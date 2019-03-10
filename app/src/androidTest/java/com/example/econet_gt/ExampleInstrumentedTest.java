@@ -1,4 +1,4 @@
-package edu.gatech.androidauthmongodbnodejs;
+package com.example.econet_gt;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("edu.gatech.androidauthmongodbnodejs", appContext.getPackageName());
+        assertEquals("com.example.econet_gt", appContext.getPackageName());
     }
 }

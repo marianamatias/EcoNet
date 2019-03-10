@@ -1,4 +1,4 @@
-package edu.gatech.androidauthmongodbnodejs;
+package com.example.econet_gt;
 
 import org.junit.Test;
 
