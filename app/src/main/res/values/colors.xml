@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+
+    <color name="myTextColordark">#3F3F3F</color>
+    <color name="blueGradient">#73D6C6</color>
+    <color name="greenGradient">#9BDE93</color>
+
+    <color name="lightGreyTransparent">#20000000</color>
+    <color name="darkGreyTransparent">#50000000</color>
+
+</resources>
