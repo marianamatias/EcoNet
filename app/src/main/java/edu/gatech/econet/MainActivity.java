@@ -83,6 +83,28 @@ public class MainActivity extends AppCompatActivity implements
     // [END on_start_check_user]
 
 
+    // [START onactivityresult]
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                // Google Sign In was successful, authenticate with Firebase
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                firebaseAuthWithGoogle(account);
+            } catch (ApiException e) {
+                // Google Sign In failed, update UI appropriately
+                Log.w(TAG, "Google sign in failed", e);
+                // [START_EXCLUDE]
+                updateUI(null);
+                // [END_EXCLUDE]
+            }
+        }
+    }
+    // [END onactivityresult]
 
     // [START auth_with_google]
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
@@ -132,11 +154,11 @@ public class MainActivity extends AppCompatActivity implements
 
     private void updateUI(FirebaseUser user) {
         if (user != null) {
-            findViewById(R.id.signInButton).setVisibility(View.VISIBLE);
+            findViewById(R.id.signInButton).setVisibility(View.GONE);
             findViewById(R.id.signOutButton).setVisibility(View.VISIBLE);
         } else {
             findViewById(R.id.signInButton).setVisibility(View.VISIBLE);
-            findViewById(R.id.signOutButton).setVisibility(View.VISIBLE);
+            findViewById(R.id.signOutButton).setVisibility(View.GONE);
         }
     }
 
