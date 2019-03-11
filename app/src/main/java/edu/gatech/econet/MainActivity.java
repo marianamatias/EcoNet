@@ -25,6 +25,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 //import com.google.firebase.quickstart.auth.R;
+import android.content.Context;
 
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,10 +40,10 @@ public class MainActivity extends AppCompatActivity implements
     private static final int RC_SIGN_IN = 9001;
 
     // [START declare_auth]
-    private FirebaseAuth mAuth;
+    public FirebaseAuth mAuth;
     // [END declare_auth]
 
-    private GoogleSignInClient mGoogleSignInClient;
+    public GoogleSignInClient mGoogleSignInClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements
     }
     // [END signin]
 
-    private void signOut() {
+    public void signOut() {
         // Firebase sign out
         mAuth.signOut();
 
@@ -154,8 +155,12 @@ public class MainActivity extends AppCompatActivity implements
 
     private void updateUI(FirebaseUser user) {
         if (user != null) {
-            findViewById(R.id.signInButton).setVisibility(View.GONE);
-            findViewById(R.id.signOutButton).setVisibility(View.VISIBLE);
+//            findViewById(R.id.signInButton).setVisibility(View.GONE);
+//            findViewById(R.id.signOutButton).setVisibility(View.VISIBLE);
+
+            //switch screens
+            Intent intent = new Intent(this, habitTracker.class);
+            startActivity(intent);
         } else {
             findViewById(R.id.signInButton).setVisibility(View.VISIBLE);
             findViewById(R.id.signOutButton).setVisibility(View.GONE);
