@@ -19,9 +19,9 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".habitTracker"
-            android:label="Habit Tracker">
+        <activity android:name=".habitTracker"
+            android:label="Habit Tracker"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
     </application>
