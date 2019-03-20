@@ -37,12 +37,19 @@ public class habitTracker extends AppCompatActivity implements
     private ArrayList<String> items;
     private ArrayAdapter<String> itemsAdapter;
     private ListView lvItems;
+    String upcomingTask;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habit_tracker);
+        Bundle bundle = getIntent().getExtras();
+
+        if (bundle!=null){
+            upcomingTask = bundle.getString("Task Name");
+            items.add(upcomingTask);
+        }
 
 
         Button button = (Button)findViewById(R.id.signOutButton);
