@@ -22,20 +22,20 @@ import static android.view.View.VISIBLE;
 public class AddTaskSearch extends AppCompatActivity {
     SearchView searchView;
     ListView listTasks;
-    EditText hint;
+    TextView hint;
     Button button;
     // Hard coded listview to get to use the bundle and retrieve information to next activity
-    String proposedTasks[] = new String [] {"Use a steel straw","Eat vegetarian","Avoid useless wastes"};
+    String proposedTasks[] = new String [] {"Use a steel straw","Eat vegetarian","Avoid useless wastes","Recycle !"};
 
     public void show(View view){
         listTasks.setVisibility(View.VISIBLE);
-
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_task_search);
-        hint = (EditText) findViewById(R.id.hintSearch);
+        final Bundle bundleIn = getIntent().getExtras();
+        hint = (TextView) findViewById(R.id.hintSearch);
         listTasks = (ListView) findViewById(R.id.listFound);
         searchView = (SearchView) findViewById(R.id.tasksearch);
         button = (Button) findViewById(R.id.nextAct);
@@ -45,7 +45,7 @@ public class AddTaskSearch extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long is) {
                 //Toast.makeText(AddTaskSearch.this,proposedTasks[position],Toast.LENGTH_SHORT).show();
-                OpenNewActivityWithParam(proposedTasks[position]);
+                OpenNewActivityWithParam(proposedTasks[position], bundleIn);
             }
         });
         button.setOnClickListener(new View.OnClickListener() {
@@ -59,11 +59,14 @@ public class AddTaskSearch extends AppCompatActivity {
         Intent intent = new Intent(this, ParamNewTask.class);
         startActivity(intent);
     }
-    private void OpenNewActivityWithParam(String data1){
+    private void OpenNewActivityWithParam(String data1, Bundle bundleInn){
         Intent intent = new Intent(this, ParamNewTask.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("firstData",data1);
-        intent.putExtras(bundle);
+        Bundle bundleOut = new Bundle();
+        bundleOut.putString("firstData",data1);
+        for (int i=0; i< bundleInn.size();i++){
+            bundleOut.putString("Task_List"+Integer.toString(i), bundleInn.getString("Task_List"+Integer.toString(i)));
+        }
+        intent.putExtras(bundleOut);
         //intent.putExtra("firstData",data1);
         //intent.putExtra("secondData",data2);
         startActivity(intent);

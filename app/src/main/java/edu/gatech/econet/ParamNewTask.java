@@ -13,7 +13,8 @@ public class ParamNewTask extends AppCompatActivity {
     TextView setFrequency;
     TextView textFrequency;
     Button goHT;
-    private int frequency;
+    private int frequency = 3;
+
     String receivedTask = null;
 
     @Override
@@ -25,11 +26,10 @@ public class ParamNewTask extends AppCompatActivity {
         setFrequency = findViewById(R.id.setFrequency);
         textFrequency = findViewById(R.id.textFrequency);
         goHT = findViewById(R.id.goHabitTracker);
+        final Bundle bundleIn = getIntent().getExtras();
 
-        Bundle bundle = getIntent().getExtras();
-
-        if (bundle!=null){
-            receivedTask = bundle.getString("firstData");
+        if (bundleIn!=null){
+            receivedTask = bundleIn.getString("firstData");
         }
         TextView selectedTaskText = (TextView) findViewById(R.id.taskSelected);
         String sentence = "Set the parameters for the task " + receivedTask;
@@ -49,13 +49,15 @@ public class ParamNewTask extends AppCompatActivity {
         goHT.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                OpenNewActivity(receivedTask);
+                OpenNewActivity(receivedTask,bundleIn);
             }
         });
     }
     private void more(){
-        frequency++;
-        setFrequency.setText((String.valueOf(frequency)));
+        if (frequency<6){
+            frequency++;
+            setFrequency.setText((String.valueOf(frequency)));
+        }
     }
     private void less(){
         if(frequency>1){
@@ -63,11 +65,14 @@ public class ParamNewTask extends AppCompatActivity {
             setFrequency.setText((String.valueOf(frequency)));
         }
     }
-    private void OpenNewActivity(String taskName){
+    private void OpenNewActivity(String taskName, Bundle bundleInn){
         Intent intent = new Intent(this, habitTracker.class);
-        Bundle bundleSent = new Bundle();
-        bundleSent.putString("Task Name",taskName);
-        intent.putExtras(bundleSent);
+        Bundle bundleOut = new Bundle();
+        for (int i=0; i< bundleInn.size();i++){
+            bundleOut.putString("Task_List"+Integer.toString(i), bundleInn.getString("Task_List"+Integer.toString(i)));
+        }
+        bundleOut.putString("Task_List"+Integer.toString(bundleInn.size()+1),taskName);
+        intent.putExtras(bundleOut);
         startActivity(intent);
     }
 

@@ -24,36 +24,38 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="52dp"
-        android:layout_marginEnd="8dp"
         android:text="Expected frequency (per week)"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.04"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/taskSelected" />
+        app:layout_constraintBaseline_toBaselineOf="@+id/setFrequency"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/setFrequency"
-        android:layout_width="wrap_content"
+        android:layout_width="11dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
         android:text="3"
         android:textSize="18sp"
-        tools:layout_editor_absoluteX="236dp"
-        tools:layout_editor_absoluteY="83dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.055"
+        app:layout_constraintStart_toEndOf="@+id/textFrequency"
+        app:layout_constraintTop_toBottomOf="@+id/taskSelected" />
 
     <Button
         android:id="@+id/buttonLess"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="Less"
         android:alpha="0.7"
-        android:onClick="less"
         android:background="@color/darkGreyTransparent"
+        android:onClick="less"
+        android:text="Less"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="126dp" />
+        app:layout_constraintTop_toBottomOf="@+id/textFrequency" />
 
     <Button
         android:id="@+id/buttonMore"

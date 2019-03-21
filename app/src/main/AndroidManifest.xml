@@ -33,6 +33,14 @@
             android:name=".adviceForum"
             android:label="See Question and Answer">
         </activity>
+        <activity
+            android:name=".AddTaskSearch"
+            android:label="Look for a new task">
+        </activity>
+        <activity
+            android:name=".ParamNewTask"
+            android:label="Edit parameters of the new task">
+        </activity>
 
     </application>
 
