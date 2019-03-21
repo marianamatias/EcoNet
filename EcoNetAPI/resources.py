@@ -6,12 +6,20 @@ from __future__ import print_function
 
 import logging
 import json
+from firebase import firebase
 
 from api.hooks import api_key, say_bye_after_operation
 
 import falcon
 
+
+#adding firebase connection/application
+firebase = firebase.FirebaseApplication("https://fir-auth-93d22.firebaseio.com/", None)
+
+
 class Resource(object):
+
+
 
     def on_get(self, req, resp):
         logging.info('Getting the resource')
@@ -25,10 +33,10 @@ class Resource(object):
     @falcon.before(api_key)
     @falcon.after(say_bye_after_operation)
     def on_post(self, req, resp):
-        logging.info('Creating a new resource')
+        result = firebase.post('/tasks', req.task, {'print': 'pretty'}, {'X_FANCY_HEADER': 'VERY FANCY'})
+        logging.info('Adding a task to firebase')
         resource = {
-            'id': 1,
-            'name': 'Random Name'
+            'result': 'Recycle'
         }
         resp.body = json.dumps(resource)
         resp.status = falcon.HTTP_201
