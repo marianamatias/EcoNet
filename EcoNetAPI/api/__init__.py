@@ -20,9 +20,11 @@ def generic_error_handler(ex, req, resp, params):
         raise
 
 
-app = falcon.API(middleware=[
-    AuthMiddleware()
-])
+app = falcon.API(
+#     middleware=[
+#     AuthMiddleware()
+# ]
+)
 
 app.add_route('/example', Resource())
 app.add_error_handler(Exception, generic_error_handler)

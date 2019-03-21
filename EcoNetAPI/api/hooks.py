@@ -13,6 +13,7 @@ import falcon
 def api_key(req, resp, resource, params):
 
     key = req.get_param('api_key')
+
     if key is None:
         raise falcon.HTTPForbidden(
             description='API KEY is required')
