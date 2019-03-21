@@ -3,6 +3,7 @@ package edu.gatech.econet;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
@@ -28,6 +29,7 @@ import android.graphics.Color;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 
 public class habitTracker extends AppCompatActivity implements
         View.OnClickListener {
@@ -37,7 +39,7 @@ public class habitTracker extends AppCompatActivity implements
     private ListView lvItems;
     RecyclerView recyclerView;
     RecyclerViewAdapter mAdapter;
-    CoordinatorLayout coordinatorLayout;
+    DrawerLayout drawerLayout;
 
 
     @Override
@@ -58,10 +60,13 @@ public class habitTracker extends AppCompatActivity implements
 //        items.add("Cook a vegetarian meal for friends");
 
         recyclerView = findViewById(R.id.recyclerView);
-        coordinatorLayout = findViewById(R.id.coordinatorLayout);
+        drawerLayout = findViewById(R.id.drawer_layout);
         enableSwipeToDeleteAndUndo();
         mAdapter = new RecyclerViewAdapter(items);
         recyclerView.setAdapter(mAdapter);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
     }
 
@@ -138,7 +143,7 @@ public class habitTracker extends AppCompatActivity implements
 
 
                 Snackbar snackbar = Snackbar
-                        .make(coordinatorLayout, "Item was removed from the list.", Snackbar.LENGTH_LONG);
+                        .make(drawerLayout, "Item was removed from the list.", Snackbar.LENGTH_LONG);
                 snackbar.setAction("UNDO", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
