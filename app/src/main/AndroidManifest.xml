@@ -29,6 +29,11 @@
             android:label="Ask a Question">
         </activity>
 
+        <activity
+            android:name=".adviceForum"
+            android:label="See Question and Answer">
+        </activity>
+
     </application>
 
 </manifest>
