@@ -36,13 +36,14 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.widget.TextView;
 
 public class habitTracker extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener {
 
 
     private DrawerLayout drawerLayout;
-    private ArrayList<String> items;
+    private ArrayList<String> items=null;
     public static ArrayList<String> itemsSent;
     private ArrayAdapter<String> itemsAdapter;
     private ListView lvItems;
@@ -50,6 +51,7 @@ public class habitTracker extends AppCompatActivity implements
     RecyclerViewAdapter mAdapter;
     //MenuItem menuItem;
     String receivedTask = null;
+    TextView noTask;
 
 
 
@@ -58,6 +60,7 @@ public class habitTracker extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habit_tracker);
         Toolbar toolbar = findViewById(R.id.toolbar);
+        noTask = (TextView) findViewById(R.id.no_task);
         setSupportActionBar(toolbar);
 
         //Sign out
@@ -100,7 +103,9 @@ public class habitTracker extends AppCompatActivity implements
         //enableSwipeToQuestion();
         mAdapter = new RecyclerViewAdapter(items);
         recyclerView.setAdapter(mAdapter);
-
+//        if(items==null){
+//            noTask.setText("Add a new task to your Habit Tracker ! Go to the side menu's Add Task section.");
+//        }
         //onNavigationItemSelected(menuItem);
     }
     private void setupListViewListener() {

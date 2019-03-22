@@ -7,37 +7,39 @@
     android:background="@drawable/gradient_bg"
     tools:context=".AddTaskSearch">
 
-    <SearchView
-        android:id="@+id/tasksearch"
+
+    <EditText
+        android:id="@+id/searchLabel"
         android:layout_width="0dp"
-        android:layout_height="@android:dimen/app_icon_size"
+        android:layout_height="42dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:alpha="0.3"
+        android:alpha="0.8"
         android:background="@color/darkGreyTransparent"
         android:onClick="show"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/searchButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/hintSearch"
-        android:inputType="textNoSuggestions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:divider="@color/darkGreyTransparent"
         android:ems="10"
         android:hint="Hint : Difficulty, Topic"
+        android:inputType="textNoSuggestions"
         android:textSize="8sp"
         android:textStyle="italic"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tasksearch" />
+        app:layout_constraintTop_toBottomOf="@+id/searchLabel" />
 
     <ListView
         android:id="@+id/listFound"
+        android:background="@color/darkGreyTransparent"
+        android:alpha="0.3"
         android:layout_width="395dp"
         android:layout_height="627dp"
         android:layout_marginStart="8dp"
@@ -50,20 +52,13 @@
         app:layout_constraintTop_toBottomOf="@+id/hintSearch" />
 
     <Button
-        android:id="@+id/nextAct"
+        android:id="@+id/searchButton"
         android:layout_width="wrap_content"
-        android:layout_height="49dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="NEXT"
         android:background="@color/darkGreyTransparent"
+        app:layout_constraintBaseline_toBaselineOf="@+id/searchLabel"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tasksearch"
-        app:layout_constraintVertical_bias="0.969" />
+
 </android.support.constraint.ConstraintLayout>

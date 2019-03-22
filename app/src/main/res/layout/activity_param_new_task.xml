@@ -44,8 +44,8 @@
 
     <Button
         android:id="@+id/buttonLess"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
@@ -53,24 +53,26 @@
         android:background="@color/darkGreyTransparent"
         android:onClick="less"
         android:text="Less"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.138"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textFrequency" />
 
     <Button
         android:id="@+id/buttonMore"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="More"
         android:alpha="0.7"
-        android:onClick="more"
         android:background="@color/darkGreyTransparent"
+        android:onClick="more"
+        android:text="More"
+        app:layout_constraintBaseline_toBaselineOf="@+id/buttonLess"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonLess" />
+        app:layout_constraintHorizontal_bias="0.396"
+        app:layout_constraintStart_toEndOf="@+id/buttonLess" />
 
     <Button
         android:id="@+id/goHabitTracker"
@@ -86,4 +88,39 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
+        android:id="@+id/spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="8dp"
+        android:alpha="0.7"
+        android:background="@color/darkGreyTransparent"
+        android:hint="Select topic"
+        android:textColorHint="@color/darkGreyTransparent"
+        app:layout_constraintBottom_toTopOf="@+id/goHabitTracker"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonMore"
+        app:layout_constraintVertical_bias="0.127" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Related topic"
+        app:layout_constraintBottom_toTopOf="@+id/spinner"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonMore"
+        app:layout_constraintVertical_bias="0.417" />
 </android.support.constraint.ConstraintLayout>
