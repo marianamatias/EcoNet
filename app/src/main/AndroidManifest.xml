@@ -11,6 +11,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".WelcomeActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -18,30 +25,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".habitTracker"
+        <activity
+            android:name=".habitTracker"
             android:label="Habit Tracker"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
-
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".askQuestion"
-            android:label="Ask a Question">
-        </activity>
-
+            android:label="Ask a Question"></activity>
         <activity
             android:name=".adviceForum"
-            android:label="See Question and Answer">
-        </activity>
+            android:label="See Question and Answer"></activity>
         <activity
             android:name=".AddTaskSearch"
-            android:label="Look for a new task">
-        </activity>
+            android:label="Look for a new task"></activity>
         <activity
             android:name=".ParamNewTask"
-            android:label="Edit parameters of the new task">
-        </activity>
-
+            android:label="Edit parameters of the new task"></activity>
     </application>
 
 </manifest>

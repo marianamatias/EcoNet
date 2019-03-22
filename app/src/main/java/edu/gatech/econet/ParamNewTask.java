@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class ParamNewTask extends AppCompatActivity {
     Button moreButton;
     Button lessButton;
@@ -14,6 +16,7 @@ public class ParamNewTask extends AppCompatActivity {
     TextView textFrequency;
     Button goHT;
     private int frequency = 3;
+    public static ArrayList<String> itemsLoc2;
 
     String receivedTask = null;
 
@@ -29,7 +32,7 @@ public class ParamNewTask extends AppCompatActivity {
         final Bundle bundleIn = getIntent().getExtras();
 
         if (bundleIn!=null){
-            receivedTask = bundleIn.getString("firstData");
+            receivedTask = bundleIn.getString("new_task");
         }
         TextView selectedTaskText = (TextView) findViewById(R.id.taskSelected);
         String sentence = "Set the parameters for the task " + receivedTask;
@@ -66,13 +69,16 @@ public class ParamNewTask extends AppCompatActivity {
         }
     }
     private void OpenNewActivity(String taskName, Bundle bundleInn){
+        itemsLoc2 = AddTaskSearch.itemsLoc;
+        itemsLoc2.add(receivedTask);
         Intent intent = new Intent(this, habitTracker.class);
-        Bundle bundleOut = new Bundle();
-        for (int i=0; i< bundleInn.size();i++){
-            bundleOut.putString("Task_List"+Integer.toString(i), bundleInn.getString("Task_List"+Integer.toString(i)));
-        }
-        bundleOut.putString("Task_List"+Integer.toString(bundleInn.size()+1),taskName);
-        intent.putExtras(bundleOut);
+        //Bundle bundleOut = new Bundle();
+        //for (int i=0; i< bundleInn.size();i++){
+        //    bundleOut.putString("Task_List"+Integer.toString(i), bundleInn.getString("Task_List"+Integer.toString(i)));
+        //}
+        //bundleOut.putString("Task_List"+Integer.toString(bundleInn.size()+1),taskName);
+        //intent.putExtras(bundleOut);
+        intent.putExtra("FROM_ACTIVITY", "ParamNewTask");
         startActivity(intent);
     }
 

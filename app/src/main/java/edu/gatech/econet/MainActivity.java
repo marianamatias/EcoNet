@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements
 
     // [START declare_auth]
     public FirebaseAuth mAuth;
+    public static  String signed = "No";
     // [END declare_auth]
 
     public GoogleSignInClient mGoogleSignInClient;
@@ -155,11 +156,13 @@ public class MainActivity extends AppCompatActivity implements
 
     private void updateUI(FirebaseUser user) {
         if (user != null) {
+            signed = "Yes";
 //            findViewById(R.id.signInButton).setVisibility(View.GONE);
 //            findViewById(R.id.signOutButton).setVisibility(View.VISIBLE);
 
             //switch screens
             Intent intent = new Intent(this, habitTracker.class);
+            intent.putExtra("FROM_ACTIVITY", "MainActivity");
             startActivity(intent);
         } else {
             findViewById(R.id.signInButton).setVisibility(View.VISIBLE);

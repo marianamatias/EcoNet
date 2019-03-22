@@ -15,12 +15,14 @@ import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.ListResourceBundle;
 
 import static android.view.View.VISIBLE;
 
 public class AddTaskSearch extends AppCompatActivity {
     SearchView searchView;
+    public static ArrayList<String> itemsLoc;
     ListView listTasks;
     TextView hint;
     Button button;
@@ -34,7 +36,7 @@ public class AddTaskSearch extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_task_search);
-        final Bundle bundleIn = getIntent().getExtras();
+        //final Bundle bundleIn = getIntent().getExtras();
         hint = (TextView) findViewById(R.id.hintSearch);
         listTasks = (ListView) findViewById(R.id.listFound);
         searchView = (SearchView) findViewById(R.id.tasksearch);
@@ -45,7 +47,17 @@ public class AddTaskSearch extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long is) {
                 //Toast.makeText(AddTaskSearch.this,proposedTasks[position],Toast.LENGTH_SHORT).show();
-                OpenNewActivityWithParam(proposedTasks[position], bundleIn);
+                if (itemsLoc==null){
+                    OpenNewActivityWithParam(proposedTasks[position]);
+                }
+                else if(itemsLoc.contains(proposedTasks[position])){
+                    Toast toast = Toast.makeText(getApplicationContext(),"Task already in your habit tracker",Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+                else{
+                    OpenNewActivityWithParam(proposedTasks[position]);
+                }
+
             }
         });
         button.setOnClickListener(new View.OnClickListener() {
@@ -59,13 +71,14 @@ public class AddTaskSearch extends AppCompatActivity {
         Intent intent = new Intent(this, ParamNewTask.class);
         startActivity(intent);
     }
-    private void OpenNewActivityWithParam(String data1, Bundle bundleInn){
+    private void OpenNewActivityWithParam(String data1){
+        itemsLoc = habitTracker.itemsSent;
         Intent intent = new Intent(this, ParamNewTask.class);
         Bundle bundleOut = new Bundle();
-        bundleOut.putString("firstData",data1);
-        for (int i=0; i< bundleInn.size();i++){
-            bundleOut.putString("Task_List"+Integer.toString(i), bundleInn.getString("Task_List"+Integer.toString(i)));
-        }
+        bundleOut.putString("new_task",data1);
+        //for (int i=0; i< bundleInn.size();i++){
+        //    bundleOut.putString("new_task", data1);
+        //}
         intent.putExtras(bundleOut);
         //intent.putExtra("firstData",data1);
         //intent.putExtra("secondData",data2);

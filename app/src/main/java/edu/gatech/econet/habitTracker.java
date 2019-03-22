@@ -43,6 +43,7 @@ public class habitTracker extends AppCompatActivity implements
 
     private DrawerLayout drawerLayout;
     private ArrayList<String> items;
+    public static ArrayList<String> itemsSent;
     private ArrayAdapter<String> itemsAdapter;
     private ListView lvItems;
     RecyclerView recyclerView;
@@ -65,18 +66,24 @@ public class habitTracker extends AppCompatActivity implements
         lvItems = findViewById(R.id.lvItems);
         readItems();
         lvItems.setAdapter(itemsAdapter);
-        Bundle bundleIn = getIntent().getExtras();
+        //Bundle bundleIn = getIntent().getExtras();
          //Retrieve data from add task
 
-        if (bundleIn!=null){
-            for (int i=0; i< bundleIn.size();i++){
-                if (bundleIn.getString("Task_List"+Integer.toString(i))!=null){
-                    items.add(bundleIn.getString("Task_List" + Integer.toString(i)));
-                }
-            }
-            receivedTask = bundleIn.getString("Task_List"+Integer.toString(bundleIn.size()));
-            items.add(receivedTask);
+        //if (bundleIn!=null){
+            //for (int i=0; i< bundleIn.size();i++){
+            //    if (bundleIn.getString("Task_List"+Integer.toString(i))!=null){
+            //        items.add(bundleIn.getString("Task_List" + Integer.toString(i)));
+            //    }
+            //}
+            //receivedTask = bundleIn.getString("new_task");
+            //items.add(receivedTask);
+        //}
+        Intent mIntent = getIntent();
+        String previousActivity= mIntent.getStringExtra("FROM_ACTIVITY");
+        if (previousActivity.equals("ParamNewTask")){
+            items = ParamNewTask.itemsLoc2;
         }
+
 
         //items.add("salut!");
 
@@ -132,13 +139,14 @@ public class habitTracker extends AppCompatActivity implements
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         if (id == R.id.add_goal){
+            itemsSent = items;
             Intent intent = new Intent(this, AddTaskSearch.class);
-            Bundle bundleAdd = new Bundle();
-            for (String str : items){
-                int i =0;
-                bundleAdd.putString("Task_List"+Integer.toString(i),str);
-            }
-            intent.putExtras(bundleAdd);
+            //Bundle bundleAdd = new Bundle();
+            //for (String str : items){
+            //    int i =0;
+            //    bundleAdd.putString("Task_List"+Integer.toString(i),str);
+            //}
+            //intent.putExtras(bundleAdd);
             startActivity(intent);
         }
         if (id == R.id.advice){
