@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="192dp"
+    android:background="@color/lightGreyTransparent"
+    android:padding="16dp"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark"
+    android:orientation="vertical"
+    android:gravity="bottom"
+    android:layout_weight="1"
+    >
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_leaf"
+        android:layout_marginTop="10dp"
+        android:layout_weight="5"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Econet"
+        android:textSize="25dp"
+        android:textColor="#000000"
+        android:textAlignment="center"
+        android:layout_weight="1"
+        android:textStyle="bold"
+        android:layout_marginBottom="10dp"
+        />
+
+</LinearLayout>

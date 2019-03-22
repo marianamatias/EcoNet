@@ -13,12 +13,15 @@
         <item android:id="@+id/challenges"
             android:icon="@drawable/ic_challenge"
             android:title="Challenges"/>
-        <item android:id="@+id/account"
-            android:icon="@drawable/ic_account"
-            android:title="Account"/>
-        <item android:id="@+id/setting"
-            android:icon="@drawable/ic_settings"
-            android:title="Settings"/>
+        <!--<item android:id="@+id/account"-->
+            <!--android:icon="@drawable/ic_account"-->
+            <!--android:title="Account"/>-->
+        <!--<item android:id="@+id/setting"-->
+            <!--android:icon="@drawable/ic_settings"-->
+            <!--android:title="Settings"/>-->
+        <item android:id="@+id/signOut"
+            android:icon="@drawable/ic_signout"
+            android:title="Sign Out"/>
 
     </group>
 

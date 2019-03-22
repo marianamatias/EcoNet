@@ -38,7 +38,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
 public class habitTracker extends AppCompatActivity implements
-        NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+        NavigationView.OnNavigationItemSelectedListener {
 
 
     private DrawerLayout drawerLayout;
@@ -61,8 +61,8 @@ public class habitTracker extends AppCompatActivity implements
         setSupportActionBar(toolbar);
 
         //Sign out
-        Button button = (Button)findViewById(R.id.signOutButton);
-        button.setOnClickListener(this);
+//        Button button = (Button)findViewById(R.id.signOutButton);
+//        button.setOnClickListener(this);
         lvItems = findViewById(R.id.lvItems);
         readItems();
         lvItems.setAdapter(itemsAdapter);
@@ -119,6 +119,7 @@ public class habitTracker extends AppCompatActivity implements
 
                 });
     }
+
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -135,6 +136,9 @@ public class habitTracker extends AppCompatActivity implements
 
         return super.onOptionsItemSelected(item);
     }
+
+
+    //Drawer Menu - Link to Activities
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
@@ -149,11 +153,17 @@ public class habitTracker extends AppCompatActivity implements
             //intent.putExtras(bundleAdd);
             startActivity(intent);
         }
+
         if (id == R.id.advice){
-            Intent intent = new Intent(this, adviceForum.class);
+            Intent intent = new Intent(this, askQuestion.class);
             startActivity(intent);
         }
-        else {}
+
+        if (id == R.id.signOut){
+            menuSignOut();
+        }
+
+//        else {}
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -185,7 +195,7 @@ public class habitTracker extends AppCompatActivity implements
         }
     }
 
-    private void signOut(View v) {
+    private void menuSignOut() {
         FirebaseAuth.getInstance().signOut();
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -206,11 +216,33 @@ public class habitTracker extends AppCompatActivity implements
 
     }
 
+
+//    private void signOut(View v) {
+//        FirebaseAuth.getInstance().signOut();
+//
+//        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//                .requestIdToken("1057246002930-8bp2uv0v2sjesp7iin4dkcp35uv3vlas.apps.googleusercontent.com")
+//                .requestEmail()
+//                .build();
+//
+//        GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+//
+//        // Google sign out
+//        mGoogleSignInClient.signOut().addOnCompleteListener(this,
+//                new OnCompleteListener<Void>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<Void> task) {
+//                        updateUI();
+//                    }
+//                });
+//
+//    }
+
     // Implement the OnClickListener callback
-    public void onClick(View v) {
-        // do something when the button is clicked
-        signOut(v);
-    }
+//    public void onClick(View v) {
+//        // do something when the button is clicked
+//        signOut(v);
+//    }
 
     public void updateUI() {
         startActivity(new Intent(this, MainActivity.class));
