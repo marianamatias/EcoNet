@@ -31,7 +31,7 @@
 
         <activity
             android:name=".adviceForum"
-            android:label="See Question and Answer">
+            android:label="Advice Forum">
         </activity>
         <activity
             android:name=".AddTaskSearch"
