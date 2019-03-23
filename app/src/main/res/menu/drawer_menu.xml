@@ -12,7 +12,7 @@
             android:title="Advice"/>
         <item android:id="@+id/challenges"
             android:icon="@drawable/ic_challenge"
-            android:title="Challenges"/>
+            android:title="Forum"/>
         <!--<item android:id="@+id/account"-->
             <!--android:icon="@drawable/ic_account"-->
             <!--android:title="Account"/>-->
