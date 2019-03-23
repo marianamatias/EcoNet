@@ -21,7 +21,7 @@ public class ForumTopicSelect extends AppCompatActivity {
     ArrayAdapter<String> adapter=null;
     ArrayAdapter<String> adapterImage=null;
     //String topic[]=null;
-    private String localTopic[] = new String[] {"Alimentation","Animal","Energy","Transportation","Zero Waste"};
+    public static String localTopic[] = new String[] {"Alimentation","Animal","Energy","Transportation","Zero Waste"};
     private String localImage[] = new String[] {"","","","",""};
     private static String chosenTopic;
 

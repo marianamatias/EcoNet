@@ -42,7 +42,6 @@ public class AddTaskSearch extends AppCompatActivity {
     TextView hint;
     //edu.gatech.econet.CustomTextView searchLabel;
     EditText searchLabel;
-    Button searchButton;
     // Hard coded listview to get to use the bundle and retrieve information to next activity
     String proposedTasks[] = new String [] {"Use a steel straw","Eat vegetarian","Avoid useless wastes","Recycle !","Avoid using plastic bottles","Limit personal commuting","Car pooling for the atmosphere",""};
     String localTasks[] = proposedTasks;
@@ -58,13 +57,13 @@ public class AddTaskSearch extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_task_search);
-        for (int i = 0; i < proposedTasks.length; i++) {
-            if (itemsLoc != null) {
-                if (itemsLoc.contains(proposedTasks[i])) {
-                    localTasks = removeTheElement(localTasks, proposedTasks[i]);
-                }
-            }
-        }
+//        for (int i = 0; i < proposedTasks.length; i++) {
+//            if (itemsLoc != null) {
+//                if (itemsLoc.contains(proposedTasks[i])) {
+//                    localTasks = removeTheElement(localTasks, proposedTasks[i]);
+//                }
+//            }
+//        }
 
 
         //final Bundle bundleIn = getIntent().getExtras();
@@ -73,13 +72,6 @@ public class AddTaskSearch extends AppCompatActivity {
         searchLabel = (EditText) findViewById(R.id.searchLabel);
         listTasks = (ListView) findViewById(R.id.listFound);
         listTasks.getBackground().setAlpha(80);
-        searchButton = (Button) findViewById(R.id.searchButton);
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                localTasks = search(searchLabel, localTasks);
-            }
-        });
 
 //        imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
 //        //Hide:
@@ -107,7 +99,7 @@ public class AddTaskSearch extends AppCompatActivity {
                 View view = super.getView(position,convertView,parent);
                 if(itemsLoc!=null){
                     if(itemsLoc.contains(proposedTasks[position])){
-                        view.setBackgroundColor(Color.parseColor("#FFB6B546"));
+                        view.setBackgroundColor(getResources().getColor(R.color.lightGreyTransparent));
                     }
                 }
                 return view;

@@ -13,6 +13,8 @@ import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
 import java.util.ArrayList;
 
+import static edu.gatech.econet.ForumTopicSelect.localTopic;
+
 public class ParamNewTask extends AppCompatActivity {
     Button moreButton;
     Button lessButton;
@@ -24,7 +26,7 @@ public class ParamNewTask extends AppCompatActivity {
     public static String tag;
 
     String receivedTask = null;
-    String [] spinnerlist={"Zero waste","Energy","Climate","Animal protection"};
+    String [] spinnerlist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +38,7 @@ public class ParamNewTask extends AppCompatActivity {
         textFrequency = findViewById(R.id.textFrequency);
         goHT = findViewById(R.id.goHabitTracker);
         final Bundle bundleIn = getIntent().getExtras();
+        spinnerlist = ForumTopicSelect.localTopic;
 
         if (bundleIn!=null){
             receivedTask = bundleIn.getString("new_task");
