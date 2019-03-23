@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -33,7 +35,7 @@ public class AddTaskSearch extends AppCompatActivity {
     EditText searchLabel;
     Button searchButton;
     // Hard coded listview to get to use the bundle and retrieve information to next activity
-    String proposedTasks[] = new String [] {"Use a steel straw","Eat vegetarian","Avoid useless wastes","Recycle !","Avoid using plastic bottles","Limit personal commuting","Car pooling for the atmosphere"};
+    String proposedTasks[] = new String [] {"Use a steel straw","Eat vegetarian","Avoid useless wastes","Recycle !","Avoid using plastic bottles","Limit personal commuting","Car pooling for the atmosphere",""};
     String localTasks[] = proposedTasks;
 
 
@@ -52,6 +54,7 @@ public class AddTaskSearch extends AppCompatActivity {
             }
         }
 
+
         //final Bundle bundleIn = getIntent().getExtras();
         hint = (TextView) findViewById(R.id.hintSearch);
         searchLabel = (EditText)findViewById(R.id.searchLabel);
@@ -65,6 +68,18 @@ public class AddTaskSearch extends AppCompatActivity {
             }
         });
 
+        searchLabel.setOnTouchListener(new View.OnTouchListener(){
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                int inType = searchLabel.getInputType(); // backup the input type
+                searchLabel.setInputType(InputType.TYPE_NULL); // disable soft input
+                searchLabel.onTouchEvent(event); // call native handler
+                searchLabel.setInputType(inType); // restore input type
+                v.performClick()
+                return true; // consume touch even
+            }
+        });
         //searchView = (SearchView) findViewById(R.id.tasksearch);
         ArrayAdapter<String> adapter=new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,localTasks);
 

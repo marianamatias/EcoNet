@@ -24,7 +24,7 @@ public class ParamNewTask extends AppCompatActivity {
     public static String tag;
 
     String receivedTask = null;
-    String [] spinnerlist={"Zero waste","Recycling","Climate","Animal protection"};
+    String [] spinnerlist={"Zero waste","Energy","Climate","Animal protection"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
