@@ -39,7 +39,7 @@ public class ForumTopicSelect extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forum_topic_select);
-        final String apiKey = BuildConfig.ApiKey;
+        //final String apiKey = BuildConfig.ApiKey;
         listTopic = (ListView) findViewById(R.id.listTopic);
         listImage = (ListView) findViewById(R.id.listImage);
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, localTopic) {
@@ -153,7 +153,7 @@ public class ForumTopicSelect extends AppCompatActivity {
                 //Log.d("salut",test.toString());
                 RequestParams rp = new RequestParams();
                 //rp.add("task", "recycle"); rp.add("tag", "recycle bottles");
-                rp.put("api_key","EconetAPIKEYtoEdit2019sDatabase");
+                //rp.put("api_key","False");
                 rp.put("data",1);
                 Log.d("salut",rp.toString());
                 HttpUtils.postByUrl("http://www.fir-auth-93d22.appspot.com/example", rp, new JsonHttpResponseHandler() {
