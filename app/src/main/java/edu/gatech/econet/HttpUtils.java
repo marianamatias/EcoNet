@@ -5,7 +5,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 public class HttpUtils {
-    private static final String BASE_URL = "http://api.twitter.com/1/";
+    private static final String BASE_URL = "http://www.fir-auth-93d22.appspot.com";
 
     private static AsyncHttpClient client = new AsyncHttpClient();
 

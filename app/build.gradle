@@ -12,9 +12,15 @@ android {
         multiDexEnabled true
     }
     buildTypes {
+        debug{
+            buildConfigField 'String', "ApiKey", API_Key_Econet
+            resValue 'string', "api_key", API_Key_Econet
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField 'String', "ApiKey", API_Key_Econet
+            resValue 'string', "api_key", API_Key_Econet
         }
     }
 }
@@ -41,7 +47,11 @@ dependencies {
 
     implementation 'com.android.support:multidex:1.0.3'
     implementation 'com.weiwangcn.betterspinner:library-material:1.1.0'
+
+
+    //Json communication
     implementation 'com.loopj.android:android-async-http:1.4.9'
+    implementation 'org.json:json:20160212'
 
 }
 apply plugin: 'com.google.gms.google-services'
