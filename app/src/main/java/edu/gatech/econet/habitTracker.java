@@ -138,6 +138,9 @@ public class habitTracker extends AppCompatActivity implements
         if (id == R.id.advice) {
             return true;
         }
+        if (id == R.id.challenges) {
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -161,6 +164,11 @@ public class habitTracker extends AppCompatActivity implements
 
         if (id == R.id.advice){
             Intent intent = new Intent(this, askQuestion.class);
+            startActivity(intent);
+        }
+
+        if (id == R.id.challenges){
+            Intent intent = new Intent(this, ForumTopicSelect.class);
             startActivity(intent);
         }
 

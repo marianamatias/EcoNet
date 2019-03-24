@@ -1,13 +1,21 @@
 package edu.gatech.econet;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
+import android.view.ContextMenu;
+import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -32,11 +40,14 @@ public class AddTaskSearch extends AppCompatActivity {
     public static ArrayList<String> itemsLoc;
     ListView listTasks;
     TextView hint;
+    //edu.gatech.econet.CustomTextView searchLabel;
     EditText searchLabel;
-    Button searchButton;
     // Hard coded listview to get to use the bundle and retrieve information to next activity
     String proposedTasks[] = new String [] {"Use a steel straw","Eat vegetarian","Avoid useless wastes","Recycle !","Avoid using plastic bottles","Limit personal commuting","Car pooling for the atmosphere",""};
     String localTasks[] = proposedTasks;
+    InputMethodManager imm ;
+    int cntHide;
+    ArrayAdapter<String> adapter;
 
 
     public void show(View view){
@@ -46,72 +57,54 @@ public class AddTaskSearch extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_task_search);
-        for (int i=0;i<proposedTasks.length;i++){
-            if(itemsLoc!=null){
-                if (itemsLoc.contains(proposedTasks[i])){
-                    localTasks= removeTheElement(localTasks,proposedTasks[i]);
-                }
-            }
-        }
+//        for (int i = 0; i < proposedTasks.length; i++) {
+//            if (itemsLoc != null) {
+//                if (itemsLoc.contains(proposedTasks[i])) {
+//                    localTasks = removeTheElement(localTasks, proposedTasks[i]);
+//                }
+//            }
+//        }
 
 
         //final Bundle bundleIn = getIntent().getExtras();
         hint = (TextView) findViewById(R.id.hintSearch);
-        searchLabel = (EditText)findViewById(R.id.searchLabel);
+        //searchLabel = (edu.gatech.econet.CustomTextView)findViewById(R.id.searchLabel);
+        searchLabel = (EditText) findViewById(R.id.searchLabel);
         listTasks = (ListView) findViewById(R.id.listFound);
         listTasks.getBackground().setAlpha(80);
-        searchButton=(Button) findViewById(R.id.searchButton);
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                localTasks=search(searchLabel,localTasks);
-            }
-        });
 
-        searchLabel.setOnTouchListener(new View.OnTouchListener(){
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                int inType = searchLabel.getInputType(); // backup the input type
-                searchLabel.setInputType(InputType.TYPE_NULL); // disable soft input
-                searchLabel.onTouchEvent(event); // call native handler
-                searchLabel.setInputType(inType); // restore input type
-                v.performClick();
-                return true; // consume touch even
-            }
-        });
-        //searchView = (SearchView) findViewById(R.id.tasksearch);
-        ArrayAdapter<String> adapter=new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,localTasks);
-
-
-        //for (int i=0;i<proposedTasks.length;i++){
-//            if (itemsLoc.contains(proposedTasks[i])){
-//                listTasks[i].setBackgroud
-//                setOnTiemTextColor(getTextColors().withAlpha(alpha));
-//            }
-        //}
-
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_list_item_1,proposedTasks) {
-//
+//        imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+//        //Hide:
+//        //imm.toggleSoftInput(InputMethodManager.RESULT_HIDDEN, 0);
+//        cntHide=0;
+//        //Show
+//        searchLabel.setOnClickListener(new View.OnClickListener() {
 //            @Override
-//            public View getView(int position, View convertView, ViewGroup parent) {
-//
-//                View view = super.getView(position, convertView, parent);
-//                TextView text = (TextView) view.findViewById(android.R.id.text1);
-//                if(itemsLoc!=null){
-//                    if (itemsLoc.contains(proposedTasks[position])) {
-//                        text.setTextColor((Color.BLACK));
-//                    }
+//            public void onClick(View view) {
+//                //imm.hideSoftInputFromWindow(searchLabel.getApplicationWindowToken(), 0);
+//                cntHide++;
+//                if (cntHide %2==0){
+//                    //imm.hideSoftInputFromWindow(searchLabel.getApplicationWindowToken(), 0);
+//                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
 //                }
-//
-//
-//                return view;
+//                else{
+//                    imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+//                }
 //            }
-//        };
-//        for (int i=0;i<proposedTasks.length;i++){
-//            adapter.getView(i,listTasks,listTasks);
-//        }
-        //adapter.getView();
+//        });
+
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, localTasks){
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent){
+                View view = super.getView(position,convertView,parent);
+                if(itemsLoc!=null){
+                    if(itemsLoc.contains(proposedTasks[position])){
+                        view.setBackgroundColor(getResources().getColor(R.color.lightGreyTransparent));
+                    }
+                }
+                return view;
+            }
+        };
         listTasks.setAdapter(adapter);
 
         listTasks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -129,6 +122,20 @@ public class AddTaskSearch extends AppCompatActivity {
                     OpenNewActivityWithParam(localTasks[position]);
                 }
 
+            }
+        });
+        searchLabel.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int i, int i1, int i2) {
+                AddTaskSearch.this.adapter.getFilter().filter(s);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
             }
         });
     }
