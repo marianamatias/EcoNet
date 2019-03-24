@@ -76,7 +76,7 @@ public class AddTaskSearch extends AppCompatActivity {
                 searchLabel.setInputType(InputType.TYPE_NULL); // disable soft input
                 searchLabel.onTouchEvent(event); // call native handler
                 searchLabel.setInputType(inType); // restore input type
-                v.performClick()
+                v.performClick();
                 return true; // consume touch even
             }
         });
