@@ -39,7 +39,7 @@ public class ForumTopicSelect extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forum_topic_select);
-        final String apiKey = BuildConfig.ApiKey;
+//        final String apiKey = BuildConfig.ApiKey;
         listTopic = (ListView) findViewById(R.id.listTopic);
         listImage = (ListView) findViewById(R.id.listImage);
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, localTopic) {
