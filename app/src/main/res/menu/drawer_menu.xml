@@ -4,6 +4,9 @@
     tools:showIn="navigation_view">
 
     <group android:checkableBehavior="single">
+        <item android:id="@+id/habit_tracker"
+            android:icon="@drawable/ic_tasks"
+            android:title="Habit Tracker"/>
         <item android:id="@+id/add_goal"
             android:icon="@drawable/ic_add"
             android:title="Add Goal"/>

@@ -46,7 +46,7 @@ public class WelcomeActivity extends AppCompatActivity {
                     intent.putExtra("FROM_ACTIVITY", "WelcomeActivity");
                     startActivity(intent);
                 }
-            }, 5000);
+            }, 2000);
         }
 
         else{
@@ -56,7 +56,7 @@ public class WelcomeActivity extends AppCompatActivity {
                     Intent intent = new Intent(WelcomeActivity.this,MainActivity.class);
                     startActivity(intent);
                 }
-            }, 5000);
+            }, 2000);
         }
 
     }

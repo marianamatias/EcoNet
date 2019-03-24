@@ -98,6 +98,8 @@ public class ParamNewTask extends AppCompatActivity {
         //}
         //bundleOut.putString("Task_List"+Integer.toString(bundleInn.size()+1),taskName);
         //intent.putExtras(bundleOut);
+        Bundle bundleOut = new Bundle();
+        bundleOut.putString("new_task", receivedTask);
         intent.putExtra("FROM_ACTIVITY", "ParamNewTask");
         startActivity(intent);
     }
