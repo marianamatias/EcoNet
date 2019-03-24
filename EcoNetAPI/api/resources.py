@@ -33,7 +33,9 @@ class Resource(object):
     @falcon.before(api_key)
     @falcon.after(say_bye_after_operation)
     def on_post(self, req, resp):
-        result = firebase.post('/tasks', req.get_param('task'), {'print': 'pretty'}, {'X_FANCY_HEADER': 'VERY FANCY'})
+        logging.info(req.get_param("data"))
+        data = json.loads(req.get_param("data"))
+        result = firebase.post('/tasks', data, {'print': 'pretty'}, {'X_FANCY_HEADER': 'VERY FANCY'})
         logging.info('Adding a task to firebase')
         resource = {
             'result': 'Recycle'
