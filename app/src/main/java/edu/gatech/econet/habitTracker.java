@@ -2,6 +2,7 @@ package edu.gatech.econet;
 
 import android.content.ClipData;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -10,6 +11,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -18,11 +20,16 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Button;
 
+import com.baoyz.swipemenulistview.SwipeMenu;
+import com.baoyz.swipemenulistview.SwipeMenuCreator;
+import com.baoyz.swipemenulistview.SwipeMenuItem;
+import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 
 import org.apache.commons.io.FileUtils;
@@ -41,19 +48,18 @@ import android.widget.TextView;
 public class habitTracker extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener {
 
+    private static final String TAG = "habitTracker";
 
     private DrawerLayout drawerLayout;
     private ArrayList<String> items=null;
     public static ArrayList<String> itemsSent;
-    private ArrayAdapter<String> itemsAdapter;
-    private ListView lvItems;
-    RecyclerView recyclerView;
-    RecyclerViewAdapter mAdapter;
+
     //MenuItem menuItem;
     String receivedTask = null;
     TextView noTask;
 
-
+    ArrayAdapter<String> habitTrackerListAdapter;
+    ArrayList<String> habitTrackerList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,102 +69,48 @@ public class habitTracker extends AppCompatActivity implements
         noTask = (TextView) findViewById(R.id.no_task);
         setSupportActionBar(toolbar);
 
-        //Sign out
-//        Button button = (Button)findViewById(R.id.signOutButton);
-//        button.setOnClickListener(this);
-        lvItems = findViewById(R.id.lvItems);
         readItems();
-        lvItems.setAdapter(itemsAdapter);
-        //Bundle bundleIn = getIntent().getExtras();
+
          //Retrieve data from add task
-
-        //if (bundleIn!=null){
-            //for (int i=0; i< bundleIn.size();i++){
-            //    if (bundleIn.getString("Task_List"+Integer.toString(i))!=null){
-            //        items.add(bundleIn.getString("Task_List" + Integer.toString(i)));
-            //    }
-            //}
-            //receivedTask = bundleIn.getString("new_task");
-            //items.add(receivedTask);
-        //}
         Intent mIntent = getIntent();
-        String previousActivity= mIntent.getStringExtra("FROM_ACTIVITY");
-        if (previousActivity.equals("ParamNewTask")){
-            items = ParamNewTask.itemsLoc2;
-        }
+        String previousActivity = mIntent.getStringExtra("FROM_ACTIVITY");
 
+//        if (previousActivity.equals("ParamNewTask")){
+//            items = ParamNewTask.itemsLoc2;
+//        }
 
-        //items.add("salut!");
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        //itemsAdapter = new ArrayAdapter<String>(this,
-        //        android.R.layout.simple_list_item_1, items);
-
-//        items.add("Cook a vegetarian meal for friends");
-        setupListViewListener();
-        recyclerView = findViewById(R.id.recyclerView);
         drawerLayout = findViewById(R.id.drawer_layout);
-        enableSwipeToDeleteAndUndo();
-        //enableSwipeToQuestion();
-        mAdapter = new RecyclerViewAdapter(items);
-        recyclerView.setAdapter(mAdapter);
-//        if(items==null){
-//            noTask.setText("Add a new task to your Habit Tracker ! Go to the side menu's Add Task section.");
-//        }
-        //onNavigationItemSelected(menuItem);
-    }
-    private void setupListViewListener() {
-        lvItems.setOnItemLongClickListener(
-                new AdapterView.OnItemLongClickListener() {
-                    @Override
-                    public boolean onItemLongClick(AdapterView<?> adapter,
-                                                   View item, int pos, long id) {
-                        // Remove the item within array at position
-                        items.remove(pos);
-                        // Refresh the adapter
-                        itemsAdapter.notifyDataSetChanged();
-                        // Return true consumes the long click event (marks it handled)
-                        return true;
-                    }
 
-                });
-    }
 
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        SwipeMenuListView swipeListView = (SwipeMenuListView) findViewById(R.id.swipeListView);
+        habitTrackerList = new ArrayList<>();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.add_goal) {
-            return true;
-        }
-        if (id == R.id.advice) {
-            return true;
-        }
-        if (id == R.id.challenges) {
-            return true;
+        if (previousActivity.equals("ParamNewTask")) {
+            if (ParamNewTask.itemsLoc2 != null) {
+                habitTrackerList = ParamNewTask.itemsLoc2;
+                items = ParamNewTask.itemsLoc2;
+            }
         }
 
-        return super.onOptionsItemSelected(item);
-    }
+        habitTrackerListAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, habitTrackerList);
 
+        if (habitTrackerList != null) {
+            swipeListView.setAdapter(habitTrackerListAdapter);
+        }
+        setupSwipeMenuListView(swipeListView);
+    }
 
     //Drawer Menu - Link to Activities
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+
         if (id == R.id.add_goal){
             itemsSent = items;
             Intent intent = new Intent(this, AddTaskSearch.class);
-            //Bundle bundleAdd = new Bundle();
-            //for (String str : items){
-            //    int i =0;
-            //    bundleAdd.putString("Task_List"+Integer.toString(i),str);
-            //}
-            //intent.putExtras(bundleAdd);
             startActivity(intent);
         }
 
@@ -176,16 +128,10 @@ public class habitTracker extends AppCompatActivity implements
             menuSignOut();
         }
 
-//        else {}
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
-//    public void onAddItem(View v) {
-//        itemsAdapter.add(receivedTask);
-//        writeItems();
-//    }
 
 
     private void readItems() {
@@ -195,16 +141,6 @@ public class habitTracker extends AppCompatActivity implements
             items = new ArrayList<String>(FileUtils.readLines(todoFile));
         } catch (IOException e) {
             items = new ArrayList<>();
-        }
-    }
-
-    private void writeItems() {
-        File filesDir = getFilesDir();
-        File todoFile = new File(filesDir, "todo.txt");
-        try {
-            FileUtils.writeLines(todoFile, items);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -226,72 +162,82 @@ public class habitTracker extends AppCompatActivity implements
                         updateUI();
                     }
                 });
-
     }
 
-
-//    private void signOut(View v) {
-//        FirebaseAuth.getInstance().signOut();
-//
-//        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//                .requestIdToken("1057246002930-8bp2uv0v2sjesp7iin4dkcp35uv3vlas.apps.googleusercontent.com")
-//                .requestEmail()
-//                .build();
-//
-//        GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-//
-//        // Google sign out
-//        mGoogleSignInClient.signOut().addOnCompleteListener(this,
-//                new OnCompleteListener<Void>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<Void> task) {
-//                        updateUI();
-//                    }
-//                });
-//
-//    }
-
-    // Implement the OnClickListener callback
-//    public void onClick(View v) {
-//        // do something when the button is clicked
-//        signOut(v);
-//    }
 
     public void updateUI() {
         startActivity(new Intent(this, MainActivity.class));
     }
 
-    private void enableSwipeToDeleteAndUndo() {
-        SwipeToDeleteCallback swipeToDeleteCallback = new SwipeToDeleteCallback(this) {
+    private void setupSwipeMenuListView(SwipeMenuListView swipeList) {
+
+        SwipeMenuCreator creator = new SwipeMenuCreator() {
             @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+            public void create(SwipeMenu menu) {
+                // create "ask for advice" item
+                SwipeMenuItem askItem = new SwipeMenuItem(getApplicationContext());
+                // set item background
+                askItem.setBackground(new ColorDrawable(Color.rgb(31, 167, 221)));
+                // set item width
+                askItem.setWidth(200);
+                // set item title
+                askItem.setIcon(R.drawable.ic_advice_white);
+                // add to menu
+                menu.addMenuItem(askItem);
 
-                final int position = viewHolder.getAdapterPosition();
-                final String item = mAdapter.getData().get(position);
-                mAdapter.removeItem(position);
-
-                Snackbar snackbar = Snackbar
-                        .make(drawerLayout, "Item was removed from the list.", Snackbar.LENGTH_LONG);
-                snackbar.setAction("UNDO", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mAdapter.restoreItem(item, position);
-                        recyclerView.scrollToPosition(position);
-                    }
-                });
-                snackbar.setActionTextColor(Color.YELLOW);
-                snackbar.show();
+                // create "delete" item
+                SwipeMenuItem deleteItem = new SwipeMenuItem(getApplicationContext());
+                // set item background
+                deleteItem.setBackground(new ColorDrawable(Color.rgb(206, 26, 10)));
+                // set item width
+                deleteItem.setWidth(200);
+                // set a icon
+                deleteItem.setIcon(R.drawable.ic_delete_white);
+                // add to menu
+                menu.addMenuItem(deleteItem);
             }
         };
 
-//        private void enableSwipeToQuestion(){
-//            @Override
-//            public void onSwiped(RecyclerView.ViewHolder viewholder, int direction){
-//            }
-//        }
+        // set creator
+        swipeList.setMenuCreator(creator);
 
-        ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeToDeleteCallback);
-        itemTouchhelper.attachToRecyclerView(recyclerView);
+        swipeList.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
+                switch (index) {
+                    case 0:
+                        //ask question
+                        Log.d(TAG, "onMenuItemClick: clicked item" + index);
+                        Intent intent = new Intent(habitTracker.this, askQuestion.class);
+                        startActivity(intent);
+                        break;
+                    case 1:
+                        //delete
+                        Log.d(TAG, "onMenuItemClick: clicked item" + index);
+                        String deletedItem = habitTrackerList.get(position);
+                        habitTrackerListAdapter.remove(habitTrackerList.get(position));
+                        deleteCallback(position, deletedItem);
+                        break;
+                }
+                // false : close the menu; true : not close the menu
+                return false;
+            }
+        });
+    }
+
+
+    private void deleteCallback(final int position, final String deletedTask) {
+        Snackbar snackbar = Snackbar
+                .make(drawerLayout, "Item was removed from the list.", Snackbar.LENGTH_LONG);
+        snackbar.setAction("UNDO", new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                habitTrackerList.add(position, deletedTask);
+                habitTrackerListAdapter.notifyDataSetChanged();
+            }
+        });
+        snackbar.setActionTextColor(Color.YELLOW);
+        snackbar.show();
     }
 
 }

@@ -43,7 +43,8 @@ public class AddTaskSearch extends AppCompatActivity {
     //edu.gatech.econet.CustomTextView searchLabel;
     EditText searchLabel;
     // Hard coded listview to get to use the bundle and retrieve information to next activity
-    String proposedTasks[] = new String [] {"Use a steel straw","Eat vegetarian","Avoid useless wastes","Recycle !","Avoid using plastic bottles","Limit personal commuting","Car pooling for the atmosphere",""};
+    String proposedTasks[] = new String [] {
+            "Use a steel straw","Eat vegetarian meals","Compost","Recycle !","Get a reusable water bottle","Turn off lights that aren't being used","Car pooling for the atmosphere",""};
     String localTasks[] = proposedTasks;
     InputMethodManager imm ;
     int cntHide;
@@ -118,7 +119,7 @@ public class AddTaskSearch extends AppCompatActivity {
                     Toast toast = Toast.makeText(getApplicationContext(),"Task already in your habit tracker",Toast.LENGTH_SHORT);
                     toast.show();
                 }
-                else{
+                else {
                     OpenNewActivityWithParam(localTasks[position]);
                 }
 

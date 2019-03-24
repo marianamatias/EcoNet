@@ -27,7 +27,8 @@
         <activity
             android:name=".habitTracker"
             android:label="Habit Tracker"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
         <activity
             android:name=".askQuestion"
             android:label="Ask a Question"></activity>
@@ -36,7 +37,11 @@
             android:label="See Question and Answer"></activity>
         <activity
             android:name=".AddTaskSearch"
-            android:label="Look for a new task"></activity>
+            android:label="Look for a new task"
+            android:theme="@style/AppTheme.NoActionBar"
+            >
+        </activity>
+
         <activity
             android:name=".ParamNewTask"
             android:label="Edit parameters of the new task"></activity>
