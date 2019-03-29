@@ -31,6 +31,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
+import com.kosalgeek.android.caching.FileCacher;
 
 import org.apache.commons.io.FileUtils;
 
@@ -50,6 +51,7 @@ public class habitTracker extends AppCompatActivity implements
 
     private static final String TAG = "habitTracker";
 
+
     private DrawerLayout drawerLayout;
     private ArrayList<String> items=null;
     public static ArrayList<String> itemsSent;
@@ -68,6 +70,8 @@ public class habitTracker extends AppCompatActivity implements
         Toolbar toolbar = findViewById(R.id.toolbar);
         noTask = (TextView) findViewById(R.id.no_task);
         setSupportActionBar(toolbar);
+        FileCacher<ArrayList<String>> stringCacher = new FileCacher<>(habitTracker.this, "habitTrackerCache.txt");
+
 
         readItems();
 
@@ -94,13 +98,32 @@ public class habitTracker extends AppCompatActivity implements
                 items = ParamNewTask.itemsLoc2;
             }
         }
+        if (stringCacher.hasCache()){
+            try{
+                ArrayList<String> text= stringCacher.readCache();
+                for (int i=0;i<text.size();i++){
+                    if (!habitTrackerList.contains(text.get(i))){
+                        habitTrackerList.add(text.get(i));
+                    }
+                }
+            } catch (IOException e ){
+                e.printStackTrace();
+            }
 
+        }
         habitTrackerListAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, habitTrackerList);
 
         if (habitTrackerList != null) {
             swipeListView.setAdapter(habitTrackerListAdapter);
         }
         setupSwipeMenuListView(swipeListView);
+
+        try {
+            stringCacher.writeCache(habitTrackerList);
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
     }
 
     //Drawer Menu - Link to Activities

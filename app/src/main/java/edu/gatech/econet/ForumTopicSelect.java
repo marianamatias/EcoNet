@@ -16,12 +16,16 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.PersistentCookieStore;
 import com.loopj.android.http.RequestParams;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -144,37 +148,48 @@ public class ForumTopicSelect extends AppCompatActivity {
                 //OpenNewActivity();
                 JSONObject test = new JSONObject ();
                 String[] tagList = new String[] {"Energy","Animal"};
-                try {
-                    test.put("task", new JSONArray(tagList));
-                    test.put("tag","Energy");
-                }
-                catch (JSONException e){
-                }
-                //Log.d("salut",test.toString());
-                RequestParams rp = new RequestParams();
-                //rp.add("task", "recycle"); rp.add("tag", "recycle bottles");
-                //rp.put("api_key","False");
-                rp.put("data",1);
-                Log.d("salut",rp.toString());
-                HttpUtils.postByUrl("http://www.fir-auth-93d22.appspot.com/example", rp, new JsonHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                        //Log.d("asd", "---------------- this is response : " + response);
-                        try {
-                            JSONObject serverResp = new JSONObject(response.toString());
-                            Log.d("salut","yo");
-                            //String jsonString = serverResp.toString();
-                            //Toast.makeText(getApplicationContext(),jsonString,Toast.LENGTH_LONG).show();
-                        } catch (JSONException e) {
-                            Log.d("salut","yomauvais");
-                        }
-                    }
-                    //Only to fill if something to do ONCE THE JSON file is received
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONArray timeline) {
-                        Log.d("salut","yo");
-                    }
-                });
+                //try {
+//                    test.put("task", new JSONArray(tagList));
+//                    test.put("tag","Energy");
+//                }
+//                catch (JSONException e){
+//                }
+//                //Log.d("salut",test.toString());
+//                RequestParams rp = new RequestParams();
+//                //rp.add("task", "recycle"); rp.add("tag", "recycle bottles");
+//                //rp.put("api_key","False");
+//                rp.put("data",1);
+//                Log.d("salut",rp.toString());
+//                HttpUtils.postByUrl("http://www.fir-auth-93d22.appspot.com/example", rp, new JsonHttpResponseHandler() {
+//                    @Override
+//                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+//                        super.onSuccess(statusCode,headers,response);
+//                        //Log.d("asd", "---------------- this is response : " + response);
+//                        try {
+//                            JSONObject serverResp = new JSONObject(response.toString());
+//                            Log.d("salut","yo");
+//                            //String jsonString = serverResp.toString();
+//                            //Toast.makeText(getApplicationContext(),jsonString,Toast.LENGTH_LONG).show();
+//                        } catch (JSONException e) {
+//                            Log.d("salut","yomauvais");
+//                        }
+//                    }
+//                    //Only to fill if something to do ONCE THE JSON file is received
+//                    @Override
+//                    public void onSuccess(int statusCode, Header[] headers, JSONArray timeline) {
+//                        Log.d("salut","yo");
+//                    }
+//                });
+//                AsyncHttpClient myClient = new AsyncHttpClient();
+//                //PersistentCookieStore myCookieStore = new PersistentCookieStore(this);
+//                //myClient.setCookieStore(myCookieStore);
+//                RequestParams rp = new RequestParams();
+//                rp.add("task", "recycle"); rp.add("tag", "recycle bottles");
+//                rp.put("api_key","False");
+//                HashMap<String, String> paramMap = new HashMap<String, String>();
+//                paramMap.put("key", "value");
+//                RequestParams params = new RequestParams(paramMap);
+
             }
         });
 
