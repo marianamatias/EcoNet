@@ -8,6 +8,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
@@ -23,7 +24,7 @@ public class ParamNewTask extends AppCompatActivity {
     Button goHT;
     private int frequency = 3;
     public static ArrayList<String> itemsLoc2;
-    public static String tag;
+    public static String tag=null;
 
     String receivedTask = null;
     String [] spinnerlist;
@@ -61,7 +62,13 @@ public class ParamNewTask extends AppCompatActivity {
         goHT.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                OpenNewActivity(receivedTask,bundleIn);
+                if (tag!=null){
+                    OpenNewActivity(receivedTask,bundleIn);
+                }
+                else {
+                    Toast toast = Toast.makeText(getApplicationContext(),"Please select a related Topic",Toast.LENGTH_SHORT);
+                    toast.show();
+                }
             }
         });
         final ArrayAdapter<String> arrayAdapter=new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line,spinnerlist);

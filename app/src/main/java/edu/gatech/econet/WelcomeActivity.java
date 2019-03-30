@@ -16,7 +16,7 @@ import java.util.TimerTask;
 public class WelcomeActivity extends AppCompatActivity {
     Timer timer;
     TextView welcome;
-    //AnimationDrawable animation;
+   // AnimationDrawable animation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +26,7 @@ public class WelcomeActivity extends AppCompatActivity {
         //Choice of the text displayed on the welcome screen by random choice
         String[] choiceWelcome;
         welcome = (TextView) findViewById(R.id.welcomeText);
-        choiceWelcome = new String[] {"Join the community of EcoWarriors","Invite your friends to help the Econet grow", "Cannot find inspiration ? Look at new topics !"};
+        choiceWelcome = new String[] {"Join the community of EcoWarriors","Invite your friends to help the Econet grow","Cannot find inspiration ? Look at new topics !","Discover the eco-world and much more","Save our world, fill your feed.","Ever thought about changing your way of living ?"};
         Random random = new Random();
         int pos = random.nextInt(choiceWelcome.length);
         welcome.setText(choiceWelcome[pos]);

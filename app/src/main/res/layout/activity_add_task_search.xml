@@ -12,15 +12,15 @@
     <EditText
         android:id="@+id/searchLabel"
         android:layout_width="0dp"
-        android:layout_height="42dp"
+        android:layout_height="39dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:alpha="0.8"
         android:background="@color/darkGreyTransparent"
-        android:hint="Search by task name, difficulty, or topic"
+        android:hint="Search by task name"
         android:onClick="show"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/filterButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -40,18 +40,34 @@
 
     <ListView
         android:id="@+id/listFound"
-        android:background="@color/darkGreyTransparent"
-        android:alpha="0.8"
-        android:layout_width="395dp"
-        android:layout_height="627dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:alpha="0.8"
+        android:background="@color/darkGreyTransparent"
         android:divider="@color/lightGreyTransparent"
         android:dividerHeight="2px"
+        android:scrollbars="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/hintSearch" />
+        app:layout_constraintTop_toBottomOf="@+id/searchLabel" />
+
+    <Button
+        android:id="@+id/filterButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_weight="1"
+        android:alpha="0.8"
+        android:background="@color/darkGreyTransparent"
+        android:text="filter"
+        android:textSize="14sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/searchLabel"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>

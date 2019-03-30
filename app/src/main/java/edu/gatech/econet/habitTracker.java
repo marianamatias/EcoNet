@@ -62,6 +62,7 @@ public class habitTracker extends AppCompatActivity implements
 
     ArrayAdapter<String> habitTrackerListAdapter;
     ArrayList<String> habitTrackerList;
+    FileCacher<ArrayList<String>> stringCacher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +71,7 @@ public class habitTracker extends AppCompatActivity implements
         Toolbar toolbar = findViewById(R.id.toolbar);
         noTask = (TextView) findViewById(R.id.no_task);
         setSupportActionBar(toolbar);
-        FileCacher<ArrayList<String>> stringCacher = new FileCacher<>(habitTracker.this, "habitTrackerCache.txt");
+        stringCacher = new FileCacher<>(habitTracker.this, "habitTrackerCache.txt");
 
 
         readItems();
@@ -261,6 +262,11 @@ public class habitTracker extends AppCompatActivity implements
         });
         snackbar.setActionTextColor(Color.YELLOW);
         snackbar.show();
+        try {
+            stringCacher.writeCache(habitTrackerList);
+        } catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
 }
