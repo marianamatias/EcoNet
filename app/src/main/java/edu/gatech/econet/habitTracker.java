@@ -14,6 +14,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -45,24 +46,24 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class habitTracker extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "habitTracker";
-
-
     private DrawerLayout drawerLayout;
     private ArrayList<String> items=null;
     public static ArrayList<String> itemsSent;
 
     //MenuItem menuItem;
-    String receivedTask = null;
     TextView noTask;
-
     ArrayAdapter<String> habitTrackerListAdapter;
     ArrayList<String> habitTrackerList;
+    public static ArrayList<String> fullList;
     FileCacher<ArrayList<String>> stringCacher;
+    SwipeMenuListView swipeListView;
+    int indexEdited;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,55 +73,111 @@ public class habitTracker extends AppCompatActivity implements
         noTask = (TextView) findViewById(R.id.no_task);
         setSupportActionBar(toolbar);
         stringCacher = new FileCacher<>(habitTracker.this, "habitTrackerCache.txt");
-
-
         readItems();
 
-         //Retrieve data from add task
+        //Retrieve data from previous activity
         Intent mIntent = getIntent();
         String previousActivity = mIntent.getStringExtra("FROM_ACTIVITY");
-
-//        if (previousActivity.equals("ParamNewTask")){
-//            items = ParamNewTask.itemsLoc2;
-//        }
 
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         drawerLayout = findViewById(R.id.drawer_layout);
 
-
-        SwipeMenuListView swipeListView = (SwipeMenuListView) findViewById(R.id.swipeListView);
+        swipeListView = (SwipeMenuListView) findViewById(R.id.swipeListView);
+        fullList = new ArrayList<>();
         habitTrackerList = new ArrayList<>();
 
-        if (previousActivity.equals("ParamNewTask")) {
-            if (ParamNewTask.itemsLoc2 != null) {
-                habitTrackerList = ParamNewTask.itemsLoc2;
-                items = ParamNewTask.itemsLoc2;
-            }
-        }
         if (stringCacher.hasCache()){
             try{
                 ArrayList<String> text= stringCacher.readCache();
-                for (int i=0;i<text.size();i++){
-                    if (!habitTrackerList.contains(text.get(i))){
-                        habitTrackerList.add(text.get(i));
-                    }
-                }
+                fullList=text;
             } catch (IOException e ){
                 e.printStackTrace();
             }
 
         }
-        habitTrackerListAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, habitTrackerList);
-
-        if (habitTrackerList != null) {
-            swipeListView.setAdapter(habitTrackerListAdapter);
+        if (previousActivity.equals("ParamNewTask")){
+            fullList.add("0");
+            fullList.add(ParamNewTask.receivedTask);
         }
+        for (int i=0;i<fullList.size()/2;i++){
+            habitTrackerList.add(fullList.get(2*i)+"   "+fullList.get(2*i+1));
+        }
+        //habitTrackerListAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, habitTrackerList);
+        habitTrackerListAdapter = new ArrayAdapter<String>(habitTracker.this, android.R.layout.simple_list_item_1, habitTrackerList){
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                //for (int z = 0; z < habitTrackerList.size(); z++) {
+                    if(position==indexEdited) {
+                        int scoreLoc = Integer.parseInt(fullList.get(2 * indexEdited));
+                        if (scoreLoc == 0) {
+                            //view.setBackgroundColor(getResources().getColor(R.color.lightGreyTransparent));
+                        } else if ((scoreLoc < 4) && (scoreLoc > 0)) {
+                            view.setBackgroundColor(getResources().getColor(R.color.yellow));
+                        } else if ((scoreLoc < 10) && (scoreLoc > 3)) {
+                            view.setBackgroundColor(getResources().getColor(R.color.green));
+                        } else if (((scoreLoc < 1000000) && (scoreLoc > 9))) {
+                            view.setBackgroundColor(getResources().getColor(R.color.azur));
+                        }
+                    }
+                //}
+                return view;
+            }
+        };
+
+        //if (habitTrackerList != null) {
+            swipeListView.setAdapter(habitTrackerListAdapter);
+        //}
+
         setupSwipeMenuListView(swipeListView);
 
+        swipeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long is) {
+                int anteScore = Integer.parseInt(fullList.get(2*position));
+                anteScore++;
+                indexEdited = position;
+                fullList.set(2*position,Integer.toString(anteScore));
+                habitTrackerList.set(position,fullList.get(2*position)+"   "+fullList.get(2*position+1));
+                habitTrackerListAdapter = new ArrayAdapter<String>(habitTracker.this, android.R.layout.simple_list_item_1, habitTrackerList);
+                swipeListView.setAdapter(habitTrackerListAdapter);
+                try {
+                    stringCacher.writeCache(fullList);
+                } catch (IOException e){
+                    e.printStackTrace();
+                }
+                habitTrackerListAdapter = new ArrayAdapter<String>(habitTracker.this, android.R.layout.simple_list_item_1, habitTrackerList){
+                    @Override
+                    public View getView(int position, View convertView, ViewGroup parent) {
+                        View view = super.getView(position, convertView, parent);
+                        for (int z = 0; z < habitTrackerList.size(); z++) {
+                            if(position==z) {
+                                int scoreLoc = Integer.parseInt(fullList.get(2 * position));
+                                if (scoreLoc == 0) {
+                                    //view.setBackgroundColor(getResources().getColor(R.color.lightGreyTransparent));
+                                } else if ((scoreLoc < 4) && (scoreLoc > 0)) {
+                                    view.setBackgroundColor(getResources().getColor(R.color.yellow));
+                                } else if ((scoreLoc < 10) && (scoreLoc > 3)) {
+                                    view.setBackgroundColor(getResources().getColor(R.color.green));
+                                } else if (((scoreLoc < 1000000) && (scoreLoc > 9))) {
+                                    view.setBackgroundColor(getResources().getColor(R.color.azur));
+                                }
+                            }
+                       }
+                        return view;
+                    }
+                };
+
+                //if (habitTrackerList != null) {
+                    swipeListView.setAdapter(habitTrackerListAdapter);
+                //}
+                setupSwipeMenuListView(swipeListView);
+            }
+        });
         try {
-            stringCacher.writeCache(habitTrackerList);
+            stringCacher.writeCache(fullList);
         } catch (IOException e){
             e.printStackTrace();
         }
@@ -240,6 +297,8 @@ public class habitTracker extends AppCompatActivity implements
                         Log.d(TAG, "onMenuItemClick: clicked item" + index);
                         String deletedItem = habitTrackerList.get(position);
                         habitTrackerListAdapter.remove(habitTrackerList.get(position));
+                        fullList.remove(fullList.get(2*position+1));
+                        fullList.remove(fullList.get(2*position));
                         deleteCallback(position, deletedItem);
                         break;
                 }
@@ -257,13 +316,15 @@ public class habitTracker extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
                 habitTrackerList.add(position, deletedTask);
+                fullList.add(2*position,deletedTask);
+                fullList.add(2*position+1,"0");
                 habitTrackerListAdapter.notifyDataSetChanged();
             }
         });
         snackbar.setActionTextColor(Color.YELLOW);
         snackbar.show();
         try {
-            stringCacher.writeCache(habitTrackerList);
+            stringCacher.writeCache(fullList);
         } catch (IOException e){
             e.printStackTrace();
         }

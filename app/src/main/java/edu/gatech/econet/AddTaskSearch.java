@@ -85,7 +85,11 @@ public class AddTaskSearch extends AppCompatActivity {
         filterButton = (Button) findViewById(R.id.filterButton);
         listTasks.getBackground().setAlpha(80);
         checkedItems = new boolean[filterList.length];
-
+        ArrayList<String> fullListLoc = habitTracker.fullList;
+        itemsLoc = new ArrayList<>() ;
+        for (int i=0; i<fullListLoc.size()/2 ; i++){
+            itemsLoc.add(fullListLoc.get(2*i+1));
+        }
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -229,18 +233,14 @@ public class AddTaskSearch extends AppCompatActivity {
             @Override
             public void beforeTextChanged(CharSequence s, int i, int i1, int i2) {
             }
-
             @Override
             public void onTextChanged(CharSequence s, int i, int i1, int i2) {
                 AddTaskSearch.this.adapter.getFilter().filter(s);
             }
-
             @Override
             public void afterTextChanged(Editable editable) {
             }
-
         });
-
     }
 
     private void OpenNewActivityWithParam(String data1){
