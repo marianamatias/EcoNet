@@ -24,7 +24,7 @@ public class ParamNewTask extends AppCompatActivity {
     Button goHT;
     private int frequency = 3;
     //public static ArrayList<String> itemsLoc2;
-    public static String tag=null;
+    public static String tag;
 
     public static String receivedTask = null;
     String [] spinnerlist;
@@ -40,6 +40,7 @@ public class ParamNewTask extends AppCompatActivity {
         goHT = findViewById(R.id.goHabitTracker);
         final Bundle bundleIn = getIntent().getExtras();
         spinnerlist = ForumTopicSelect.localTopic;
+        tag = null;
 
         if (bundleIn!=null){
             receivedTask = bundleIn.getString("new_task");

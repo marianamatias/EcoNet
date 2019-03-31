@@ -101,9 +101,12 @@ public class habitTracker extends AppCompatActivity implements
             fullList.add("0");
             fullList.add(ParamNewTask.receivedTask);
         }
-        for (int i=0;i<fullList.size()/2;i++){
-            habitTrackerList.add(fullList.get(2*i)+"   "+fullList.get(2*i+1));
+        if (fullList.size()%2==0){
+            for (int i=0;i<fullList.size()/2;i++){
+                habitTrackerList.add(fullList.get(2*i)+"   "+fullList.get(2*i+1));
+            }
         }
+
         //habitTrackerListAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, habitTrackerList);
         habitTrackerListAdapter = new ArrayAdapter<String>(habitTracker.this, android.R.layout.simple_list_item_1, habitTrackerList){
             @Override
@@ -111,15 +114,20 @@ public class habitTracker extends AppCompatActivity implements
                 View view = super.getView(position, convertView, parent);
                 //for (int z = 0; z < habitTrackerList.size(); z++) {
                     if(position==indexEdited) {
-                        int scoreLoc = Integer.parseInt(fullList.get(2 * indexEdited));
-                        if (scoreLoc == 0) {
-                            //view.setBackgroundColor(getResources().getColor(R.color.lightGreyTransparent));
-                        } else if ((scoreLoc < 4) && (scoreLoc > 0)) {
-                            view.setBackgroundColor(getResources().getColor(R.color.yellow));
-                        } else if ((scoreLoc < 10) && (scoreLoc > 3)) {
-                            view.setBackgroundColor(getResources().getColor(R.color.green));
-                        } else if (((scoreLoc < 1000000) && (scoreLoc > 9))) {
-                            view.setBackgroundColor(getResources().getColor(R.color.azur));
+                        int a = 0 ;
+                        try {
+                            int scoreLoc = Integer.parseInt(fullList.get(2 * indexEdited));
+                            if (scoreLoc == 0) {
+                                //view.setBackgroundColor(getResources().getColor(R.color.lightGreyTransparent));
+                            } else if ((scoreLoc < 4) && (scoreLoc > 0)) {
+                                view.setBackgroundColor(getResources().getColor(R.color.yellow));
+                            } else if ((scoreLoc < 10) && (scoreLoc > 3)) {
+                                view.setBackgroundColor(getResources().getColor(R.color.green));
+                            } else if (((scoreLoc < 1000000) && (scoreLoc > 9))) {
+                                view.setBackgroundColor(getResources().getColor(R.color.azur));
+                            }
+                        } catch (Exception e){
+                            fullList.remove(fullList.get(0));
                         }
                     }
                 //}
@@ -297,8 +305,13 @@ public class habitTracker extends AppCompatActivity implements
                         Log.d(TAG, "onMenuItemClick: clicked item" + index);
                         String deletedItem = habitTrackerList.get(position);
                         habitTrackerListAdapter.remove(habitTrackerList.get(position));
-                        fullList.remove(fullList.get(2*position+1));
-                        fullList.remove(fullList.get(2*position));
+                        try {
+                            fullList.remove(fullList.get(2 * position + 1));
+                            fullList.remove(fullList.get(2 * position));
+                        } catch (Exception e)
+                        {
+                            fullList.remove(fullList.get(2*position));
+                        }
                         deleteCallback(position, deletedItem);
                         break;
                 }
