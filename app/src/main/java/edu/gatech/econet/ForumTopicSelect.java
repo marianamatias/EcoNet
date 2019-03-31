@@ -143,6 +143,7 @@ public class ForumTopicSelect extends AppCompatActivity implements
 
     private void OpenNewActivity(){
         Intent intent = new Intent(this, adviceForum.class);
+        intent.putExtra("FROM2", "ForumTopicSelect");
         startActivity(intent);
     }
     class ForumAdapter extends BaseAdapter{

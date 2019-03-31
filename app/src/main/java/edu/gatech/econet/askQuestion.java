@@ -16,13 +16,14 @@ import android.widget.Toast;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
 public class askQuestion extends AppCompatActivity {
-    String suggestedTopic;
+    public static String suggestedTopic;
     String suggestedTask;
     String [] spinnerTask;
     String [] spinnerTopic;
     Button sendButton;
     EditText questionText;
     public static String questionSent;
+    public static String topicQuestion;
 
 
     @Override
@@ -84,6 +85,7 @@ public class askQuestion extends AppCompatActivity {
 
     private void OpenNewActivityWithParam(){
         Intent intent = new Intent(this, adviceForum.class);
+        intent.putExtra("FROM2", "askQuestion");
         startActivity(intent);
     }
 

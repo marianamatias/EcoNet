@@ -33,9 +33,10 @@ import java.util.ArrayList;
 
 public class adviceForum extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener {
-    public static String questions[] = new String[] {"?","??","???","????","?????","??????"};
-    public static String localTasks[] = new String[] {"Alimentation","Animal","Energy","Transportation","Zero Waste","Other"};
-    public static Integer nbrResponse[] = new Integer[] {0,0,0,0,0,0};
+    public static String questions[] = new String[] {};
+    public static String localTasks[] = new String[] {};
+    public static String nbrResponse[] = new String[] {} ;
+    public static String localTopic[] = new String[] {};
     ListView listAdvice=null;
     public static String selectedTopic;
 
@@ -43,7 +44,34 @@ public class adviceForum extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.advice_forum);
-        selectedTopic = ForumTopicSelect.chosenTopic;
+        localTasks = new String[] {};
+        localTopic = new String[] {};
+        nbrResponse = new String[] {};
+        questions = new String[] {};
+        selectedTopic=null;
+        //Depend on where we are from : determine the new topic
+        Intent mIntent = getIntent();
+        String previousActivity = mIntent.getStringExtra("FROM2");
+        if (previousActivity.equals("ForumTopicSelect")){
+            selectedTopic = ForumTopicSelect.chosenTopic;
+        }
+        else if (previousActivity.equals("askQuestion")){
+            selectedTopic = askQuestion.suggestedTopic;
+        }
+        String rawTasks[]=AddTaskSearch.rawTasks;
+        String rawTopic[]=AddTaskSearch.topicTasks;
+//        selectedTopic = ForumTopicSelect.chosenTopic;
+//        localTasks=AddTaskSearch.rawTasks;
+//        localTopic=AddTaskSearch.topicTasks;
+        for (int i=0;i<rawTopic.length;i++){
+            if(rawTopic[i].equals(selectedTopic)){
+                localTopic = increaseArray(localTopic,selectedTopic);
+                localTasks = increaseArray(localTasks,rawTasks[i]);
+                nbrResponse= increaseArray(nbrResponse,"0");
+                questions= increaseArray(questions,"Why would I "+rawTasks[i]);
+            }
+        }
+
         listAdvice = (ListView) findViewById(R.id.listAdvice);
         adviceForum.AdviceAdapter adviceAdapter = new adviceForum.AdviceAdapter();
         listAdvice.setAdapter(adviceAdapter);
@@ -66,7 +94,7 @@ public class adviceForum extends AppCompatActivity implements
     class AdviceAdapter extends BaseAdapter {
         @Override
         public int getCount() {
-            return questions.length;
+            return localTasks.length;
         }
         @Override
         public Object getItem(int i) {
@@ -141,5 +169,21 @@ public class adviceForum extends AppCompatActivity implements
         Intent intent = new Intent(this, askQuestion.class);
         intent.putExtra("FROM", "adviceForum");
         startActivity(intent);
+    }
+    public String[] increaseArray(String[] input, String newElem){
+        String [] nullList = new String []{};
+        if (input!=nullList) {
+            int i = input.length;
+            String[] newArray = new String[i + 1];
+            for (int cnt = 0; cnt < i; cnt++) {
+                newArray[cnt] = input[cnt];
+            }
+            newArray[i] = newElem;
+            return newArray;
+        }
+        else {
+            String [] returnList = new String[] {newElem};
+            return returnList;
+        }
     }
 }
