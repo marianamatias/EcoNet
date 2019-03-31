@@ -27,6 +27,7 @@ public class ParamNewTask extends AppCompatActivity {
     public static String tag;
 
     public static String receivedTask = null;
+    public static String receivedTopic=null;
     String [] spinnerlist;
 
     @Override
@@ -40,11 +41,13 @@ public class ParamNewTask extends AppCompatActivity {
         goHT = findViewById(R.id.goHabitTracker);
         final Bundle bundleIn = getIntent().getExtras();
         spinnerlist = ForumTopicSelect.localTopic;
+        receivedTask=AddTaskSearch.sentTask;
+        receivedTopic=AddTaskSearch.sentTopic;
         tag = null;
 
-        if (bundleIn!=null){
-            receivedTask = bundleIn.getString("new_task");
-        }
+//        if (bundleIn!=null){
+//            receivedTask = bundleIn.getString("new_task");
+//        }
         TextView selectedTaskText = (TextView) findViewById(R.id.taskSelected);
         String sentence = "Set the parameters for the task " + receivedTask;
         selectedTaskText.setText(sentence);
@@ -60,10 +63,11 @@ public class ParamNewTask extends AppCompatActivity {
                 less();
             }
         });
+        tag=receivedTopic;
         goHT.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (tag!=null){
+                if (tag==receivedTopic){
                     OpenNewActivity(receivedTask,bundleIn);
                 }
                 else {
@@ -74,11 +78,17 @@ public class ParamNewTask extends AppCompatActivity {
         });
         final ArrayAdapter<String> arrayAdapter=new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line,spinnerlist);
         MaterialBetterSpinner betterSpinner=(MaterialBetterSpinner)findViewById(R.id.spinner);
+        betterSpinner.setText(receivedTopic);
         betterSpinner.setAdapter(arrayAdapter);
         betterSpinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                tag = spinnerlist[i];
+                if (spinnerlist[i].equals(receivedTopic)){
+                    Toast toast = Toast.makeText(getApplicationContext(),"Topic do not match the task, please change",Toast.LENGTH_LONG);
+                }
+                else {
+                    tag = spinnerlist[i];
+                }
             }
         });
 

@@ -48,22 +48,25 @@ public class AddTaskSearch extends AppCompatActivity {
     //edu.gatech.econet.CustomTextView searchLabel;
     EditText searchLabel;
     // Hard coded listview to get to use the bundle and retrieve information to next activity
-    String rawTasks[] = new String [] {
+    public static String rawTasks[] = new String [] {
             "Use a steel straw","Use a glass straw","Make my cleaning products","Make my laundry products","Eat vegetarian meals","Compost","Recycle at home",
             "Get a reusable water bottle","Turn off lights that aren't being used","Car pooling for the atmosphere","Avoid useless commuting","Other1","Other2"};
-    String difficultyTasks[] = new String [] {
+    public static String difficultyTasks[] = new String [] {
             "Easy","Easy","Intermediate","Intermediate","Intermediate","Difficult","Intermediate","Easy","Easy","Intermediate","Easy","Difficult","Dfficult"};
-    String topicTasks[] = new String [] {
+    public static String topicTasks[] = new String [] {
             "Zero Waste","Zero Waste","Zero Waste","Zero Waste","Alimentation","Zero Waste","Zero Waste","Zero Waste","Energy","Transportation",
             "Transportation","Animal","Animal"};
     String [] filterList = new String [] {"Easy","Intermediate","Difficult","Energy","Zero Waste","Transportation","Animal","Alimentation"};
     //Used after filter
     String [] proposedTasks = rawTasks;
+    String [] proposedTopic = topicTasks;
     //Displayed list
     String localTasks[] = proposedTasks;
     InputMethodManager imm ;
     int cntHide;
     ArrayAdapter<String> adapter;
+    public static String sentTask=null;
+    public static String sentTopic=null;
 
     boolean [] checkedItems;
     ArrayList<Integer> mUserItems = new ArrayList<>();
@@ -119,12 +122,14 @@ public class AddTaskSearch extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int which) {
                         proposedTasks = new String [] {};
+                        proposedTopic = new String [] {};
                         for (int j =0;j<rawTasks.length; j++){
                             for (int k=0;k<mUserItems.size();k++){
                                 String cmp = filterList[mUserItems.get(k)];
                                 if((topicTasks[j].equals(cmp)) || (difficultyTasks[j].equals(cmp))){
                                     proposedTasks = increaseArray(proposedTasks, rawTasks[j]);
                                     localTasks = proposedTasks;
+                                    proposedTopic = increaseArray(proposedTopic,topicTasks[j]);
                                 }
                             }
                         }
@@ -157,6 +162,7 @@ public class AddTaskSearch extends AppCompatActivity {
                             mUserItems.clear();
                             proposedTasks=rawTasks;
                             localTasks=rawTasks;
+                            proposedTopic = topicTasks;
                         }
                         adapter = new ArrayAdapter<String>(AddTaskSearch.this, android.R.layout.simple_list_item_1, localTasks){
                             @Override
@@ -217,14 +223,18 @@ public class AddTaskSearch extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long is) {
                 //Toast.makeText(AddTaskSearch.this,proposedTasks[position],Toast.LENGTH_SHORT).show();
                 if (itemsLoc==null){
-                    OpenNewActivityWithParam(localTasks[position]);
-                }
+                    sentTask=localTasks[position];
+                    sentTopic=proposedTopic[position];
+                    OpenNewActivityWithParam();
+                    }
                 else if(itemsLoc.contains(localTasks[position])){
                     Toast toast = Toast.makeText(getApplicationContext(),"Task already in your habit tracker",Toast.LENGTH_SHORT);
                     toast.show();
                 }
                 else {
-                    OpenNewActivityWithParam(localTasks[position]);
+                    sentTask=localTasks[position];
+                    sentTopic=proposedTopic[position];
+                    OpenNewActivityWithParam();
                 }
 
             }
@@ -243,12 +253,13 @@ public class AddTaskSearch extends AppCompatActivity {
         });
     }
 
-    private void OpenNewActivityWithParam(String data1){
+    private void OpenNewActivityWithParam(){
         itemsLoc = habitTracker.itemsSent;
         Intent intent = new Intent(this, ParamNewTask.class);
-        Bundle bundleOut = new Bundle();
-        bundleOut.putString("new_task",data1);
-        intent.putExtras(bundleOut);
+        //Bundle bundleOut = new Bundle();
+        //bundleOut.putString("new_task",data1);
+        //bundleOut.putString("new_topic",)
+        //ntent.putExtras(bundleOut);
         startActivity(intent);
     }
     public static String[] removeTheElement(String[] arr, String seek){

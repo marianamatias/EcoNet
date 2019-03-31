@@ -49,21 +49,24 @@ public class ForumTopicSelect extends AppCompatActivity implements
     ListView listTopic=null;
     int[] icons = {R.drawable.alimentation, R.drawable.animal, R.drawable.energy, R.drawable.transportation, R.drawable.zero_waste};
     public static String localTopic[] = new String[] {"Alimentation","Animal","Energy","Transportation","Zero Waste"};
-    private static String chosenTopic;
+    public static String chosenTopic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forum_topic_select);
         //final String apiKey = BuildConfig.ApiKey;
+        chosenTopic=null;
         listTopic = (ListView) findViewById(R.id.listTopic);
         ForumAdapter forumAdapter = new ForumAdapter();
         listTopic.setAdapter(forumAdapter);
         listTopic.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast toast = Toast.makeText(ForumTopicSelect.this,"You selected "+localTopic[i],Toast.LENGTH_LONG);
-                toast.show();
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                //Toast toast = Toast.makeText(ForumTopicSelect.this,"You selected "+localTopic[i],Toast.LENGTH_LONG);
+                //toast.show();
+                chosenTopic=localTopic[position];
+                OpenNewActivity();
             }
         });
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);

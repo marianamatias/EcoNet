@@ -61,9 +61,12 @@ public class habitTracker extends AppCompatActivity implements
     ArrayAdapter<String> habitTrackerListAdapter;
     ArrayList<String> habitTrackerList;
     public static ArrayList<String> fullList;
+    ArrayList<String> taskList =new ArrayList<>();
     FileCacher<ArrayList<String>> stringCacher;
     SwipeMenuListView swipeListView;
     int indexEdited;
+    public static String taskSwiped;
+    public static String topicSwiped;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -189,6 +192,7 @@ public class habitTracker extends AppCompatActivity implements
         } catch (IOException e){
             e.printStackTrace();
         }
+        String rawTasks[] = AddTaskSearch.rawTasks;
 
     }
 
@@ -205,6 +209,7 @@ public class habitTracker extends AppCompatActivity implements
 
         if (id == R.id.advice){
             Intent intent = new Intent(this, askQuestion.class);
+            intent.putExtra("FROM", "habitTracker_menu");
             startActivity(intent);
         }
 
@@ -297,7 +302,18 @@ public class habitTracker extends AppCompatActivity implements
                     case 0:
                         //ask question
                         Log.d(TAG, "onMenuItemClick: clicked item" + index);
+                        String rawTasks[] = AddTaskSearch.rawTasks;
+                        for (int i =0; i<fullList.size();i++){
+                            if (isInArray(rawTasks,fullList.get(i))){
+                                taskList.add(fullList.get(i));
+                            }
+                        }
+                        taskSwiped = taskList.get(index);
+                        String topicTask[] = AddTaskSearch.topicTasks;
+                        int indexTopic = find(rawTasks,taskSwiped);
+                        topicSwiped = topicTask[indexTopic];
                         Intent intent = new Intent(habitTracker.this, askQuestion.class);
+                        intent.putExtra("FROM", "habitTracker_swipe");
                         startActivity(intent);
                         break;
                     case 1:
@@ -342,5 +358,24 @@ public class habitTracker extends AppCompatActivity implements
             e.printStackTrace();
         }
     }
-
+    public static int find(String[] inputList, String target){
+        for (int i = 0; i < inputList.length; i++) {
+            if (inputList[i].equals(target)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+    public static boolean isInArray(String[] inputList, String target){
+        int found= 0;
+        for (int i =0; i< inputList.length;i++){
+            if (inputList[i].equals(target)){
+                found=1;
+            }
+        }
+        if(found==1){
+            return true;
+        }
+        else{ return false;}
+    }
 }

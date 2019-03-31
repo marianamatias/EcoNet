@@ -37,19 +37,22 @@ public class adviceForum extends AppCompatActivity implements
     public static String localTasks[] = new String[] {"Alimentation","Animal","Energy","Transportation","Zero Waste","Other"};
     public static Integer nbrResponse[] = new Integer[] {0,0,0,0,0,0};
     ListView listAdvice=null;
+    public static String selectedTopic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.advice_forum);
+        selectedTopic = ForumTopicSelect.chosenTopic;
         listAdvice = (ListView) findViewById(R.id.listAdvice);
         adviceForum.AdviceAdapter adviceAdapter = new adviceForum.AdviceAdapter();
         listAdvice.setAdapter(adviceAdapter);
         listAdvice.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast toast = Toast.makeText(adviceForum.this,"You selected "+localTasks[i],Toast.LENGTH_LONG);
-                toast.show();
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                //Toast toast = Toast.makeText(adviceForum.this,"You selected "+selectedTopic,Toast.LENGTH_LONG);
+                //toast.show();
+
             }
         });
 
@@ -103,8 +106,7 @@ public class adviceForum extends AppCompatActivity implements
             startActivity(intent);
         }
         if (id == R.id.advice){
-            Intent intent = new Intent(this, askQuestion.class);
-            startActivity(intent);
+            OpenNewActivity();
         }
         if (id == R.id.challenges){
             Intent intent = new Intent(this, ForumTopicSelect.class);
@@ -134,5 +136,10 @@ public class adviceForum extends AppCompatActivity implements
     }
     public void updateUI() {
         startActivity(new Intent(this, MainActivity.class));
+    }
+    public void OpenNewActivity(){
+        Intent intent = new Intent(this, askQuestion.class);
+        intent.putExtra("FROM", "adviceForum");
+        startActivity(intent);
     }
 }
