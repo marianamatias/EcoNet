@@ -17,7 +17,7 @@ import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
 public class askQuestion extends AppCompatActivity {
     public static String suggestedTopic;
-    String suggestedTask;
+    public static String suggestedTask;
     String [] spinnerTask;
     String [] spinnerTopic;
     Button sendButton;
@@ -84,8 +84,8 @@ public class askQuestion extends AppCompatActivity {
 
 
     private void OpenNewActivityWithParam(){
-        Intent intent = new Intent(this, adviceForum.class);
-        intent.putExtra("FROM2", "askQuestion");
+        Intent intent = new Intent(this, AskView.class);
+        intent.putExtra("FROM3", "askQuestion");
         startActivity(intent);
     }
 

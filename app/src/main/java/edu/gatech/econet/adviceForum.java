@@ -1,5 +1,7 @@
 package edu.gatech.econet;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,7 +13,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -39,6 +43,19 @@ public class adviceForum extends AppCompatActivity implements
     public static String localTopic[] = new String[] {};
     ListView listAdvice=null;
     public static String selectedTopic;
+    Button filterButton;
+    //For the filter feature
+    String [] filterList = new String [] {};
+    boolean [] checkedItems;
+    ArrayList<Integer> mUserItems = new ArrayList<>();
+    ArrayAdapter<String> adapter;
+    String rawTasks[];
+    String rawTopic[];
+    String copyTasks[] = new String[] {};
+    //For conversation activity
+    public static String topicSend;
+    public static String taskSend;
+    public static String questionSend;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,32 +75,146 @@ public class adviceForum extends AppCompatActivity implements
         else if (previousActivity.equals("askQuestion")){
             selectedTopic = askQuestion.suggestedTopic;
         }
-        String rawTasks[]=AddTaskSearch.rawTasks;
-        String rawTopic[]=AddTaskSearch.topicTasks;
-//        selectedTopic = ForumTopicSelect.chosenTopic;
-//        localTasks=AddTaskSearch.rawTasks;
-//        localTopic=AddTaskSearch.topicTasks;
+        rawTasks=AddTaskSearch.rawTasks;
+        rawTopic=AddTaskSearch.topicTasks;
         for (int i=0;i<rawTopic.length;i++){
             if(rawTopic[i].equals(selectedTopic)){
                 localTopic = increaseArray(localTopic,selectedTopic);
                 localTasks = increaseArray(localTasks,rawTasks[i]);
                 nbrResponse= increaseArray(nbrResponse,"0");
                 questions= increaseArray(questions,"Why would I "+rawTasks[i]);
+                copyTasks = increaseArray(copyTasks,rawTasks[i]);
             }
         }
 
         listAdvice = (ListView) findViewById(R.id.listAdvice);
         adviceForum.AdviceAdapter adviceAdapter = new adviceForum.AdviceAdapter();
         listAdvice.setAdapter(adviceAdapter);
+
+        checkedItems = new boolean[copyTasks.length];
+        filterList = copyTasks;
+        filterButton = (Button) findViewById(R.id.filterButton);
+        filterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final AlertDialog.Builder mBuilder=new AlertDialog.Builder(adviceForum.this);
+                mBuilder.setTitle("Filters available in the Forum");
+                mBuilder.setMultiChoiceItems(filterList, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int position, boolean isChecked) {
+                        if (isChecked) {
+                            if (!mUserItems.contains(position)) {
+                                mUserItems.add(position);
+                            }
+                        }
+                        else if (mUserItems.contains(position)){
+                            int index;
+                            for (int m =0 ;m<mUserItems.size();m++){
+                                if (mUserItems.get(m)==position){
+                                    mUserItems.remove(m);
+                                }
+                            }
+                        }
+
+                    }
+                });
+                mBuilder.setCancelable(false);
+                mBuilder.setPositiveButton("Search", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int which) {
+                        localTasks = new String[] {};
+                        localTopic = new String[] {};
+                        nbrResponse = new String[] {};
+                        questions = new String[] {};
+                        for (int j =0;j<rawTasks.length; j++){
+                            for (int k=0;k<mUserItems.size();k++){
+                                //comparison with the tasks selected
+                                String cmp = filterList[mUserItems.get(k)];
+                                if(rawTasks[j].equals(cmp)){
+                                    localTasks = increaseArray(localTasks,rawTasks[j]);
+                                    localTopic = increaseArray(localTopic,rawTopic[j]);
+                                    nbrResponse = increaseArray(nbrResponse,"0");
+                                    questions = increaseArray(questions,"Why would I"+rawTasks[j]);
+                                }
+                            }
+                        }
+//                        adapter = new ArrayAdapter<String>(adviceForum.this, android.R.layout.simple_list_item_1, localTasks){
+//                            @Override
+//                            public View getView(int position, View convertView, ViewGroup parent){
+//                                View view = super.getView(position,convertView,parent);
+//                                if(itemsLoc!=null){
+//                                    if(itemsLoc.contains(proposedTasks[position])){
+//                                        view.setBackgroundColor(getResources().getColor(R.color.lightGreyTransparent));
+//                                    }
+//                                }
+//                                return view;
+//                            }
+//                        };
+//                        listTasks.setAdapter(adapter);
+                        listAdvice = (ListView) findViewById(R.id.listAdvice);
+                        adviceForum.AdviceAdapter adviceAdapter = new adviceForum.AdviceAdapter();
+                        listAdvice.setAdapter(adviceAdapter);
+                    }
+                });
+                mBuilder.setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+                mBuilder.setNeutralButton("Clear all", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        for (int k=0; k<checkedItems.length; k++){
+                            checkedItems[k]=false;
+                        }
+                        mUserItems.clear();
+//                        proposedTasks=rawTasks;
+//                        localTasks=rawTasks;
+//                        proposedTopic = topicTasks;
+                        rawTasks=AddTaskSearch.rawTasks;
+                        rawTopic=AddTaskSearch.topicTasks;
+                        for (int m=0;m<rawTopic.length;m++){
+                            if(rawTopic[m].equals(selectedTopic)){
+                                localTopic = increaseArray(localTopic,selectedTopic);
+                                localTasks = increaseArray(localTasks,rawTasks[m]);
+                                nbrResponse= increaseArray(nbrResponse,"0");
+                                questions= increaseArray(questions,"Why would I "+rawTasks[m]);
+                            }
+                        }
+//                        adapter = new ArrayAdapter<String>(AddTaskSearch.this, android.R.layout.simple_list_item_1, localTasks){
+//                            @Override
+//                            public View getView(int position, View convertView, ViewGroup parent){
+//                                View view = super.getView(position,convertView,parent);
+//                                if(itemsLoc!=null){
+//                                    if(itemsLoc.contains(proposedTasks[position])){
+//                                        view.setBackgroundColor(getResources().getColor(R.color.lightGreyTransparent));
+//                                    }
+//                                }
+//                                return view;
+//                            }
+//                        };
+//                        listTasks.setAdapter(adapter);
+                        listAdvice = (ListView) findViewById(R.id.listAdvice);
+                        adviceForum.AdviceAdapter adviceAdapter = new adviceForum.AdviceAdapter();
+                        listAdvice.setAdapter(adviceAdapter);
+                    }
+                });
+                AlertDialog mDialog = mBuilder.create();
+                mDialog.show();
+            }
+        });
         listAdvice.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 //Toast toast = Toast.makeText(adviceForum.this,"You selected "+selectedTopic,Toast.LENGTH_LONG);
                 //toast.show();
-
+                topicSend=localTopic[position];
+                taskSend=localTasks[position];
+                questionSend=questions[position];
+                OpenConversation();
             }
         });
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -168,6 +299,11 @@ public class adviceForum extends AppCompatActivity implements
     public void OpenNewActivity(){
         Intent intent = new Intent(this, askQuestion.class);
         intent.putExtra("FROM", "adviceForum");
+        startActivity(intent);
+    }
+    public void OpenConversation(){
+        Intent intent = new Intent(this, AskView.class);
+        intent.putExtra("FROM3", "adviceForum");
         startActivity(intent);
     }
     public String[] increaseArray(String[] input, String newElem){
