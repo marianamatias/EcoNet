@@ -11,7 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AskView"></activity>
+        <activity android:name=".AskView" />
         <activity
             android:name=".WelcomeActivity"
             android:label="Welcome to Econet">
@@ -27,7 +27,7 @@
         <activity
             android:name=".habitTracker"
             android:label="Habit Tracker"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".askQuestion"
             android:label="Ask a Question" />
@@ -37,13 +37,16 @@
         <activity
             android:name=".AddTaskSearch"
             android:label="Look for a new task"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ParamNewTask"
             android:label="Edit parameters of the new task" />
         <activity
             android:name=".ForumTopicSelect"
-            android:label="Select the desired topic"></activity>
+            android:label="Select the desired topic" />
+        <activity android:name=".askReplayPop"
+            android:label="Prompt your response"
+            android:theme= "@style/Theme.AppCompat.Dialog.Alert"/>
     </application>
 
 </manifest>

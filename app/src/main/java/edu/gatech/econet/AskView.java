@@ -21,9 +21,10 @@ public class AskView extends AppCompatActivity {
     TextView askMessage;
     TextView authorID;
     ListView listMessages;
-    String retrievedTopic;
-    String retrievedTask;
-    String retrieveQuestion;
+    public static String retrievedUser;
+    public static String retrievedTopic;
+    public static String  retrievedTask;
+    public static String retrieveQuestion;
     String authorRespID[] = new String [] {"Billy","Eva","Josh"};
     String nbrPlus[] = new String [] {"0","0","0"};
     String textResponse[] = new String[] {"Hey what's up ?","Really good question !","I will answer asap !"};
@@ -51,15 +52,35 @@ public class AskView extends AppCompatActivity {
             retrievedTopic = adviceForum.topicSend;
             retrieveQuestion = adviceForum.questionSend;
         }
+        else if (previousActivity.equals("askReplayPop")){
+            retrievedTask = askReplayPop.task;
+            retrievedTopic = askReplayPop.topic;
+            retrieveQuestion = askReplayPop.question;
+            retrievedUser = askReplayPop.user;
+            authorRespID=increaseArray(authorRespID,"New User");
+            nbrPlus=increaseArray(nbrPlus,"0");
+            textResponse=increaseArray(textResponse,askReplayPop.responseText);
+        }
         askTask.setText("Task : "+retrievedTask);
         askTopic.setText("Topic : "+retrievedTopic);
         askMessage.setText(retrieveQuestion);
         authorID.setText("Anonymous author");
+        retrievedUser=authorID.getText().toString();
         listMessages = (ListView) findViewById(R.id.listMessages);
         AskView.AskAdapter forumAdapter = new AskView.AskAdapter();
         listMessages.setAdapter(forumAdapter);
+        replyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                OpenNewActivity();
+            }
+        });
     }
 
+    void OpenNewActivity(){
+        Intent intent = new Intent(this, askReplayPop.class);
+        startActivity(intent);
+    }
     class AskAdapter extends BaseAdapter {
         @Override
         public int getCount() {
@@ -96,6 +117,22 @@ public class AskView extends AppCompatActivity {
             view.setForegroundGravity(Gravity.CENTER);
             view.setBackgroundColor(getResources().getColor(R.color.lightGreyTransparent));
             return view;
+        }
+    }
+    public String[] increaseArray(String[] input, String newElem){
+        String [] nullList = new String []{};
+        if (input!=nullList) {
+            int i = input.length;
+            String[] newArray = new String[i + 1];
+            for (int cnt = 0; cnt < i; cnt++) {
+                newArray[cnt] = input[cnt];
+            }
+            newArray[i] = newElem;
+            return newArray;
+        }
+        else {
+            String [] returnList = new String[] {newElem};
+            return returnList;
         }
     }
 }

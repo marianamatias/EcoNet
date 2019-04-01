@@ -11,45 +11,44 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:text="TextView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/textResponse" />
 
     <TextView
         android:id="@+id/textResponse"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="20dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:text="TextView"
-        app:layout_constraintBaseline_toBaselineOf="@+id/nbrPlus"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/nbrPlus" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/upButton"
         android:layout_width="56dp"
         android:layout_height="41dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:text="UP"
         android:textSize="10sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nbrPlus" />
+        app:layout_constraintBaseline_toBaselineOf="@+id/nbrPlus"
+        app:layout_constraintStart_toEndOf="@+id/nbrPlus" />
 
     <TextView
         android:id="@+id/authorRespID"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="4dp"
         android:text="TextView"
         android:textAlignment="textEnd"
         android:textSize="12sp"
         android:textStyle="italic"
+        app:layout_constraintBaseline_toBaselineOf="@+id/upButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/upButton"
-        app:layout_constraintTop_toBottomOf="@+id/textResponse" />
+        app:layout_constraintStart_toEndOf="@+id/upButton" />
 </android.support.constraint.ConstraintLayout>
