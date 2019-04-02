@@ -39,6 +39,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -73,56 +75,93 @@ public class ForumTopicSelect extends AppCompatActivity implements
         navigationView.setNavigationItemSelectedListener(this);
 
 
-//        listTopic.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int position, long is) {
-//                //chosenTopic = localTopic[position];
-//                //OpenNewActivity();
+        listTopic.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long is) {
+                chosenTopic = localTopic[position];
+                OpenNewActivity();
+
+                //////////////////////////////////////////////////////////////////
+                // EXAMPLE FOR POST QUERY IN FIREBASE /////////////////////////////
+                //////////////////////////////////////////////////////////////////
+                // Creating the json file to be SENT to the firebase database
 //                JSONObject test = new JSONObject ();
 //                String[] tagList = new String[] {"Energy","Animal"};
-//                //try {
-//                    test.put("task", new JSONArray(tagList));
-//                    test.put("tag","Energy");
+//                try {
+//                    test.put("task", new JSONArray(tagList)); // Add the list of tags to the json file
+//                    test.put("tag","Energy"); //Depth parameter in the json file
 //                }
 //                catch (JSONException e){
 //                }
-//                //Log.d("salut",test.toString());
 //                RequestParams rp = new RequestParams();
 //                //rp.add("task", "recycle"); rp.add("tag", "recycle bottles");
-//                //rp.put("api_key","False");
-//                rp.put("data",1);
+//                rp.put("api_key","blurryapikeyseetutorial"); // Input the APIKEY here : must remains secret see the tutorial
+//                try {
+//                    //Need to encode to that no special characters will mess up the request ! Very important
+//                    rp.put("data", URLEncoder.encode(test.toString(),"UTF-8"));
+//                } catch (UnsupportedEncodingException e) {
+//                    e.printStackTrace();
+//                }
+//                //Let's verfiy the structure of the parameters sent to the database
 //                Log.d("salut",rp.toString());
-//                HttpUtils.postByUrl("http://www.fir-auth-93d22.appspot.com/example", rp, new JsonHttpResponseHandler() {
+//                    //Url added so that we specify the database to work with and append the parameters
+//                String URl = "http://www.fir-auth-93d22.appspot.com/example?"+rp.toString();
+//                    //Let's try to post it ; the handler will catch the response : whether a single task for example (first method) or a list (second one)
+//                HttpUtils.postByUrl(URl, rp, new JsonHttpResponseHandler() {
+////                    //Only to fill if something to do ONCE THE JSON file is received and one element
 //                    @Override
 //                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 //                        super.onSuccess(statusCode,headers,response);
-//                        //Log.d("asd", "---------------- this is response : " + response);
 //                        try {
 //                            JSONObject serverResp = new JSONObject(response.toString());
-//                            Log.d("salut","yo");
-//                            //String jsonString = serverResp.toString();
-//                            //Toast.makeText(getApplicationContext(),jsonString,Toast.LENGTH_LONG).show();
+//                            String jsonString = serverResp.toString();
+//                            Toast.makeText(getApplicationContext(),jsonString,Toast.LENGTH_LONG).show();
 //                        } catch (JSONException e) {
-//                            Log.d("salut","yomauvais");
 //                        }
 //                    }
-//                    //Only to fill if something to do ONCE THE JSON file is received
+////                    //Only to fill if something to do ONCE THE JSON file is received and list
 //                    @Override
 //                    public void onSuccess(int statusCode, Header[] headers, JSONArray timeline) {
-//                        Log.d("salut","yo");
 //                    }
 //                });
-//                AsyncHttpClient myClient = new AsyncHttpClient();
-//                //PersistentCookieStore myCookieStore = new PersistentCookieStore(this);
-//                //myClient.setCookieStore(myCookieStore);
+
+                //////////////////////////////////////////////////////////////////
+                // EXAMPLE FOR GET QUERY IN FIREBASE /////////////////////////////
+                //////////////////////////////////////////////////////////////////
+                // Creating the json file to be SENT to the firebase database
+//                JSONObject test = new JSONObject ();
 //                RequestParams rp = new RequestParams();
-//                rp.add("task", "recycle"); rp.add("tag", "recycle bottles");
-//                rp.put("api_key","False");
-//                HashMap<String, String> paramMap = new HashMap<String, String>();
-//                paramMap.put("key", "value");
-//                RequestParams params = new RequestParams(paramMap);
-//            }
-//        });
+//                rp.put("api_key","blurryapikeyseetutorial"); // Input the APIKEY here : must remains secret see the tutorial
+//                try {
+//                    //Need to encode to that no special characters will mess up the request ! Very important
+//                    rp.put("data", URLEncoder.encode("1","UTF-8"));
+//                } catch (UnsupportedEncodingException e) {
+//                    e.printStackTrace();
+//                }
+//                //Let's verfiy the structure of the parameters sent to the database
+//                Log.d("salut",rp.toString());
+//                    //Url added so that we specify the database to work with and append the parameters
+//                String URl = "http://www.fir-auth-93d22.appspot.com/example?"+rp.toString();
+//                    //Let's try to post it ; the handler will catch the response : whether a single task for example (first method) or a list (second one)
+//                HttpUtils.postByUrl(URl, rp, new JsonHttpResponseHandler() {
+////                    //Only to fill if something to do ONCE THE JSON file is received and one element
+//                    @Override
+//                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+//                        super.onSuccess(statusCode,headers,response);
+//                        try {
+//                            JSONObject serverResp = new JSONObject(response.toString());
+//                            String jsonString = serverResp.toString();
+//                            Toast.makeText(getApplicationContext(),jsonString,Toast.LENGTH_LONG).show();
+//                        } catch (JSONException e) {
+//                        }
+//                    }
+////                    //Only to fill if something to do ONCE THE JSON file is received and list
+//                    @Override
+//                    public void onSuccess(int statusCode, Header[] headers, JSONArray timeline) {
+//                    }
+//                });
+            }
+        });
 
         // request to database
 

@@ -8,7 +8,6 @@
     tools:context=".AddTaskSearch">
 
 
-    <!--<edu.gatech.econet.CustomTextView-->
     <EditText
         android:id="@+id/searchLabel"
         android:layout_width="0dp"

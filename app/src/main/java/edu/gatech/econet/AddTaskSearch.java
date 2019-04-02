@@ -45,7 +45,6 @@ public class AddTaskSearch extends AppCompatActivity {
     ListView listTasks;
     TextView hint;
     Button filterButton;
-    //edu.gatech.econet.CustomTextView searchLabel;
     EditText searchLabel;
     // Hard coded listview to get to use the bundle and retrieve information to next activity
     public static String rawTasks[] = new String [] {
@@ -82,7 +81,7 @@ public class AddTaskSearch extends AppCompatActivity {
 
         //final Bundle bundleIn = getIntent().getExtras();
         hint = (TextView) findViewById(R.id.hintSearch);
-        //searchLabel = (edu.gatech.econet.CustomTextView)findViewById(R.id.searchLabel);
+
         searchLabel = (EditText) findViewById(R.id.searchLabel);
         listTasks = (ListView) findViewById(R.id.listFound);
         filterButton = (Button) findViewById(R.id.filterButton);
