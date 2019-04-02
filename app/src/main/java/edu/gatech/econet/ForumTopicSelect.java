@@ -237,9 +237,16 @@ public class ForumTopicSelect extends AppCompatActivity implements
         }
 
         if (id == R.id.challenges){
-            Intent intent = new Intent(this, ForumTopicSelect.class);
+            Toast toast = Toast.makeText(getApplicationContext(),"Could you please implement the challenge activities ?",Toast.LENGTH_LONG);
+            toast.show();
+        }
+
+        if (id== R.id.forum){
+            Intent intent = new Intent(this, askQuestion.class);
+            intent.putExtra("FROM", "habitTracker_menu");
             startActivity(intent);
         }
+
 
         if (id == R.id.signOut){
             menuSignOut();

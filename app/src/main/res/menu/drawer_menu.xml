@@ -13,6 +13,9 @@
         <item android:id="@+id/advice"
             android:icon="@drawable/ic_advice"
             android:title="Advice"/>
+        <item android:id="@+id/forum"
+            android:icon="@drawable/ic_account"
+            android:title="Forum"/>
         <item android:id="@+id/challenges"
             android:icon="@drawable/ic_challenge"
             android:title="Forum"/>
