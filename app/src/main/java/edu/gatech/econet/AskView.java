@@ -26,8 +26,8 @@ public class AskView extends AppCompatActivity {
     public static String  retrievedTask;
     public static String retrieveQuestion;
     String authorRespID[] = new String [] {"Billy","Eva","Josh"};
-    String nbrPlus[] = new String [] {"0","0","0"};
-    String textResponse[] = new String[] {"Hey what's up ?","Really good question !","I will answer asap !"};
+    String nbrPlus[] = new String [] {"20","5","1"};
+    String textResponse[] = new String[] {"Amazon has some great ones, I would highly suggest this.","I've tried some bamboo straws but are not very durable... You should use steel straws","There are some styilsh ones on etsy!"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

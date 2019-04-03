@@ -50,7 +50,7 @@ public class ForumTopicSelect extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener {
     ListView listTopic=null;
     int[] icons = {R.drawable.alimentation, R.drawable.animal, R.drawable.energy, R.drawable.transportation, R.drawable.zero_waste};
-    public static String localTopic[] = new String[] {"Alimentation","Animal","Energy","Transportation","Zero Waste"};
+    public static String localTopic[] = new String[] {"Vegetarianism","Animal","Energy","Transportation","Zero Waste"};
     public static String chosenTopic;
 
     @Override

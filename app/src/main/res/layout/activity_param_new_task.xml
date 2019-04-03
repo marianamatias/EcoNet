@@ -8,53 +8,68 @@
     tools:context=".ParamNewTask">
 
     <TextView
-        android:id="@+id/taskSelected"
-        android:layout_width="0dp"
+        android:id="@+id/taskLabel"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="50dp"
+        android:text="Task: "
+        android:textSize="20dp"
+        android:textStyle="bold"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/taskSelected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:textSize="20dp"
+        android:text="hello"
+        app:layout_constraintStart_toEndOf="@id/taskLabel"
+        app:layout_constraintTop_toTopOf="@id/taskLabel"
+        app:layout_constraintBottom_toBottomOf="@id/taskLabel"
+        />
 
     <TextView
         android:id="@+id/textFrequency"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="Expected frequency (per week)"
-        app:layout_constraintBaseline_toBaselineOf="@+id/setFrequency"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="50dp"
+        android:text="Expected frequency (per week): "
+        android:textSize="20dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/taskLabel"
+        />
 
     <TextView
         android:id="@+id/setFrequency"
         android:layout_width="11dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="10dp"
         android:text="3"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.055"
+        android:textSize="20dp"
         app:layout_constraintStart_toEndOf="@+id/textFrequency"
-        app:layout_constraintTop_toBottomOf="@+id/taskSelected" />
+        app:layout_constraintTop_toTopOf="@id/textFrequency" />
+
 
     <Button
         android:id="@+id/buttonLess"
         android:layout_width="150dp"
         android:layout_height="40dp"
+        android:layout_marginTop="25dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:background="@drawable/round_button"
         android:onClick="less"
         android:text="Less"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.138"
+        app:layout_constraintHorizontal_bias="0.146"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textFrequency" />
 
@@ -72,52 +87,45 @@
         app:layout_constraintHorizontal_bias="0.396"
         app:layout_constraintStart_toEndOf="@+id/buttonLess" />
 
-    <Button
-        android:id="@+id/goHabitTracker"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="30dp"
-        android:onClick="goHT"
-        android:background="@drawable/round_button"
-        android:text="Add to my Habit Tracker"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
-        android:id="@+id/spinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginBottom="8dp"
-        android:alpha="0.7"
-        android:background="@color/darkGreyTransparent"
-        android:hint="Select topic"
-        android:textColorHint="@color/darkGreyTransparent"
-        app:layout_constraintBottom_toTopOf="@+id/goHabitTracker"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonMore"
-        app:layout_constraintVertical_bias="0.127" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="20dp"
         android:text="Related topic"
+        android:textSize="20dp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/spinner"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonMore"
-        app:layout_constraintVertical_bias="0.417" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonLess" />
+
+    <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
+        android:id="@+id/spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@color/lightGreyTransparent"
+        android:hint="Select topic"
+        android:textColorHint="@color/darkGreyTransparent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <Button
+        android:id="@+id/goHabitTracker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginRight="20dp"
+        android:onClick="goHT"
+        android:background="@drawable/round_button"
+        android:text="Add to My Habit Tracker"
+        android:padding="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/spinner"
+        />
 </android.support.constraint.ConstraintLayout>

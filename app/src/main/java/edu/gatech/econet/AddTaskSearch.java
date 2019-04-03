@@ -48,8 +48,8 @@ public class AddTaskSearch extends AppCompatActivity {
     EditText searchLabel;
     // Hard coded listview to get to use the bundle and retrieve information to next activity
     public static String rawTasks[] = new String [] {
-            "Use a steel straw","Use a glass straw","Make my cleaning products","Make my laundry products","Eat vegetarian meals","Compost","Recycle at home",
-            "Get a reusable water bottle","Turn off lights that aren't being used","Car pooling for the atmosphere","Avoid useless commuting","Other1","Other2"};
+            "Use a bamboo straw","Use a steel straw","Use natural cleaning products","Air dry clothes","Eat vegetarian meals","Compost","Recycle at home",
+            "Get a reusable water bottle","Turn off lights that aren't being used","Carpool for the atmosphere","Take quick showers","Bring a reusable bag to the grocery store","Turn off water when brushing teeth"};
     public static String difficultyTasks[] = new String [] {
             "Easy","Easy","Intermediate","Intermediate","Intermediate","Difficult","Intermediate","Easy","Easy","Intermediate","Easy","Difficult","Dfficult"};
     public static String topicTasks[] = new String [] {

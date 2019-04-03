@@ -8,11 +8,14 @@
     <color name="blueGradient">#73D6C6</color>
     <color name="greenGradient">#9BDE93</color>
 
+    <color name="lavender">#c992dd</color>
+
+
     <color name="lightGreyTransparent">#20000000</color>
     <color name="darkGreyTransparent">#50000000</color>
-    <color name="yellow">#a9d872</color>
-    <color name="green">#6cb780</color>
-    <color name="azur">#42f4eb</color>
+    <color name="green1">#8078E8AD</color>
+    <color name="green2">#8090FF9A</color>
+    <color name="green3">#80A8E885</color>
 
 
 

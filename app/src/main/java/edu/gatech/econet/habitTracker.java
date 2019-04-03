@@ -367,11 +367,11 @@ public class habitTracker extends AppCompatActivity implements
             if (scoreList[i].equals("0")) {
                 //view.setBackgroundColor(getResources().getColor(R.color.lightGreyTransparent));
             } else if ((myScore < 4) && (myScore > 0)) {
-                view.setBackgroundColor(getResources().getColor(R.color.yellow));
+                view.setBackgroundColor(getResources().getColor(R.color.green1));
             } else if ((myScore < 10) && (myScore > 3)) {
-                view.setBackgroundColor(getResources().getColor(R.color.green));
+                view.setBackgroundColor(getResources().getColor(R.color.green2));
             } else if (((myScore < 1000000) && (myScore > 9))) {
-                view.setBackgroundColor(getResources().getColor(R.color.azur));
+                view.setBackgroundColor(getResources().getColor(R.color.green3));
             }
             //view.setBackgroundColor(getResources().getColor(R.color.lightGreyTransparent));
             return view;

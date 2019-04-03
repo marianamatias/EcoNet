@@ -32,6 +32,7 @@
     <style name="AppTheme.PopTheme">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowCloseOnTouchOutside">true</item>
+
     </style>
     <color name="grey_500">#F0F0F0</color>
 </resources>
