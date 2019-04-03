@@ -260,7 +260,7 @@ public class adviceForum extends AppCompatActivity implements
             startActivity(intent);
         }
         if (id == R.id.add_goal){
-            ArrayList<String> itemsSent = habitTracker.itemsSent;
+            //ArrayList<String> itemsSent = habitTracker.itemsSent;
             Intent intent = new Intent(this, AddTaskSearch.class);
             startActivity(intent);
         }

@@ -14,6 +14,8 @@ def api_key(req, resp, resource, params):
 
     key = req.get_param('api_key')
 
+#Modify this verification before deploying the app
+#Must match the api_key in the application front end code
     if key is None:
         raise falcon.HTTPForbidden(
             description='API KEY is required')

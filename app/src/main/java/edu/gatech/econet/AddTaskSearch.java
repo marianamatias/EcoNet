@@ -87,7 +87,7 @@ public class AddTaskSearch extends AppCompatActivity {
         filterButton = (Button) findViewById(R.id.filterButton);
         listTasks.getBackground().setAlpha(80);
         checkedItems = new boolean[filterList.length];
-        ArrayList<String> fullListLoc = habitTracker.fullList;
+        ArrayList<String> fullListLoc = new ArrayList<>();
         itemsLoc = new ArrayList<>() ;
         for (int i=0; i<fullListLoc.size()/2 ; i++){
             itemsLoc.add(fullListLoc.get(2*i+1));
@@ -253,7 +253,7 @@ public class AddTaskSearch extends AppCompatActivity {
     }
 
     private void OpenNewActivityWithParam(){
-        itemsLoc = habitTracker.itemsSent;
+        itemsLoc = null;
         Intent intent = new Intent(this, ParamNewTask.class);
         //Bundle bundleOut = new Bundle();
         //bundleOut.putString("new_task",data1);
