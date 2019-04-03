@@ -123,11 +123,11 @@ public class habitTracker extends AppCompatActivity implements
                             if (scoreLoc == 0) {
                                 //view.setBackgroundColor(getResources().getColor(R.color.lightGreyTransparent));
                             } else if ((scoreLoc < 4) && (scoreLoc > 0)) {
-                                view.setBackgroundColor(getResources().getColor(R.color.yellow));
+                                view.setBackgroundColor(getResources().getColor(R.color.green1));
                             } else if ((scoreLoc < 10) && (scoreLoc > 3)) {
-                                view.setBackgroundColor(getResources().getColor(R.color.green));
+                                view.setBackgroundColor(getResources().getColor(R.color.green2));
                             } else if (((scoreLoc < 1000000) && (scoreLoc > 9))) {
-                                view.setBackgroundColor(getResources().getColor(R.color.azur));
+                                view.setBackgroundColor(getResources().getColor(R.color.green3));
                             }
                         } catch (Exception e){
                             fullList.remove(fullList.get(0));
@@ -169,11 +169,11 @@ public class habitTracker extends AppCompatActivity implements
                                 if (scoreLoc == 0) {
                                     //view.setBackgroundColor(getResources().getColor(R.color.lightGreyTransparent));
                                 } else if ((scoreLoc < 4) && (scoreLoc > 0)) {
-                                    view.setBackgroundColor(getResources().getColor(R.color.yellow));
+                                    view.setBackgroundColor(getResources().getColor(R.color.green1));
                                 } else if ((scoreLoc < 10) && (scoreLoc > 3)) {
-                                    view.setBackgroundColor(getResources().getColor(R.color.green));
+                                    view.setBackgroundColor(getResources().getColor(R.color.green2));
                                 } else if (((scoreLoc < 1000000) && (scoreLoc > 9))) {
-                                    view.setBackgroundColor(getResources().getColor(R.color.azur));
+                                    view.setBackgroundColor(getResources().getColor(R.color.green3));
                                 }
                             }
                        }
@@ -271,7 +271,7 @@ public class habitTracker extends AppCompatActivity implements
                 // create "ask for advice" item
                 SwipeMenuItem askItem = new SwipeMenuItem(getApplicationContext());
                 // set item background
-                askItem.setBackground(new ColorDrawable(Color.rgb(31, 167, 221)));
+                askItem.setBackground(new ColorDrawable(Color.rgb(63, 108, 175)));
                 // set item width
                 askItem.setWidth(200);
                 // set item title
@@ -282,7 +282,7 @@ public class habitTracker extends AppCompatActivity implements
                 // create "delete" item
                 SwipeMenuItem deleteItem = new SwipeMenuItem(getApplicationContext());
                 // set item background
-                deleteItem.setBackground(new ColorDrawable(Color.rgb(206, 26, 10)));
+                deleteItem.setBackground(new ColorDrawable(Color.rgb(178, 49, 35)));
                 // set item width
                 deleteItem.setWidth(200);
                 // set a icon

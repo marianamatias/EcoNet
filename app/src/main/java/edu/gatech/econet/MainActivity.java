@@ -51,9 +51,9 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Button listeners
+//        // Button listeners
         findViewById(R.id.signInButton).setOnClickListener(this);
-        findViewById(R.id.signOutButton).setOnClickListener(this);
+//        findViewById(R.id.signOutButton).setOnClickListener(this);
 
 
         // Configure sign-in to request the user's ID, email address, and basic
@@ -166,7 +166,6 @@ public class MainActivity extends AppCompatActivity implements
             startActivity(intent);
         } else {
             findViewById(R.id.signInButton).setVisibility(View.VISIBLE);
-            findViewById(R.id.signOutButton).setVisibility(View.GONE);
         }
     }
 
@@ -175,8 +174,6 @@ public class MainActivity extends AppCompatActivity implements
         int i = v.getId();
         if (i == R.id.signInButton) {
             signIn();
-        } else if (i == R.id.signOutButton) {
-            signOut();
         }
     }
 

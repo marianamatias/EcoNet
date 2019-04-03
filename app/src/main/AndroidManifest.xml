@@ -21,6 +21,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".MainActivity"
             android:label="Log in to Econet" />
@@ -45,7 +46,7 @@
             android:name=".ForumTopicSelect"
             android:label="Select the desired topic" />
         <activity android:name=".askReplayPop"
-            android:label="Prompt your response"
+            android:label="Your Answer"
             android:theme= "@style/Theme.AppCompat.Dialog.Alert"/>
     </application>
 

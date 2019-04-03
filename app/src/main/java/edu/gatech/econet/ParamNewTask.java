@@ -49,8 +49,7 @@ public class ParamNewTask extends AppCompatActivity {
 //            receivedTask = bundleIn.getString("new_task");
 //        }
         TextView selectedTaskText = (TextView) findViewById(R.id.taskSelected);
-        String sentence = "Set the parameters for the task " + receivedTask;
-        selectedTaskText.setText(sentence);
+        selectedTaskText.setText(receivedTask);
         moreButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
