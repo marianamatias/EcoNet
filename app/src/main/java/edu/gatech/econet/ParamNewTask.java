@@ -10,8 +10,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.kosalgeek.android.caching.FileCacher;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import static edu.gatech.econet.ForumTopicSelect.localTopic;
@@ -23,9 +25,7 @@ public class ParamNewTask extends AppCompatActivity {
     TextView textFrequency;
     Button goHT;
     private int frequency = 3;
-    //public static ArrayList<String> itemsLoc2;
-    public static String tag;
-
+    public static String tag =null;
     public static String receivedTask = null;
     public static String receivedTopic=null;
     String [] spinnerlist;
@@ -39,15 +39,9 @@ public class ParamNewTask extends AppCompatActivity {
         setFrequency = findViewById(R.id.setFrequency);
         textFrequency = findViewById(R.id.textFrequency);
         goHT = findViewById(R.id.goHabitTracker);
-        final Bundle bundleIn = getIntent().getExtras();
         spinnerlist = ForumTopicSelect.localTopic;
         receivedTask=AddTaskSearch.sentTask;
         receivedTopic=AddTaskSearch.sentTopic;
-        tag = null;
-
-//        if (bundleIn!=null){
-//            receivedTask = bundleIn.getString("new_task");
-//        }
         TextView selectedTaskText = (TextView) findViewById(R.id.taskSelected);
         selectedTaskText.setText(receivedTask);
         moreButton.setOnClickListener(new View.OnClickListener() {
@@ -66,8 +60,8 @@ public class ParamNewTask extends AppCompatActivity {
         goHT.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (tag==receivedTopic){
-                    OpenNewActivity(receivedTask,bundleIn);
+                if (tag.equals(receivedTopic)){
+                    OpenNewActivity();
                 }
                 else {
                     Toast toast = Toast.makeText(getApplicationContext(),"Please select a related Topic",Toast.LENGTH_SHORT);
@@ -90,8 +84,6 @@ public class ParamNewTask extends AppCompatActivity {
                 }
             }
         });
-
-
     }
     private void more(){
         if (frequency<7){
@@ -105,12 +97,9 @@ public class ParamNewTask extends AppCompatActivity {
             setFrequency.setText((String.valueOf(frequency)));
         }
     }
-    private void OpenNewActivity(String taskName, Bundle bundleInn){
-        //itemsLoc2 = AddTaskSearch.itemsLoc;
-        //itemsLoc2.add(receivedTask);
+    private void OpenNewActivity(){
         Intent intent = new Intent(this, habitTracker.class);
         Bundle bundleOut = new Bundle();
-        bundleOut.putString("new_task", receivedTask);
         intent.putExtra("FROM_ACTIVITY", "ParamNewTask");
         startActivity(intent);
     }

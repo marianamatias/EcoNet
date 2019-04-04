@@ -59,7 +59,7 @@ public class habitTracker extends AppCompatActivity implements
     String tasksList[] = AddTaskSearch.rawTasks;
     String topicList[] = AddTaskSearch.topicTasks;
     String scoreList[] = new String[] {};
-    boolean challengedList[] = new boolean[] {};
+    String challengedList[] = new String[] {};
     //new score =
     //To retrieve the data from askAdvice screen
     public static String topicSwiped ;
@@ -67,9 +67,14 @@ public class habitTracker extends AppCompatActivity implements
     private static final String TAG = "habitTracker";
     private DrawerLayout drawerLayout;
 
+
     //MenuItem menuItem;
     TextView noTask;
-    //FileCacher<ArrayList<String>> stringCacher;
+    FileCacher<String []> taskCacher;
+    FileCacher<String []> topicCacher;
+    FileCacher<String []> scoreCacher;
+    FileCacher<String []> challengeCacher;
+
     SwipeMenuListView swipeListView;
 
     @Override
@@ -82,11 +87,14 @@ public class habitTracker extends AppCompatActivity implements
         noTask.setVisibility(View.GONE);
 
         setSupportActionBar(toolbar);
-        //stringCacher = new FileCacher<>(habitTracker.this, "habitTrackerCache.txt");
+        taskCacher = new FileCacher<>(habitTracker.this, "taskCacher.txt");
+        topicCacher = new FileCacher<>(habitTracker.this, "topicCacher.txt");
+        scoreCacher = new FileCacher<>(habitTracker.this, "scoreCacher.txt");
+        challengeCacher = new FileCacher<>(habitTracker.this, "challengeCacher.txt");
 
         for (int i=0;i<tasksList.length;i++){
             scoreList = Methods.increaseArray(scoreList,"0");
-            challengedList = Methods.increaseArrayBool(challengedList,false);
+            challengedList = Methods.increaseArray(challengedList,"false");
         }
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -94,21 +102,25 @@ public class habitTracker extends AppCompatActivity implements
         drawerLayout = findViewById(R.id.drawer_layout);
 
         swipeListView = (SwipeMenuListView) findViewById(R.id.swipeListView);
-//        if (stringCacher.hasCache()){
-//            try{
-//                ArrayList<String> text= stringCacher.readCache();
-//                fullList=text;
-//            } catch (IOException e ){
-//                e.printStackTrace();
-//            }
-//        }
+        if (taskCacher.hasCache()){
+            try{
+                tasksList=taskCacher.readCache();
+                topicList=topicCacher.readCache();
+                scoreList=scoreCacher.readCache();
+                challengedList=challengeCacher.readCache();
+            } catch (IOException e ){
+                e.printStackTrace();
+            }
+        }
 //Retrieve data from previous activity
-//        Intent mIntent = getIntent();
-//        String previousActivity = mIntent.getStringExtra("FROM_ACTIVITY");
-//        if (previousActivity.equals("ParamNewTask")){
-//            fullList.add("0");
-//            fullList.add(ParamNewTask.receivedTask);
-//        }
+        Intent mIntent = getIntent();
+        String previousActivity = mIntent.getStringExtra("FROM_ACTIVITY");
+        if ((previousActivity.equals("ParamNewTask"))&&(!Methods.isInArray(tasksList,ParamNewTask.receivedTask))){
+            tasksList=Methods.increaseArray(tasksList,ParamNewTask.receivedTask);
+            topicList=Methods.increaseArray(topicList,ParamNewTask.receivedTopic);
+            scoreList=Methods.increaseArray(scoreList,"0");
+            challengedList=Methods.increaseArray(challengedList,"false");
+        }
 
         HabitTrackerAdapter habitTrackerListAdapter = new HabitTrackerAdapter();
         swipeListView.setAdapter(habitTrackerListAdapter);
@@ -121,11 +133,6 @@ public class habitTracker extends AppCompatActivity implements
                 scoreList[position]=Integer.toString(anteScore);
                 HabitTrackerAdapter habitTrackerListAdapter = new HabitTrackerAdapter();
                 swipeListView.setAdapter(habitTrackerListAdapter);
-//                try {
-//                    stringCacher.writeCache(fullList);
-//                } catch (IOException e){
-//                    e.printStackTrace();
-//                }
             }
         });
         if(tasksList.length==0){
@@ -144,6 +151,7 @@ public class habitTracker extends AppCompatActivity implements
         }
         if (id == R.id.add_goal){
             Intent intent = new Intent(this, AddTaskSearch.class);
+            quitActivity();
             startActivity(intent);
         }
         if (id == R.id.challenges){
@@ -153,10 +161,12 @@ public class habitTracker extends AppCompatActivity implements
         if (id== R.id.advice){
             Intent intent = new Intent(this, askQuestion.class);
             intent.putExtra("FROM", "habitTracker_menu");
+            quitActivity();
             startActivity(intent);
         }
         if (id == R.id.forum){
             Intent intent = new Intent(this, ForumTopicSelect.class);
+            quitActivity();
             startActivity(intent);
         }
         if (id == R.id.signOut){
@@ -179,6 +189,7 @@ public class habitTracker extends AppCompatActivity implements
                 new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
+                        quitActivity();
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     }
                 });
@@ -213,6 +224,7 @@ public class habitTracker extends AppCompatActivity implements
                         taskSwiped = tasksList[position];
                         Intent intent = new Intent(habitTracker.this, askQuestion.class);
                         intent.putExtra("FROM", "habitTracker_swipe");
+                        quitActivity();
                         startActivity(intent);
                         break;
                     case 1:
@@ -222,11 +234,11 @@ public class habitTracker extends AppCompatActivity implements
                         String deletedTask = tasksList[position];
                         String deletedTopic = topicList[position];
                         String deletecScore = scoreList[position];
-                        boolean deletedChallenge = challengedList[position];
+                        String deletedChallenge = challengedList[position];
                         tasksList = Methods.deleteString(tasksList,position);
                         topicList = Methods.deleteString(topicList,position);
                         scoreList = Methods.deleteString(scoreList,position);
-                        challengedList = Methods.deleteStringBool(challengedList,position);
+                        challengedList = Methods.deleteString(challengedList,position);
                         deleteCallback(position,deletedTask,deletedTopic,deletecScore,deletedChallenge);
                         if(tasksList.length==0){
                             noTask.setVisibility(View.VISIBLE);
@@ -243,7 +255,7 @@ public class habitTracker extends AppCompatActivity implements
         });
     }
 
-    private void deleteCallback(final int position, final String deletedTask, final String deletedTopic, final String deletedScore, final boolean deletedChallenge) {
+    private void deleteCallback(final int position, final String deletedTask, final String deletedTopic, final String deletedScore, final String deletedChallenge) {
         Snackbar snackbar = Snackbar
                 .make(drawerLayout, "Item was removed from the list.", Snackbar.LENGTH_LONG);
         snackbar.setAction("UNDO", new View.OnClickListener() {
@@ -252,7 +264,7 @@ public class habitTracker extends AppCompatActivity implements
                 tasksList = Methods.increaseArray(tasksList,deletedTask);
                 topicList = Methods.increaseArray(topicList,deletedTopic);
                 scoreList = Methods.increaseArray(scoreList,deletedScore);
-                challengedList = Methods.increaseArrayBool(challengedList,deletedChallenge);
+                challengedList = Methods.increaseArray(challengedList,deletedChallenge);
                 if(tasksList.length==0){
                     noTask.setVisibility(View.VISIBLE);
                     swipeListView.setVisibility(View.GONE);
@@ -267,11 +279,6 @@ public class habitTracker extends AppCompatActivity implements
         });
         snackbar.setActionTextColor(Color.YELLOW);
         snackbar.show();
-//        try {
-//            stringCacher.writeCache(fullList);
-//        } catch (IOException e){
-//            e.printStackTrace();
-//        }
     }
 
 
@@ -314,6 +321,17 @@ public class habitTracker extends AppCompatActivity implements
             }
             return view;
         }
+    }
+    public void quitActivity(){
+        try {
+            taskCacher.writeCache(tasksList);
+            topicCacher.writeCache(topicList);
+            scoreCacher.writeCache(scoreList);
+            challengeCacher.writeCache(challengedList);
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
     }
 
 }

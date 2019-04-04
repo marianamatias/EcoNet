@@ -27,10 +27,12 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.kosalgeek.android.caching.FileCacher;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
 import org.w3c.dom.Text;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListResourceBundle;
@@ -41,7 +43,7 @@ import static android.view.View.VISIBLE;
 
 public class AddTaskSearch extends AppCompatActivity {
     SearchView searchView;
-    public static ArrayList<String> itemsLoc;
+    public static String[] itemsLoc = new String[] {};
     ListView listTasks;
     TextView hint;
     Button filterButton;
@@ -67,6 +69,7 @@ public class AddTaskSearch extends AppCompatActivity {
     public static String sentTask=null;
     public static String sentTopic=null;
 
+    FileCacher<String []> taskCacher = new FileCacher<>(AddTaskSearch.this, "taskCacher.txt");
     boolean [] checkedItems;
     ArrayList<Integer> mUserItems = new ArrayList<>();
 
@@ -78,7 +81,13 @@ public class AddTaskSearch extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_task_search);
-
+        if (taskCacher.hasCache()){
+            try{
+                itemsLoc=taskCacher.readCache();
+            } catch (IOException e ){
+                e.printStackTrace();
+            }
+        }
         //final Bundle bundleIn = getIntent().getExtras();
         hint = (TextView) findViewById(R.id.hintSearch);
 
@@ -88,10 +97,8 @@ public class AddTaskSearch extends AppCompatActivity {
         listTasks.getBackground().setAlpha(80);
         checkedItems = new boolean[filterList.length];
         ArrayList<String> fullListLoc = new ArrayList<>();
-        itemsLoc = new ArrayList<>() ;
-        for (int i=0; i<fullListLoc.size()/2 ; i++){
-            itemsLoc.add(fullListLoc.get(2*i+1));
-        }
+
+
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -126,9 +133,9 @@ public class AddTaskSearch extends AppCompatActivity {
                             for (int k=0;k<mUserItems.size();k++){
                                 String cmp = filterList[mUserItems.get(k)];
                                 if((topicTasks[j].equals(cmp)) || (difficultyTasks[j].equals(cmp))){
-                                    proposedTasks = increaseArray(proposedTasks, rawTasks[j]);
+                                    proposedTasks = Methods.increaseArray(proposedTasks, rawTasks[j]);
                                     localTasks = proposedTasks;
-                                    proposedTopic = increaseArray(proposedTopic,topicTasks[j]);
+                                    proposedTopic = Methods.increaseArray(proposedTopic,topicTasks[j]);
                                 }
                             }
                         }
@@ -137,7 +144,7 @@ public class AddTaskSearch extends AppCompatActivity {
                             public View getView(int position, View convertView, ViewGroup parent){
                                 View view = super.getView(position,convertView,parent);
                                 if(itemsLoc!=null){
-                                    if(itemsLoc.contains(proposedTasks[position])){
+                                    if(Methods.isInArray(itemsLoc,proposedTasks[position])){
                                         view.setBackgroundColor(getResources().getColor(R.color.lightGreyTransparent));
                                     }
                                 }
@@ -168,7 +175,7 @@ public class AddTaskSearch extends AppCompatActivity {
                             public View getView(int position, View convertView, ViewGroup parent){
                                 View view = super.getView(position,convertView,parent);
                                 if(itemsLoc!=null){
-                                    if(itemsLoc.contains(proposedTasks[position])){
+                                    if(Methods.isInArray(itemsLoc,proposedTasks[position])){
                                         view.setBackgroundColor(getResources().getColor(R.color.lightGreyTransparent));
                                     }
                                 }
@@ -182,32 +189,12 @@ public class AddTaskSearch extends AppCompatActivity {
                 mDialog.show();
             }
         });
-//        imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-//        //Hide:
-//        //imm.toggleSoftInput(InputMethodManager.RESULT_HIDDEN, 0);
-//        cntHide=0;
-//        //Show
-//        searchLabel.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                //imm.hideSoftInputFromWindow(searchLabel.getApplicationWindowToken(), 0);
-//                cntHide++;
-//                if (cntHide %2==0){
-//                    //imm.hideSoftInputFromWindow(searchLabel.getApplicationWindowToken(), 0);
-//                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-//                }
-//                else{
-//                    imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
-//                }
-//            }
-//        });
-
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, localTasks){
             @Override
             public View getView(int position, View convertView, ViewGroup parent){
                 View view = super.getView(position,convertView,parent);
                 if(itemsLoc!=null){
-                    if(itemsLoc.contains(proposedTasks[position])){
+                    if(Methods.isInArray(itemsLoc,proposedTasks[position])){
                         view.setBackgroundColor(getResources().getColor(R.color.lightGreyTransparent));
                     }
                 }
@@ -215,8 +202,6 @@ public class AddTaskSearch extends AppCompatActivity {
             }
         };
         listTasks.setAdapter(adapter);
-
-
         listTasks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long is) {
@@ -226,7 +211,7 @@ public class AddTaskSearch extends AppCompatActivity {
                     sentTopic=proposedTopic[position];
                     OpenNewActivityWithParam();
                     }
-                else if(itemsLoc.contains(localTasks[position])){
+                else if(Methods.isInArray(itemsLoc,localTasks[position])){
                     Toast toast = Toast.makeText(getApplicationContext(),"Task already in your habit tracker",Toast.LENGTH_SHORT);
                     toast.show();
                 }
@@ -251,54 +236,22 @@ public class AddTaskSearch extends AppCompatActivity {
             }
         });
     }
-
     private void OpenNewActivityWithParam(){
         itemsLoc = null;
         Intent intent = new Intent(this, ParamNewTask.class);
-        //Bundle bundleOut = new Bundle();
-        //bundleOut.putString("new_task",data1);
-        //bundleOut.putString("new_topic",)
-        //ntent.putExtras(bundleOut);
         startActivity(intent);
     }
-    public static String[] removeTheElement(String[] arr, String seek){
-        if (arr == null) {
-            return arr;
-        }
-        String[] anotherArray = new String[arr.length - 1];
-        for (int i = 0, k = 0; i < arr.length; i++) {
-            if (arr[i].equals(seek)) {
-                continue;
-            }
-            anotherArray[k++] = arr[i];
-        }
-        return anotherArray;
-    }
+
     private static String[] search(TextView searchLabel, String localTasks[] ){
         if((searchLabel.getText()!=null)&&(localTasks!=null)){
             for (int i = 0;i<localTasks.length;i++){
                 if((searchLabel.getText().toString()).equals(localTasks[i])){
-                    localTasks=removeTheElement(localTasks,localTasks[i]);
+                    localTasks=Methods.removeTheElement(localTasks,localTasks[i]);
                 }
             }
         }
         return localTasks;
     }
-    public String[] increaseArray(String[] input, String newElem){
-        String [] nullList = new String []{};
-        if (input!=nullList) {
-            int i = input.length;
-            String[] newArray = new String[i + 1];
-            for (int cnt = 0; cnt < i; cnt++) {
-                newArray[cnt] = input[cnt];
-            }
-            newArray[i] = newElem;
-            return newArray;
-        }
-        else {
-            String [] returnList = new String[] {newElem};
-            return returnList;
-        }
-    }
+
 }
 
