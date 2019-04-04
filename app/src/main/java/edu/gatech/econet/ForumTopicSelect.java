@@ -65,8 +65,6 @@ public class ForumTopicSelect extends AppCompatActivity implements
         listTopic.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                //Toast toast = Toast.makeText(ForumTopicSelect.this,"You selected "+localTopic[i],Toast.LENGTH_LONG);
-                //toast.show();
                 chosenTopic=localTopic[position];
                 OpenNewActivity();
             }
@@ -212,75 +210,52 @@ public class ForumTopicSelect extends AppCompatActivity implements
     }
     //Drawer Menu - Link to Activities
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
-
         if (id == R.id.habit_tracker){
+
             Intent intent = new Intent(this, habitTracker.class);
-
-            //just so it doesn't crash, need to fix this...
-            intent.putExtra("FROM_ACTIVITY", "ParamNewTask");
-
             startActivity(intent);
         }
-
-
         if (id == R.id.add_goal){
-            //ArrayList<String> itemsSent = habitTracker.itemsSent;
             Intent intent = new Intent(this, AddTaskSearch.class);
             startActivity(intent);
         }
-
-        if (id == R.id.advice){
-            Intent intent = new Intent(this, askQuestion.class);
-            startActivity(intent);
-        }
-
         if (id == R.id.challenges){
             Toast toast = Toast.makeText(getApplicationContext(),"Could you please implement the challenge activities ?",Toast.LENGTH_LONG);
             toast.show();
         }
-
-        if (id== R.id.forum){
+        if (id== R.id.advice){
             Intent intent = new Intent(this, askQuestion.class);
             intent.putExtra("FROM", "habitTracker_menu");
             startActivity(intent);
         }
-
-
+        if (id == R.id.forum){
+            //Already in it
+            //Intent intent = new Intent(this, ForumTopicSelect.class);
+            //startActivity(intent);
+        }
         if (id == R.id.signOut){
             menuSignOut();
         }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-
     private void menuSignOut() {
         FirebaseAuth.getInstance().signOut();
-
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken("1057246002930-8bp2uv0v2sjesp7iin4dkcp35uv3vlas.apps.googleusercontent.com")
                 .requestEmail()
                 .build();
-
         GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
         // Google sign out
         mGoogleSignInClient.signOut().addOnCompleteListener(this,
                 new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        updateUI();
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     }
                 });
     }
-
-
-    public void updateUI() {
-        startActivity(new Intent(this, MainActivity.class));
-    }
-
 }

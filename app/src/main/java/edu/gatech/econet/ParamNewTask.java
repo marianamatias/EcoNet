@@ -10,13 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.kosalgeek.android.caching.FileCacher;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
-
-import java.io.IOException;
-import java.util.ArrayList;
-
-import static edu.gatech.econet.ForumTopicSelect.localTopic;
 
 public class ParamNewTask extends AppCompatActivity {
     Button moreButton;
@@ -70,7 +64,7 @@ public class ParamNewTask extends AppCompatActivity {
             }
         });
         final ArrayAdapter<String> arrayAdapter=new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line,spinnerlist);
-        MaterialBetterSpinner betterSpinner=(MaterialBetterSpinner)findViewById(R.id.spinner);
+        MaterialBetterSpinner betterSpinner=(MaterialBetterSpinner)findViewById(R.id.topicScroll);
         betterSpinner.setText(receivedTopic);
         betterSpinner.setAdapter(arrayAdapter);
         betterSpinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -78,6 +72,7 @@ public class ParamNewTask extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if (spinnerlist[i].equals(receivedTopic)){
                     Toast toast = Toast.makeText(getApplicationContext(),"Topic do not match the task, please change",Toast.LENGTH_LONG);
+                    toast.show();
                 }
                 else {
                     tag = spinnerlist[i];
@@ -99,7 +94,6 @@ public class ParamNewTask extends AppCompatActivity {
     }
     private void OpenNewActivity(){
         Intent intent = new Intent(this, habitTracker.class);
-        Bundle bundleOut = new Bundle();
         intent.putExtra("FROM_ACTIVITY", "ParamNewTask");
         startActivity(intent);
     }

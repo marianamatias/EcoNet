@@ -23,7 +23,6 @@ public class askQuestion extends AppCompatActivity {
     Button sendButton;
     EditText questionText;
     public static String questionSent;
-    public static String topicQuestion;
 
 
     @Override
@@ -56,9 +55,8 @@ public class askQuestion extends AppCompatActivity {
             suggestedTask = null;
             suggestedTopic = null;
         }
-        Toast toast = Toast.makeText(this,"Found "+suggestedTask+" and "+suggestedTopic,Toast.LENGTH_LONG);
-        toast.show();
-
+        //Toast toast = Toast.makeText(this,"Found "+suggestedTask+" and "+suggestedTopic,Toast.LENGTH_LONG);
+        //toast.show();
         betterSpinnerTopic.setAdapter(arrayAdapterTopic);
         betterSpinnerTopic.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -82,10 +80,10 @@ public class askQuestion extends AppCompatActivity {
         });
     }
 
-
     private void OpenNewActivityWithParam(){
-        Intent intent = new Intent(this, AskView.class);
-        intent.putExtra("FROM3", "askQuestion");
+        Intent intent = new Intent(this, adviceForum.class);
+        intent.putExtra("FROM2", "askQuestion");
+
         startActivity(intent);
     }
 

@@ -57,9 +57,9 @@ public class AskView extends AppCompatActivity {
             retrievedTopic = askReplayPop.topic;
             retrieveQuestion = askReplayPop.question;
             retrievedUser = askReplayPop.user;
-            authorRespID=increaseArray(authorRespID,"New User");
-            nbrPlus=increaseArray(nbrPlus,"0");
-            textResponse=increaseArray(textResponse,askReplayPop.responseText);
+            authorRespID=Methods.increaseArray(authorRespID,"New User");
+            nbrPlus=Methods.increaseArray(nbrPlus,"0");
+            textResponse=Methods.increaseArray(textResponse,askReplayPop.responseText);
         }
         askTask.setText("Task : "+retrievedTask);
         askTopic.setText("Topic : "+retrievedTopic);
@@ -112,27 +112,13 @@ public class AskView extends AppCompatActivity {
                     int cnt = Integer.parseInt(nbrPlus[u]);
                     cnt++ ;
                     nbrPlus[u]=Integer.toString(cnt);
+                    AskView.AskAdapter forumAdapter = new AskView.AskAdapter();
+                    listMessages.setAdapter(forumAdapter);
                 }
             });
             view.setForegroundGravity(Gravity.CENTER);
             view.setBackgroundColor(getResources().getColor(R.color.lightGreyTransparent));
             return view;
-        }
-    }
-    public String[] increaseArray(String[] input, String newElem){
-        String [] nullList = new String []{};
-        if (input!=nullList) {
-            int i = input.length;
-            String[] newArray = new String[i + 1];
-            for (int cnt = 0; cnt < i; cnt++) {
-                newArray[cnt] = input[cnt];
-            }
-            newArray[i] = newElem;
-            return newArray;
-        }
-        else {
-            String [] returnList = new String[] {newElem};
-            return returnList;
         }
     }
 }

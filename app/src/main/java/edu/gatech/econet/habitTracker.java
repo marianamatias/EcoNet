@@ -74,6 +74,7 @@ public class habitTracker extends AppCompatActivity implements
     FileCacher<String []> topicCacher;
     FileCacher<String []> scoreCacher;
     FileCacher<String []> challengeCacher;
+    FileCacher<String []> challengesRunningCacher;
 
     SwipeMenuListView swipeListView;
 
@@ -91,6 +92,7 @@ public class habitTracker extends AppCompatActivity implements
         topicCacher = new FileCacher<>(habitTracker.this, "topicCacher.txt");
         scoreCacher = new FileCacher<>(habitTracker.this, "scoreCacher.txt");
         challengeCacher = new FileCacher<>(habitTracker.this, "challengeCacher.txt");
+        challengesRunningCacher = new FileCacher<>(habitTracker.this, "challengeedTopicCacher.txt");
 
         for (int i=0;i<tasksList.length;i++){
             scoreList = Methods.increaseArray(scoreList,"0");
@@ -112,16 +114,41 @@ public class habitTracker extends AppCompatActivity implements
                 e.printStackTrace();
             }
         }
-//Retrieve data from previous activity
+
+        //Retrieve data from previous activity
         Intent mIntent = getIntent();
-        String previousActivity = mIntent.getStringExtra("FROM_ACTIVITY");
-        if ((previousActivity.equals("ParamNewTask"))&&(!Methods.isInArray(tasksList,ParamNewTask.receivedTask))){
-            tasksList=Methods.increaseArray(tasksList,ParamNewTask.receivedTask);
-            topicList=Methods.increaseArray(topicList,ParamNewTask.receivedTopic);
-            scoreList=Methods.increaseArray(scoreList,"0");
-            challengedList=Methods.increaseArray(challengedList,"false");
+        try{
+            String previousActivity = mIntent.getStringExtra("FROM_ACTIVITY");
+            if ((previousActivity.equals("ParamNewTask"))&&(!Methods.isInArray(tasksList,ParamNewTask.receivedTask))){
+                tasksList=Methods.increaseArray(tasksList,ParamNewTask.receivedTask);
+                topicList=Methods.increaseArray(topicList,ParamNewTask.receivedTopic);
+                scoreList=Methods.increaseArray(scoreList,"0");
+                challengedList=Methods.increaseArray(challengedList,"false");
+            }
+        }catch (Exception e){
+
         }
 
+
+        if (challengesRunningCacher.hasCache()){
+            try{
+                String challengesLocal [] = challengesRunningCacher.readCache();
+                for (int i =0; i<challengesLocal.length;i++){
+                    for (int j=0; j<topicList.length;j++){
+                        if (topicList[j].equals(challengesLocal[i])){
+                            challengedList[j] = "true";
+                            //Toast toast = Toast.makeText(getApplicationContext(),"you are here dude !",Toast.LENGTH_LONG);
+                            //toast.show();
+                        }
+                        else {
+
+                        }
+                    }
+                }
+            } catch (IOException e ){
+                e.printStackTrace();
+            }
+        }
         HabitTrackerAdapter habitTrackerListAdapter = new HabitTrackerAdapter();
         swipeListView.setAdapter(habitTrackerListAdapter);
         setupSwipeMenuListView(swipeListView);
@@ -131,15 +158,17 @@ public class habitTracker extends AppCompatActivity implements
                 int anteScore = Integer.parseInt(scoreList[position]);
                 anteScore++;
                 scoreList[position]=Integer.toString(anteScore);
+                //boolean anteChallenged = Boolean.parseBoolean(challengedList[position]);
+                ///challengedList[position]=Boolean.toString(!anteChallenged);
                 HabitTrackerAdapter habitTrackerListAdapter = new HabitTrackerAdapter();
                 swipeListView.setAdapter(habitTrackerListAdapter);
             }
         });
+
         if(tasksList.length==0){
             noTask.setVisibility(View.VISIBLE);
             swipeListView.setVisibility(View.GONE);
         }
-
     }
 
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -155,8 +184,11 @@ public class habitTracker extends AppCompatActivity implements
             startActivity(intent);
         }
         if (id == R.id.challenges){
-            Toast toast = Toast.makeText(getApplicationContext(),"Could you please implement the challenge activities ?",Toast.LENGTH_LONG);
-            toast.show();
+            //Toast toast = Toast.makeText(getApplicationContext(),"Could you please implement the challenge activities ?",Toast.LENGTH_LONG);
+            //toast.show();
+            Intent intent = new Intent(this, ManageChallenge.class);
+            quitActivity();
+            startActivity(intent);
         }
         if (id== R.id.advice){
             Intent intent = new Intent(this, askQuestion.class);
@@ -298,9 +330,13 @@ public class habitTracker extends AppCompatActivity implements
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
             view = getLayoutInflater().inflate(R.layout.habit_tracker_adapter_layout,null);
-//            if (challengedList[i]){
-                ImageView challengeIcon = (ImageView)view.findViewById(R.id.challengeIcon);
-//            }
+            ImageView challengeIcon = (ImageView)view.findViewById(R.id.challengeIcon);
+            if (!Boolean.parseBoolean(challengedList[i])){
+                challengeIcon.setVisibility(View.GONE);
+            }
+            else{
+                challengeIcon.setVisibility(View.VISIBLE);
+            }
 //            if (newScore[i]){
 //                ImageView greatIcon = (ImageView)view.findViewById(R.id.greatIcon);
 //            }

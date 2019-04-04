@@ -30,12 +30,14 @@
 
     <Button
         android:id="@+id/upButton"
-        android:layout_width="56dp"
+        android:layout_width="41dp"
         android:layout_height="41dp"
         android:layout_marginStart="8dp"
-        android:text="UP"
+        android:text=""
         android:textSize="10sp"
+        android:background="@drawable/tree"
         app:layout_constraintBaseline_toBaselineOf="@+id/nbrPlus"
+        android:focusableInTouchMode="true"
         app:layout_constraintStart_toEndOf="@+id/nbrPlus" />
 
     <TextView

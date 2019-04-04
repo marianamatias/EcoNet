@@ -55,9 +55,9 @@ public class AddTaskSearch extends AppCompatActivity {
     public static String difficultyTasks[] = new String [] {
             "Easy","Easy","Intermediate","Intermediate","Intermediate","Difficult","Intermediate","Easy","Easy","Intermediate","Easy","Difficult","Dfficult"};
     public static String topicTasks[] = new String [] {
-            "Zero Waste","Zero Waste","Zero Waste","Zero Waste","Alimentation","Zero Waste","Zero Waste","Zero Waste","Energy","Transportation",
+            "Zero Waste","Zero Waste","Zero Waste","Zero Waste","Vegetarianism","Zero Waste","Zero Waste","Zero Waste","Energy","Transportation",
             "Transportation","Animal","Animal"};
-    String [] filterList = new String [] {"Easy","Intermediate","Difficult","Energy","Zero Waste","Transportation","Animal","Alimentation"};
+    String [] filterList = new String [] {"Easy","Intermediate","Difficult","Energy","Zero Waste","Transportation","Animal","Vegetarianism"};
     //Used after filter
     String [] proposedTasks = rawTasks;
     String [] proposedTopic = topicTasks;

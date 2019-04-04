@@ -77,18 +77,25 @@ public class adviceForum extends AppCompatActivity implements
         }
         else if (previousActivity.equals("askQuestion")){
             selectedTopic = askQuestion.suggestedTopic;
+            localTopic = Methods.increaseArray(localTopic,askQuestion.suggestedTopic);
+            localTasks = Methods.increaseArray(localTasks,askQuestion.suggestedTask);
+            //Here add the length of the history retrieved from the database
+            nbrResponse= Methods.increaseArray(nbrResponse,"0");
+            questions= Methods.increaseArray(questions,askQuestion.questionSent);
+            copyTasks = Methods.increaseArray(copyTasks,askQuestion.suggestedTask);
         }
         rawTasks=AddTaskSearch.rawTasks;
         rawTopic=AddTaskSearch.topicTasks;
         for (int i=0;i<rawTopic.length;i++){
             if(rawTopic[i].equals(selectedTopic)){
-                localTopic = increaseArray(localTopic,selectedTopic);
-                localTasks = increaseArray(localTasks,rawTasks[i]);
-                nbrResponse= increaseArray(nbrResponse,"0");
-                questions= increaseArray(questions,listofquestions[i]);
-                copyTasks = increaseArray(copyTasks,rawTasks[i]);
+                localTopic = Methods.increaseArray(localTopic,selectedTopic);
+                localTasks = Methods.increaseArray(localTasks,rawTasks[i]);
+                nbrResponse= Methods.increaseArray(nbrResponse,"0");
+                questions= Methods.increaseArray(questions,listofquestions[i]);
+                copyTasks = Methods.increaseArray(copyTasks,rawTasks[i]);
             }
         }
+
 
         listAdvice = (ListView) findViewById(R.id.listAdvice);
         adviceForum.AdviceAdapter adviceAdapter = new adviceForum.AdviceAdapter();
@@ -111,14 +118,12 @@ public class adviceForum extends AppCompatActivity implements
                             }
                         }
                         else if (mUserItems.contains(position)){
-                            int index;
                             for (int m =0 ;m<mUserItems.size();m++){
                                 if (mUserItems.get(m)==position){
                                     mUserItems.remove(m);
                                 }
                             }
                         }
-
                     }
                 });
                 mBuilder.setCancelable(false);
@@ -134,26 +139,13 @@ public class adviceForum extends AppCompatActivity implements
                                 //comparison with the tasks selected
                                 String cmp = filterList[mUserItems.get(k)];
                                 if(rawTasks[j].equals(cmp)){
-                                    localTasks = increaseArray(localTasks,rawTasks[j]);
-                                    localTopic = increaseArray(localTopic,rawTopic[j]);
-                                    nbrResponse = increaseArray(nbrResponse,"0");
-                                    questions = increaseArray(questions,"Why would I"+rawTasks[j]);
+                                    localTasks = Methods.increaseArray(localTasks,rawTasks[j]);
+                                    localTopic = Methods.increaseArray(localTopic,rawTopic[j]);
+                                    nbrResponse = Methods.increaseArray(nbrResponse,"0");
+                                    questions = Methods.increaseArray(questions,"Why would I"+rawTasks[j]);
                                 }
                             }
                         }
-//                        adapter = new ArrayAdapter<String>(adviceForum.this, android.R.layout.simple_list_item_1, localTasks){
-//                            @Override
-//                            public View getView(int position, View convertView, ViewGroup parent){
-//                                View view = super.getView(position,convertView,parent);
-//                                if(itemsLoc!=null){
-//                                    if(itemsLoc.contains(proposedTasks[position])){
-//                                        view.setBackgroundColor(getResources().getColor(R.color.lightGreyTransparent));
-//                                    }
-//                                }
-//                                return view;
-//                            }
-//                        };
-//                        listTasks.setAdapter(adapter);
                         listAdvice = (ListView) findViewById(R.id.listAdvice);
                         adviceForum.AdviceAdapter adviceAdapter = new adviceForum.AdviceAdapter();
                         listAdvice.setAdapter(adviceAdapter);
@@ -179,25 +171,12 @@ public class adviceForum extends AppCompatActivity implements
                         rawTopic=AddTaskSearch.topicTasks;
                         for (int m=0;m<rawTopic.length;m++){
                             if(rawTopic[m].equals(selectedTopic)){
-                                localTopic = increaseArray(localTopic,selectedTopic);
-                                localTasks = increaseArray(localTasks,rawTasks[m]);
-                                nbrResponse= increaseArray(nbrResponse,"0");
-                                questions= increaseArray(questions,"Why would I "+rawTasks[m]);
+                                localTopic = Methods.increaseArray(localTopic,selectedTopic);
+                                localTasks = Methods.increaseArray(localTasks,rawTasks[m]);
+                                nbrResponse= Methods.increaseArray(nbrResponse,"0");
+                                questions= Methods.increaseArray(questions,"Why would I "+rawTasks[m]);
                             }
                         }
-//                        adapter = new ArrayAdapter<String>(AddTaskSearch.this, android.R.layout.simple_list_item_1, localTasks){
-//                            @Override
-//                            public View getView(int position, View convertView, ViewGroup parent){
-//                                View view = super.getView(position,convertView,parent);
-//                                if(itemsLoc!=null){
-//                                    if(itemsLoc.contains(proposedTasks[position])){
-//                                        view.setBackgroundColor(getResources().getColor(R.color.lightGreyTransparent));
-//                                    }
-//                                }
-//                                return view;
-//                            }
-//                        };
-//                        listTasks.setAdapter(adapter);
                         listAdvice = (ListView) findViewById(R.id.listAdvice);
                         adviceForum.AdviceAdapter adviceAdapter = new adviceForum.AdviceAdapter();
                         listAdvice.setAdapter(adviceAdapter);
@@ -210,8 +189,6 @@ public class adviceForum extends AppCompatActivity implements
         listAdvice.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                //Toast toast = Toast.makeText(adviceForum.this,"You selected "+selectedTopic,Toast.LENGTH_LONG);
-                //toast.show();
                 topicSend=localTopic[position];
                 taskSend=localTasks[position];
                 questionSend=questions[position];
@@ -220,7 +197,6 @@ public class adviceForum extends AppCompatActivity implements
         });
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
     }
 
 
@@ -254,33 +230,26 @@ public class adviceForum extends AppCompatActivity implements
     }
     //Drawer Menu - Link to Activities
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
         if (id == R.id.habit_tracker){
             Intent intent = new Intent(this, habitTracker.class);
-            //just so it doesn't crash, need to fix this...
-            intent.putExtra("FROM_ACTIVITY", "ParamNewTask");
             startActivity(intent);
         }
         if (id == R.id.add_goal){
-            //ArrayList<String> itemsSent = habitTracker.itemsSent;
             Intent intent = new Intent(this, AddTaskSearch.class);
             startActivity(intent);
-        }
-        if (id == R.id.advice){
-            OpenNewActivity();
         }
         if (id == R.id.challenges){
             Toast toast = Toast.makeText(getApplicationContext(),"Could you please implement the challenge activities ?",Toast.LENGTH_LONG);
             toast.show();
         }
-
-        if (id== R.id.forum){
-            Intent intent = new Intent(this, askQuestion.class);
-            intent.putExtra("FROM", "habitTracker_menu");
+        if (id== R.id.advice){
+            OpenNewActivity();
+        }
+        if (id == R.id.forum){
+            Intent intent = new Intent(this, ForumTopicSelect.class);
             startActivity(intent);
         }
-
         if (id == R.id.signOut){
             menuSignOut();
         }
@@ -315,21 +284,5 @@ public class adviceForum extends AppCompatActivity implements
         Intent intent = new Intent(this, AskView.class);
         intent.putExtra("FROM3", "adviceForum");
         startActivity(intent);
-    }
-    public String[] increaseArray(String[] input, String newElem){
-        String [] nullList = new String []{};
-        if (input!=nullList) {
-            int i = input.length;
-            String[] newArray = new String[i + 1];
-            for (int cnt = 0; cnt < i; cnt++) {
-                newArray[cnt] = input[cnt];
-            }
-            newArray[i] = newElem;
-            return newArray;
-        }
-        else {
-            String [] returnList = new String[] {newElem};
-            return returnList;
-        }
     }
 }
