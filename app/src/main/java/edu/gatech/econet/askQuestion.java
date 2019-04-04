@@ -47,8 +47,8 @@ public class askQuestion extends AppCompatActivity {
             betterSpinnerTopic.setText(suggestedTopic);
         }
         else if (previousActivity.equals("habitTracker_swipe")){
-            suggestedTask = null;
-            suggestedTopic = null;
+            suggestedTask = habitTracker.taskSwiped;
+            suggestedTopic = habitTracker.topicSwiped;
             betterSpinnerTopic.setText(suggestedTopic);
             betterSpinnerTask.setText(suggestedTask);
         }
