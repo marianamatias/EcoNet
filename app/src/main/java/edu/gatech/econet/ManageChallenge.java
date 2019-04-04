@@ -31,7 +31,7 @@ import java.io.IOException;
 
 public class ManageChallenge extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener{
-    ListView listChallenge;
+    ListView listChallenge = null;
     FileCacher<String []> challengeCacher;
     FileCacher<String []> topicCacher;
     FileCacher<String []> scoreCacher;
@@ -53,33 +53,26 @@ public class ManageChallenge extends AppCompatActivity implements
         challengedUserCacher = new FileCacher<>(ManageChallenge.this, "challengedUserCacher.txt");
         challengeedTopicCacher = new FileCacher<>(ManageChallenge.this, "challengeedTopicCacher.txt");
         addChallenge = (Button)findViewById(R.id.addChallenge);
-        listChallenge=(ListView)findViewById(R.id.listChallenge);
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        drawerLayout = findViewById(R.id.drawer_layout);
+        listChallenge=(ListView) findViewById(R.id.ntm);
 
         if (challengedUserCacher.hasCache()){
-            //Toast toast = Toast.makeText(getApplicationContext(),"Hello I am the challenge ",Toast.LENGTH_LONG);
-            //toast.show();
             try{
                 challengedUsers=challengedUserCacher.readCache();
                 challengedTopic=challengeedTopicCacher.readCache();
-
             } catch (IOException e ){
                 e.printStackTrace();
             }
         }
-
         ManageChallenge.ChallengeAdapter challengeAdapter = new ManageChallenge.ChallengeAdapter();
         listChallenge.setAdapter(challengeAdapter);
         listChallenge.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Toast toast = Toast.makeText(getApplicationContext(),"Hello I am the challenge " + challengedTopic[position],Toast.LENGTH_LONG);
+                Toast toast = Toast.makeText(getApplicationContext(),"Hello I am the challenge ",Toast.LENGTH_LONG);
                 toast.show();
             }
         });
+
         addChallenge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -88,6 +81,9 @@ public class ManageChallenge extends AppCompatActivity implements
                 startActivity(intent);
             }
         });
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        drawerLayout = findViewById(R.id.drawer_layout);
     }
     class ChallengeAdapter extends BaseAdapter {
         @Override
@@ -124,6 +120,13 @@ public class ManageChallenge extends AppCompatActivity implements
                     challengedUsers=Methods.deleteString(challengedUsers,u);
                     ManageChallenge.ChallengeAdapter challengeAdapter = new ManageChallenge.ChallengeAdapter();
                     listChallenge.setAdapter(challengeAdapter);
+                    listChallenge.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                            Toast toast = Toast.makeText(getApplicationContext(),"Hello I am the challenge ",Toast.LENGTH_LONG);
+                            toast.show();
+                        }
+                    });
                 }
             });
             view.setForegroundGravity(Gravity.CENTER);

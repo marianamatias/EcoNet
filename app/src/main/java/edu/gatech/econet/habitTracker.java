@@ -91,7 +91,7 @@ public class habitTracker extends AppCompatActivity implements
         taskCacher = new FileCacher<>(habitTracker.this, "taskCacher.txt");
         topicCacher = new FileCacher<>(habitTracker.this, "topicCacher.txt");
         scoreCacher = new FileCacher<>(habitTracker.this, "scoreCacher.txt");
-        challengeCacher = new FileCacher<>(habitTracker.this, "challengeCacher.txt");
+        //challengeCacher = new FileCacher<>(habitTracker.this, "challengeCacher.txt");
         challengesRunningCacher = new FileCacher<>(habitTracker.this, "challengeedTopicCacher.txt");
 
         for (int i=0;i<tasksList.length;i++){
@@ -109,7 +109,7 @@ public class habitTracker extends AppCompatActivity implements
                 tasksList=taskCacher.readCache();
                 topicList=topicCacher.readCache();
                 scoreList=scoreCacher.readCache();
-                challengedList=challengeCacher.readCache();
+                //challengedList=challengeCacher.readCache();
             } catch (IOException e ){
                 e.printStackTrace();
             }
@@ -363,7 +363,7 @@ public class habitTracker extends AppCompatActivity implements
             taskCacher.writeCache(tasksList);
             topicCacher.writeCache(topicList);
             scoreCacher.writeCache(scoreList);
-            challengeCacher.writeCache(challengedList);
+            //challengeCacher.writeCache(challengedList);
         } catch (IOException e){
             e.printStackTrace();
         }
