@@ -41,7 +41,17 @@ public class ManageChallenge extends AppCompatActivity implements
     FileCacher<String []> challengeedTopicCacher;
     String [] challengedUsers = new String[] {};
     String [] challengedTopic = new String[] {};
+    String [] challengesStatus = new String[] {};
     private DrawerLayout drawerLayout;
+    public static String topicSelected;
+    public static String challengerSelected;
+    // Implement the fact that :
+    //challenge can be pending then display it with no action text view
+    //challenge can be acccepted and running for a week (display the time remaining until the end and button access odds
+    //challenge can be received and then accepted and declined
+    //if declined, remove it from both players challenge maanger screen
+    // status can be : pending, received, running, finished, or tobedeleted
+    public static String statusSelected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +69,9 @@ public class ManageChallenge extends AppCompatActivity implements
             try{
                 challengedUsers=challengedUserCacher.readCache();
                 challengedTopic=challengeedTopicCacher.readCache();
+                for (int i=0; i<challengedTopic.length;i++){
+                    challengesStatus = Methods.increaseArray(challengesStatus,"Received");
+                }
             } catch (IOException e ){
                 e.printStackTrace();
             }
@@ -68,8 +81,14 @@ public class ManageChallenge extends AppCompatActivity implements
         listChallenge.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Toast toast = Toast.makeText(getApplicationContext(),"Hello I am the challenge ",Toast.LENGTH_LONG);
-                toast.show();
+//                Toast toast = Toast.makeText(getApplicationContext(),"Hello I am the challenge ",Toast.LENGTH_LONG);
+//                toast.show();
+                topicSelected=challengedTopic[position];
+                challengerSelected=challengedUsers[position];
+                statusSelected=challengesStatus[position];
+                quitActivity();
+                Intent intent = new Intent (getApplicationContext(), ChallengeView.class);
+                startActivity(intent);
             }
         });
 
@@ -106,10 +125,37 @@ public class ManageChallenge extends AppCompatActivity implements
             Button acceptButton = (Button) view.findViewById(R.id.acceptButton);
             Button declineButton = (Button) view.findViewById(R.id.declineButton);
             Button oddViewButton = (Button) view.findViewById(R.id.oddViewButton);
+            TextView statusText = (TextView) view.findViewById(R.id.textChallengeStatus);
 
             challengeTitle.setText(challengedTopic[i]);
             challengerID.setText(challengedUsers[i]);
-            oddViewButton.setVisibility(View.GONE);
+            statusText.setText(challengesStatus[i]);
+            //conditions on the pending or not buttons
+            if (challengesStatus[i].equals("Received")){
+                statusText.setVisibility(View.GONE);
+                oddViewButton.setVisibility(View.GONE);
+                declineButton.setVisibility(View.VISIBLE);
+                acceptButton.setVisibility(View.VISIBLE);
+            }
+            else if (challengesStatus[i].equals("Pending")){
+                statusText.setVisibility(View.VISIBLE);
+                oddViewButton.setVisibility(View.GONE);
+                declineButton.setVisibility(View.GONE);
+                acceptButton.setVisibility(View.GONE);
+            }
+            else if (challengesStatus[i].equals("Running")){
+                statusText.setVisibility(View.GONE);
+                oddViewButton.setVisibility(View.VISIBLE);
+                declineButton.setVisibility(View.GONE);
+                acceptButton.setVisibility(View.GONE);
+            }
+            else if (challengesStatus[i].equals("Finished")){
+                statusText.setVisibility(View.GONE);
+                oddViewButton.setVisibility(View.VISIBLE);
+                declineButton.setVisibility(View.GONE);
+                acceptButton.setVisibility(View.GONE);
+            }
+            //oddViewButton.setVisibility(View.GONE);
             //topicIcon.setImageResource(icons[i]);
             //topicName.setText(localTopic[i]);
             final int u=i;
@@ -118,15 +164,28 @@ public class ManageChallenge extends AppCompatActivity implements
                 public void onClick(View view) {
                     challengedTopic=Methods.deleteString(challengedTopic,u);
                     challengedUsers=Methods.deleteString(challengedUsers,u);
+                    challengesStatus = Methods.deleteString(challengesStatus,u);
                     ManageChallenge.ChallengeAdapter challengeAdapter = new ManageChallenge.ChallengeAdapter();
                     listChallenge.setAdapter(challengeAdapter);
-                    listChallenge.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                            Toast toast = Toast.makeText(getApplicationContext(),"Hello I am the challenge ",Toast.LENGTH_LONG);
-                            toast.show();
-                        }
-                    });
+                }
+            });
+            acceptButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    challengesStatus[u]="Running";
+                    ManageChallenge.ChallengeAdapter challengeAdapter = new ManageChallenge.ChallengeAdapter();
+                    listChallenge.setAdapter(challengeAdapter);
+                }
+            });
+            oddViewButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    topicSelected=challengedTopic[u];
+                    challengerSelected=challengedUsers[u];
+                    statusSelected=challengesStatus[u];
+                    quitActivity();
+                    Intent intent = new Intent (getApplicationContext(), ChallengeView.class);
+                    startActivity(intent);
                 }
             });
             view.setForegroundGravity(Gravity.CENTER);
@@ -148,7 +207,6 @@ public class ManageChallenge extends AppCompatActivity implements
         }
         if (id == R.id.challenges){
             //Already in it
-
         }
         if (id== R.id.advice){
             Intent intent = new Intent(this, askQuestion.class);

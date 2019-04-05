@@ -91,7 +91,7 @@ public class adviceForum extends AppCompatActivity implements
                 localTopic = Methods.increaseArray(localTopic,selectedTopic);
                 localTasks = Methods.increaseArray(localTasks,rawTasks[i]);
                 nbrResponse= Methods.increaseArray(nbrResponse,"0");
-                questions= Methods.increaseArray(questions,listofquestions[i]);
+                questions= Methods.increaseArray(questions,"Why should I" + rawTasks[i]);
                 copyTasks = Methods.increaseArray(copyTasks,rawTasks[i]);
             }
         }
