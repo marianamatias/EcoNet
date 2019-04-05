@@ -32,8 +32,9 @@ class Resource(object):
 
     @falcon.before(api_key)
     @falcon.after(say_bye_after_operation)
-def on_post(self, req, resp):
-		data=json.loads(req.get_param("data"))
+    def on_post(self, req, resp):
+        logging.info(req.get_param("data"))
+        data = json.loads(req.get_param("data"))
         result = firebase.post('/tasks', data, {'print': 'pretty'}, {'X_FANCY_HEADER': 'VERY FANCY'})
         logging.info('Adding a task to firebase')
         resource = {

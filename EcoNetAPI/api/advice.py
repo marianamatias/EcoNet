@@ -15,7 +15,9 @@ import falcon
 #adding firebase connection/application
 firebase = firebase.FirebaseApplication("https://fir-auth-93d22.firebaseio.com/", None)
 
-
+#to access the first parameter to condition 
+#data['keyName']
+#then remove it from the json : data.remove('keyName')
 class Advice(object):
 
     def on_get(self, req, resp):
