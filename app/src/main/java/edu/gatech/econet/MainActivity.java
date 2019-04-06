@@ -3,6 +3,7 @@ package edu.gatech.econet;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.content.Intent;
 import android.util.Log;
@@ -26,11 +27,25 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 //import com.google.firebase.quickstart.auth.R;
 import android.content.Context;
+import android.widget.Toast;
 
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.kosalgeek.android.caching.FileCacher;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Iterator;
+
+import cz.msebera.android.httpclient.Header;
 
 
 public class MainActivity extends AppCompatActivity implements
@@ -38,6 +53,11 @@ public class MainActivity extends AppCompatActivity implements
 
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;
+    EditText firstnameText;
+    EditText usernameText;
+    public static String userID;
+    FileCacher<String> userIDCacher;
+
 
     // [START declare_auth]
     public FirebaseAuth mAuth;
@@ -51,6 +71,16 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        firstnameText = (EditText) findViewById(R.id.firstnameText);
+        usernameText = (EditText) findViewById(R.id.usernameText);
+        userIDCacher = new FileCacher<>(MainActivity.this, "userId.txt");
+        if (signed.equals("No")){
+            try {
+                userIDCacher.clearCache();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 //        // Button listeners
         findViewById(R.id.signInButton).setOnClickListener(this);
 //        findViewById(R.id.signOutButton).setOnClickListener(this);
@@ -156,10 +186,44 @@ public class MainActivity extends AppCompatActivity implements
 
     private void updateUI(FirebaseUser user) {
         if (user != null) {
-            signed = "Yes";
-//            findViewById(R.id.signInButton).setVisibility(View.GONE);
-//            findViewById(R.id.signOutButton).setVisibility(View.VISIBLE);
+            if (signed.equals("No")) {
+                //Success in log in so post of the new user into the database
+                JSONObject test = new JSONObject();
+                RequestParams rp = new RequestParams();
+                rp.put("api_key", "blurryapikeyseetutorial");
+                rp.put("param", "new");
+                try {
+                    test.put("firstname", firstnameText.getText().toString());
+                    test.put("username", usernameText.getText().toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                rp.put("data", URLEncoder.encode(test.toString()));
+                String URl = "http://www.fir-auth-93d22.appspot.com/user?" + rp.toString();
+                HttpUtils.postByUrl(URl, rp, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                        super.onSuccess(statusCode, headers, response);
+                        try {
+                            JSONObject serverResp = new JSONObject(response.toString());
+                            //JSONObject item = serverResp.getJSONObject("name");
+                            userID = serverResp.getString("name");
+                            userIDCacher.writeCache(userID);
+                            //Log.d("salut",serverResp.toString());
+                        } catch (JSONException e1) {
+                            e1.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
 
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONArray timeline) {
+                        // Log.d("salut","received array");
+                    }
+                });
+                signed = "Yes";
+            }
             //switch screens
             Intent intent = new Intent(this, habitTracker.class);
             intent.putExtra("FROM_ACTIVITY", "MainActivity");
@@ -172,9 +236,27 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onClick(View v) {
         int i = v.getId();
-        if (i == R.id.signInButton) {
+        if ((i == R.id.signInButton)&&(!usernameText.getText().toString().equals(""))&&(!firstnameText.getText().toString().equals(""))
+        && (!Methods.isInArray(WelcomeActivity.usernameList,usernameText.getText().toString()))) {
             signIn();
         }
+        else if ((Methods.isInArray(WelcomeActivity.usernameList,usernameText.getText().toString()))&&
+                (Methods.isInArray(WelcomeActivity.firstnameList,firstnameText.getText().toString()))){
+            userID = WelcomeActivity.userIDList[Methods.find(WelcomeActivity.usernameList,usernameText.getText().toString())];
+            try {
+                userIDCacher.writeCache(userID);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            retrieveProfile();
+            signed = "Yes";
+            signIn();
+        }
+        else {
+            Toast.makeText(getApplicationContext(),"Please enter a firstname and username before login",Toast.LENGTH_LONG).show();
+        }
     }
-
+    public void retrieveProfile(){
+        //on get the profile
+    }
 }

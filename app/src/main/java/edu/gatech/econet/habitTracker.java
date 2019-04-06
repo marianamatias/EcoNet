@@ -175,6 +175,7 @@ public class habitTracker extends AppCompatActivity implements
             noTask.setVisibility(View.VISIBLE);
             swipeListView.setVisibility(View.GONE);
         }
+
     }
 
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -183,6 +184,7 @@ public class habitTracker extends AppCompatActivity implements
             //Already in it
             //Intent intent = new Intent(this, habitTracker.class);
             //startActivity(intent);
+            Toast.makeText(getApplicationContext(),"your user id is "+MainActivity.userID,Toast.LENGTH_LONG).show();
         }
         if (id == R.id.add_goal){
             Intent intent = new Intent(this, AddTaskSearch.class);
