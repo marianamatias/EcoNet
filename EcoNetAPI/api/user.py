@@ -21,53 +21,69 @@ class User(object):
 
 
 #For now no need to deal with storing all the information from the user like the credentials and so on
-    def on_get(self, req, resp):
-#Getting the task list of the user
-#Getting the challenges of the user
-#Getting all the users that have that task 
-        logging.info('Getting the user')
-        resource = {
-            #'id': 1,
-            #'name': 'Random Name'
-        }
-        resp.body = json.dumps(resource)
-        resp.status = falcon.HTTP_200
+	def on_get(self, req, resp):
+		data = json.loads(req.get_param("data"))
+		#The user is on the welcome activity and wants to retrieve all the database
+		if req.get_param("param") == 'all':
+			logging.info('Getting all the users')
+			resource = firebase.get('/users',None)
+		#The user wants to retrieve only his profile on the database
+		elif req.get_param("param") == 'myaccount':
+			logging.info('Getting one user')
+			resource = firebase.get('/users',data)
+		resp.body = json.dumps(resource)
+		resp.status = falcon.HTTP_200
 
-    @falcon.before(api_key)
-    @falcon.after(say_bye_after_operation)
-    def on_post(self, req, resp):
-		#We need to post the new users so add a new element
-		#We need to be able to add a new task to one users
-		#We need to be able to post the new challenges 
-        logging.info(req.get_param("data"))
-        data = json.loads(req.get_param("data"))
-        result = firebase.post('/tasks', data, {'print': 'pretty'}, {'X_FANCY_HEADER': 'VERY FANCY'})
-        logging.info('Adding a task to firebase')
-        resource = {
-            'result': 'Recycle'
-        }
-        resp.body = json.dumps(resource)
-        resp.status = falcon.HTTP_201
+	@falcon.before(api_key)
+	@falcon.after(say_bye_after_operation)
+	def on_post(self, req, resp):
+		data = json.loads(req.get_param("data"))
+		if req.get_param("param") == 'new' :
+			#We need to post the new users so add a new element
+			logging.info('Adding a user to firebase')
+			#The structure for data on post is :
+			# data = {"firstname" : "Hadrien","lastname" : "RIVIERE","username" : "hadrrivi88","tasklist":{}, "challenges":{},"followedQuestion":{}}
+			result = firebase.post('/tasks', data)
+			#Retrieve the 'name' of the user which is his ID on to the FRONT-END
+		elif req.get_param('param') == 'challenge' : 
+			#An user wants to challenge another one
+			#We need to post on both account the new challenge
+			logging.info("Adding a challenge in both challengers")
+			result = firebase.post('/users/'+data['fromUserID']+'/challenge',data['challengeFrom'])
+			result = firebase.post('/users/'+data['otherUserID']+'/challenge',data{'challengeTo'])
+		resource = 'added'
+		resp.body = json.dumps(resource)
+		resp.status = falcon.HTTP_201
 
-    @falcon.before(api_key)
-    @falcon.after(say_bye_after_operation)
-    def on_patch(self, req, resp):
-	#We need to be able to change the username
-        logging.info('Updating the resource')
-        resource = {
-            'id': 1,
-            'name': 'Random Name'
-        }
-        resp.body = json.dumps(resource)
-        resp.status = falcon.HTTP_200
+	@falcon.before(api_key)
+	@falcon.after(say_bye_after_operation)
+	def on_patch(self, req, resp):
+	#We need to be able to change the challenges, followedQuestion and the tasklist 
+	#All of this is quite able to change quickly so we'll edit all the user at once for this
+		data = json.loads(req.get_param("data"))
+		if req.get_param('param') == 'challenge_status':
+			logging.info('Updating the challenge status for both challengers')
+			result = firebase.patch('/users/'+data['fromUserID']+'/challenge',data['challengeFrom'])
+			result = firebase.patch('/users/'+data['otherUserID']+'/challenge',data{'challengeTo'])
+		elif req.get_param('param') == 'update':
+		#Only updating the tasklist and followedQuestion periodically
+			logging.info('Updating the user')
+			result = firebase.patch('/users/'+data['userID'],data['tasklist'])
+			result = firebase.patch('/users/'+data['userID'],data['followedQuestion'])
+		resource = 'updated'
+		resp.body = json.dumps(resource)
+		resp.status = falcon.HTTP_200
 
-    @falcon.before(api_key)
-    @falcon.after(say_bye_after_operation)
-    def on_delete(self, req, resp):
-        logging.info('Deleting the resource')
-        resource = {
-            'id': 1,
-            'name': 'Random Name'
-        }
-        resp.body = json.dumps(resource)
-        resp.status = falcon.HTTP_200
+	@falcon.before(api_key)
+	@falcon.after(say_bye_after_operation)
+	def on_delete(self, req, resp):
+		#One of the challengers has declined, or deleted the challenge
+		#need to remove this challenge for both challengers
+		#The challenge ID is the otherchallengerID which explain the path to delete
+		logging.info('Deleting a challenge for User 1 and User 2')
+		data = json.loads(req.get_param("data"))
+		result = firebase.delete('/users/'+data['otherUserID']+'/challenge/',data['fromUserID'])
+		result = firebase.delete('/users/'+data['fromUserID']+'/challenge/',data['otherUserID'])
+		resource = 'deleted'
+		resp.body = json.dumps(resource)
+		resp.status = falcon.HTTP_200
