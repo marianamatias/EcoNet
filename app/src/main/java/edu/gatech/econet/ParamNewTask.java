@@ -18,7 +18,8 @@ public class ParamNewTask extends AppCompatActivity {
     TextView setFrequency;
     TextView textFrequency;
     Button goHT;
-    private int frequency = 3;
+    public static int frequency ;
+    public static  String key ;
     public static String tag =null;
     public static String receivedTask = null;
     public static String receivedTopic=null;
@@ -36,6 +37,11 @@ public class ParamNewTask extends AppCompatActivity {
         spinnerlist = ForumTopicSelect.localTopic;
         receivedTask=AddTaskSearch.sentTask;
         receivedTopic=AddTaskSearch.sentTopic;
+        //Retrieve freq and key of the selected task
+        int index = Methods.find(WelcomeActivity.taskList,receivedTask);
+        frequency = Integer.parseInt(WelcomeActivity.freqList[index]);
+        key = WelcomeActivity.keysList[index];
+
         TextView selectedTaskText = (TextView) findViewById(R.id.taskSelected);
         selectedTaskText.setText(receivedTask);
         moreButton.setOnClickListener(new View.OnClickListener() {

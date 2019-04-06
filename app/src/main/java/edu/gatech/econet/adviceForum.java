@@ -146,9 +146,15 @@ public class adviceForum extends AppCompatActivity implements
                                 }
                             }
                         }
-                        listAdvice = (ListView) findViewById(R.id.listAdvice);
-                        adviceForum.AdviceAdapter adviceAdapter = new adviceForum.AdviceAdapter();
-                        listAdvice.setAdapter(adviceAdapter);
+                        if (localTasks.length!=0){
+                            listAdvice.setVisibility(View.VISIBLE);
+                            listAdvice = (ListView) findViewById(R.id.listAdvice);
+                            adviceForum.AdviceAdapter adviceAdapter = new adviceForum.AdviceAdapter();
+                            listAdvice.setAdapter(adviceAdapter);
+                        }
+                        else{
+                            listAdvice.setVisibility(View.GONE);
+                        }
                     }
                 });
                 mBuilder.setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {

@@ -56,10 +56,12 @@ public class habitTracker extends AppCompatActivity implements
 
     //String tasksList[] = new String[] {};
     //String topicList[] = new String[] {};
-    String tasksList[] = AddTaskSearch.rawTasks;
-    String topicList[] = AddTaskSearch.topicTasks;
+    String tasksList[] = new String[] {};
+    String topicList[] = new String[] {};
     String scoreList[] = new String[] {};
     String challengedList[] = new String[] {};
+    String keysList[] = new String[] {};
+    String freqList[] = new String[] {};
     //new score =
     //To retrieve the data from askAdvice screen
     public static String topicSwiped ;
@@ -71,10 +73,13 @@ public class habitTracker extends AppCompatActivity implements
     //MenuItem menuItem;
     TextView noTask;
     FileCacher<String []> taskCacher;
+    FileCacher<String []> keyCacher;
     FileCacher<String []> topicCacher;
     FileCacher<String []> scoreCacher;
+    FileCacher<String []> freqCacher;
     FileCacher<String []> challengeCacher;
     FileCacher<String []> challengesRunningCacher;
+
 
     SwipeMenuListView swipeListView;
 
@@ -91,8 +96,10 @@ public class habitTracker extends AppCompatActivity implements
         taskCacher = new FileCacher<>(habitTracker.this, "taskCacher.txt");
         topicCacher = new FileCacher<>(habitTracker.this, "topicCacher.txt");
         scoreCacher = new FileCacher<>(habitTracker.this, "scoreCacher.txt");
-        //challengeCacher = new FileCacher<>(habitTracker.this, "challengeCacher.txt");
+        challengeCacher = new FileCacher<>(habitTracker.this, "challengeCacher.txt");
         challengesRunningCacher = new FileCacher<>(habitTracker.this, "challengeedTopicCacher.txt");
+        keyCacher = new FileCacher<>(habitTracker.this, "keys.txt");
+        freqCacher = new FileCacher<>(habitTracker.this, "frequency.txt");
 
         for (int i=0;i<tasksList.length;i++){
             scoreList = Methods.increaseArray(scoreList,"0");
@@ -109,7 +116,9 @@ public class habitTracker extends AppCompatActivity implements
                 tasksList=taskCacher.readCache();
                 topicList=topicCacher.readCache();
                 scoreList=scoreCacher.readCache();
-                //challengedList=challengeCacher.readCache();
+                keysList=keyCacher.readCache();
+                freqList=freqCacher.readCache();
+                challengedList=challengeCacher.readCache();
             } catch (IOException e ){
                 e.printStackTrace();
             }
@@ -124,6 +133,8 @@ public class habitTracker extends AppCompatActivity implements
                 topicList=Methods.increaseArray(topicList,ParamNewTask.receivedTopic);
                 scoreList=Methods.increaseArray(scoreList,"0");
                 challengedList=Methods.increaseArray(challengedList,"false");
+                freqList=Methods.increaseArray(freqList,Integer.toString(ParamNewTask.frequency));
+                keysList=Methods.increaseArray(keysList,ParamNewTask.key);
             }
         }catch (Exception e){
 
@@ -137,11 +148,6 @@ public class habitTracker extends AppCompatActivity implements
                     for (int j=0; j<topicList.length;j++){
                         if (topicList[j].equals(challengesLocal[i])){
                             challengedList[j] = "true";
-                            //Toast toast = Toast.makeText(getApplicationContext(),"you are here dude !",Toast.LENGTH_LONG);
-                            //toast.show();
-                        }
-                        else {
-
                         }
                     }
                 }
@@ -267,11 +273,15 @@ public class habitTracker extends AppCompatActivity implements
                         String deletedTopic = topicList[position];
                         String deletecScore = scoreList[position];
                         String deletedChallenge = challengedList[position];
+                        String deletedKey = keysList[position];
+                        String deletedFreq = freqList[position];
                         tasksList = Methods.deleteString(tasksList,position);
                         topicList = Methods.deleteString(topicList,position);
                         scoreList = Methods.deleteString(scoreList,position);
                         challengedList = Methods.deleteString(challengedList,position);
-                        deleteCallback(position,deletedTask,deletedTopic,deletecScore,deletedChallenge);
+                        keysList = Methods.deleteString(keysList,position);
+                        freqList = Methods.deleteString(freqList,position);
+                        deleteCallback(position,deletedTask,deletedTopic,deletecScore,deletedChallenge,deletedKey,deletedFreq);
                         if(tasksList.length==0){
                             noTask.setVisibility(View.VISIBLE);
                             swipeListView.setVisibility(View.GONE);
@@ -287,7 +297,7 @@ public class habitTracker extends AppCompatActivity implements
         });
     }
 
-    private void deleteCallback(final int position, final String deletedTask, final String deletedTopic, final String deletedScore, final String deletedChallenge) {
+    private void deleteCallback(final int position, final String deletedTask, final String deletedTopic, final String deletedScore, final String deletedChallenge, final String deletedKey, final String deletedFreq) {
         Snackbar snackbar = Snackbar
                 .make(drawerLayout, "Item was removed from the list.", Snackbar.LENGTH_LONG);
         snackbar.setAction("UNDO", new View.OnClickListener() {
@@ -297,6 +307,8 @@ public class habitTracker extends AppCompatActivity implements
                 topicList = Methods.increaseArray(topicList,deletedTopic);
                 scoreList = Methods.increaseArray(scoreList,deletedScore);
                 challengedList = Methods.increaseArray(challengedList,deletedChallenge);
+                keysList = Methods.increaseArray(keysList,deletedKey);
+                freqList = Methods.increaseArray(freqList,deletedFreq);
                 if(tasksList.length==0){
                     noTask.setVisibility(View.VISIBLE);
                     swipeListView.setVisibility(View.GONE);
@@ -331,12 +343,15 @@ public class habitTracker extends AppCompatActivity implements
         public View getView(int i, View view, ViewGroup viewGroup) {
             view = getLayoutInflater().inflate(R.layout.habit_tracker_adapter_layout,null);
             ImageView challengeIcon = (ImageView)view.findViewById(R.id.challengeIcon);
-            if (!Boolean.parseBoolean(challengedList[i])){
-                challengeIcon.setVisibility(View.GONE);
+            if(challengedList.length!=0){
+                if (!Boolean.parseBoolean(challengedList[i])){
+                    challengeIcon.setVisibility(View.GONE);
+                }
+                else{
+                    challengeIcon.setVisibility(View.VISIBLE);
+                }
             }
-            else{
-                challengeIcon.setVisibility(View.VISIBLE);
-            }
+
 //            if (newScore[i]){
 //                ImageView greatIcon = (ImageView)view.findViewById(R.id.greatIcon);
 //            }
@@ -363,7 +378,9 @@ public class habitTracker extends AppCompatActivity implements
             taskCacher.writeCache(tasksList);
             topicCacher.writeCache(topicList);
             scoreCacher.writeCache(scoreList);
-            //challengeCacher.writeCache(challengedList);
+            keyCacher.writeCache(keysList);
+            freqCacher.writeCache(freqList);
+            challengeCacher.writeCache(challengedList);
         } catch (IOException e){
             e.printStackTrace();
         }

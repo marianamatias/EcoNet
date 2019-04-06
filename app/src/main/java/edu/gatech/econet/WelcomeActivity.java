@@ -30,10 +30,10 @@ import cz.msebera.android.httpclient.Header;
 public class WelcomeActivity extends AppCompatActivity {
     Timer timer;
     TextView welcome;
-    String[] topicList = new String[] {};
-    String[] taskList = new String[]{};
-    String[] freqList = new String[]{};
-    String[] keysList = new String[]{};
+    public static String[] topicList = new String[] {};
+    public static String[] taskList = new String[]{};
+    public static String[] freqList = new String[]{};
+    public static String[] keysList = new String[]{};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

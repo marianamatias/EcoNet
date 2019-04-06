@@ -49,14 +49,16 @@ public class AddTaskSearch extends AppCompatActivity {
     Button filterButton;
     EditText searchLabel;
     // Hard coded listview to get to use the bundle and retrieve information to next activity
-    public static String rawTasks[] = new String [] {
-            "Use a bamboo straw","Use a steel straw","Use natural cleaning products","Air dry clothes","Eat vegetarian meals","Compost","Recycle at home",
-            "Get a reusable water bottle","Turn off lights that aren't being used","Carpool for the atmosphere","Take quick showers","Bring a reusable bag to the grocery store","Turn off water when brushing teeth"};
-    public static String difficultyTasks[] = new String [] {
-            "Easy","Easy","Intermediate","Intermediate","Intermediate","Difficult","Intermediate","Easy","Easy","Intermediate","Easy","Difficult","Dfficult"};
-    public static String topicTasks[] = new String [] {
-            "Zero Waste","Zero Waste","Zero Waste","Zero Waste","Vegetarianism","Zero Waste","Zero Waste","Zero Waste","Energy","Transportation",
-            "Transportation","Animal","Animal"};
+    public static String rawTasks[] = WelcomeActivity.taskList;
+            //new String [] {
+            //"Use a bamboo straw","Use a steel straw","Use natural cleaning products","Air dry clothes","Eat vegetarian meals","Compost","Recycle at home",
+            //"Get a reusable water bottle","Turn off lights that aren't being used","Carpool for the atmosphere","Take quick showers","Bring a reusable bag to the grocery store","Turn off water when brushing teeth"};
+    public static String difficultyTasks[] = new String [] {};
+            //"Easy","Easy","Intermediate","Intermediate","Intermediate","Difficult","Intermediate","Easy","Easy","Intermediate","Easy","Difficult","Dfficult"};
+    public static String topicTasks[] = WelcomeActivity.topicList;
+                    //new String [] {
+            //"Zero Waste","Zero Waste","Zero Waste","Zero Waste","Vegetarianism","Zero Waste","Zero Waste","Zero Waste","Energy","Transportation",
+            //"Transportation","Animal","Animal"};
     String [] filterList = new String [] {"Easy","Intermediate","Difficult","Energy","Zero Waste","Transportation","Animal","Vegetarianism"};
     //Used after filter
     String [] proposedTasks = rawTasks;
@@ -89,6 +91,9 @@ public class AddTaskSearch extends AppCompatActivity {
             }
         }
         //final Bundle bundleIn = getIntent().getExtras();
+        for(int i =0; i<rawTasks.length;i++){
+            difficultyTasks = Methods.increaseArray(difficultyTasks,"Easy");
+        }
         hint = (TextView) findViewById(R.id.hintSearch);
 
         searchLabel = (EditText) findViewById(R.id.searchLabel);
@@ -139,19 +144,26 @@ public class AddTaskSearch extends AppCompatActivity {
                                 }
                             }
                         }
-                        adapter = new ArrayAdapter<String>(AddTaskSearch.this, android.R.layout.simple_list_item_1, localTasks){
-                            @Override
-                            public View getView(int position, View convertView, ViewGroup parent){
-                                View view = super.getView(position,convertView,parent);
-                                if(itemsLoc!=null){
-                                    if(Methods.isInArray(itemsLoc,proposedTasks[position])){
-                                        view.setBackgroundColor(getResources().getColor(R.color.lightGreyTransparent));
+                        if (proposedTasks.length!=0){
+                            listTasks.setVisibility(View.VISIBLE);
+                            adapter = new ArrayAdapter<String>(AddTaskSearch.this, android.R.layout.simple_list_item_1, localTasks){
+                                @Override
+                                public View getView(int position, View convertView, ViewGroup parent){
+                                    View view = super.getView(position,convertView,parent);
+                                    if(itemsLoc!=null){
+                                        if(Methods.isInArray(itemsLoc,proposedTasks[position])){
+                                            view.setBackgroundColor(getResources().getColor(R.color.lightGreyTransparent));
+                                        }
                                     }
+                                    return view;
                                 }
-                                return view;
-                            }
-                        };
-                        listTasks.setAdapter(adapter);
+                            };
+                            listTasks.setAdapter(adapter);
+                        }
+                        else {
+                            listTasks.setVisibility(View.GONE);
+                        }
+
                     }
                 });
                 mBuilder.setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
