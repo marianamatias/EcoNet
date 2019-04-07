@@ -65,19 +65,18 @@ public class habitTracker extends AppCompatActivity implements
 
     //String tasksList[] = new String[] {};
     //String topicList[] = new String[] {};
-    String tasksList[] = new String[] {};
-    String topicList[] = new String[] {};
-    String scoreList[] = new String[] {};
-    String challengedList[] = new String[] {};
-    String keysList[] = new String[] {};
-    String freqList[] = new String[] {};
-    //new score =
+    public static String tasksList[] = new String[] {};
+    public static String topicList[] = new String[] {};
+    public static String scoreList[] = new String[] {};
+    public static String challengedList[] = new String[] {};
+    public static String keysList[] = new String[] {};
+    public static String freqList[] = new String[] {};
+
     //To retrieve the data from askAdvice screen
     public static String topicSwiped ;
     public static String taskSwiped ;
     private static final String TAG = "habitTracker";
     private DrawerLayout drawerLayout;
-
 
     //MenuItem menuItem;
     TextView noTask;
@@ -89,20 +88,15 @@ public class habitTracker extends AppCompatActivity implements
     FileCacher<String []> challengeCacher;
     FileCacher<String []> challengesRunningCacher;
     FileCacher<String []> userIDCacher;
-
-
     SwipeMenuListView swipeListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habit_tracker);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setVisibility(View.GONE);
-        noTask = (TextView) findViewById(R.id.no_task);
-        noTask.setText("Your Habit Tracker is empty, please swipe the menu and add your first task !");
-        noTask.setVisibility(View.GONE);
 
+        userIDCacher = new FileCacher<>(habitTracker.this, "userId.txt");
         //setSupportActionBar(toolbar);
         //By matching the taskretrieved and the tasklist find topic and ID
         taskCacher = new FileCacher<>(habitTracker.this, "taskCacher.txt");
@@ -114,39 +108,44 @@ public class habitTracker extends AppCompatActivity implements
         //From the challengelist of the database
         challengeCacher = new FileCacher<>(habitTracker.this, "challengeCacher.txt");
         challengesRunningCacher = new FileCacher<>(habitTracker.this, "challengeedTopicCacher.txt");
-        userIDCacher = new FileCacher<>(habitTracker.this, "userId.txt");
+        //Retrieve the data of the user if already userID cached
+        retrieveData();
 
-        for (int i=0;i<tasksList.length;i++){
-            scoreList = Methods.increaseArray(scoreList,"0");
-            challengedList = Methods.increaseArray(challengedList,"false");
-        }
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setVisibility(View.GONE);
+        noTask = (TextView) findViewById(R.id.no_task);
+        noTask.setText("Your Habit Tracker is empty, please swipe the menu and add your first task !");
+        noTask.setVisibility(View.GONE);
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         drawerLayout = findViewById(R.id.drawer_layout);
 
         swipeListView = (SwipeMenuListView) findViewById(R.id.swipeListView);
-//        if (taskCacher.hasCache()){
-//            try{
-//                tasksList=taskCacher.readCache();
-//                topicList=topicCacher.readCache();
-//                scoreList=scoreCacher.readCache();
-//                keysList=keyCacher.readCache();
-//                freqList=freqCacher.readCache();
-//                challengedList=challengeCacher.readCache();
-//            } catch (IOException e ){
-//                e.printStackTrace();
-//            }
-//        }
-
-        scoreList=WelcomeActivity.getTaskScoreListUser;
-        freqList=WelcomeActivity.getTaskFreqListUser;
-        challengedList=WelcomeActivity.getChallengersIDListUser;
-        keysList=WelcomeActivity.getTaskKeysListUser;
-        for (int i=0;i<keysList.length;i++){
-            tasksList=Methods.increaseArray(tasksList,WelcomeActivity.taskList[Methods.find(WelcomeActivity.keysList,keysList[i])]);
-            topicList=Methods.increaseArray(topicList,WelcomeActivity.topicList[Methods.find(WelcomeActivity.keysList,keysList[i])]);
+        if (taskCacher.hasCache()){
+            try{
+                tasksList=taskCacher.readCache();
+                topicList=topicCacher.readCache();
+                scoreList=scoreCacher.readCache();
+                keysList=keyCacher.readCache();
+                freqList=freqCacher.readCache();
+                challengedList=challengeCacher.readCache();
+            } catch (IOException e ){
+                e.printStackTrace();
+            }
         }
+
+        for (int i=0;i<tasksList.length;i++){
+            scoreList = Methods.increaseArray(scoreList,"0");
+            challengedList = Methods.increaseArray(challengedList,"false");
+        }
+
+
+//        scoreList=WelcomeActivity.getTaskScoreListUser;
+//        freqList=WelcomeActivity.getTaskFreqListUser;
+//        challengedList=WelcomeActivity.getChallengersIDListUser;
+//        keysList=WelcomeActivity.getTaskKeysListUser;
+
 
         //Retrieve data from previous activity
         Intent mIntent = getIntent();
@@ -159,11 +158,22 @@ public class habitTracker extends AppCompatActivity implements
                 challengedList=Methods.increaseArray(challengedList,"false");
                 freqList=Methods.increaseArray(freqList,Integer.toString(ParamNewTask.frequency));
                 keysList=Methods.increaseArray(keysList,ParamNewTask.key);
+                Log.d("salut","ow the keys are bigger with param new task "+keysList.length);
             }
+            taskCacher.writeCache(tasksList);
+            topicCacher.writeCache(topicList);
+            scoreCacher.writeCache(scoreList);
+            keyCacher.writeCache(keysList);
+            freqCacher.writeCache(freqList);
+            challengeCacher.writeCache(challengedList);
         }catch (Exception e){
 
         }
-
+        try {
+            quitActivity();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 //        if (challengesRunningCacher.hasCache()){
 //            try{
@@ -190,6 +200,11 @@ public class habitTracker extends AppCompatActivity implements
                 scoreList[position]=Integer.toString(anteScore);
                 //boolean anteChallenged = Boolean.parseBoolean(challengedList[position]);
                 ///challengedList[position]=Boolean.toString(!anteChallenged);
+                try {
+                    quitActivity();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 HabitTrackerAdapter habitTrackerListAdapter = new HabitTrackerAdapter();
                 swipeListView.setAdapter(habitTrackerListAdapter);
             }
@@ -396,6 +411,7 @@ public class habitTracker extends AppCompatActivity implements
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
             view = getLayoutInflater().inflate(R.layout.habit_tracker_adapter_layout,null);
+
             ImageView challengeIcon = (ImageView)view.findViewById(R.id.challengeIcon);
 //            if(challengedList.length!=0){
 //                if (!Boolean.parseBoolean(challengedList[i])){
@@ -429,20 +445,17 @@ public class habitTracker extends AppCompatActivity implements
         }
     }
     public void quitActivity() throws IOException {
-//        try {
-//            taskCacher.writeCache(tasksList);
-//            topicCacher.writeCache(topicList);
-//            scoreCacher.writeCache(scoreList);
-//            keyCacher.writeCache(keysList);
-//            freqCacher.writeCache(freqList);
-//            challengeCacher.writeCache(challengedList);
-//        } catch (IOException e){
-//            e.printStackTrace();
-//        }
+        tasksList=taskCacher.readCache();
+        topicList=topicCacher.readCache();
+        scoreList=scoreCacher.readCache();
+        keysList=keyCacher.readCache();
+        freqList=freqCacher.readCache();
+        challengedList=challengeCacher.readCache();
         JSONObject tasklistdata = new JSONObject();
         JSONObject challengedata = new JSONObject();
         JSONObject questionsdata = new JSONObject();
         RequestParams rp3 = new RequestParams();
+        Log.d("salut","The length before writting is "+keysList.length);
         rp3.put("api_key", "blurryapikeyseetutorial");
         rp3.put("param", "update");
         rp3.put("userID",userIDCacher.readCache());
@@ -475,6 +488,94 @@ public class habitTracker extends AppCompatActivity implements
                 } catch (JSONException e1) {
                     e1.printStackTrace();
                 }
+            }
+        });
+        try {
+            taskCacher.writeCache(tasksList);
+            topicCacher.writeCache(topicList);
+            scoreCacher.writeCache(scoreList);
+            keyCacher.writeCache(keysList);
+            freqCacher.writeCache(freqList);
+            challengeCacher.writeCache(challengedList);
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
+    }
+    public void retrieveData(){
+        JSONObject data = new JSONObject();
+        RequestParams rp3 = new RequestParams();
+        rp3.put("api_key", "blurryapikeyseetutorial");
+        rp3.put("param", "myaccount");
+        try {
+            data.put("ID", userIDCacher.readCache());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        rp3.put("data", data.toString());
+        String URlprofile = "http://www.fir-auth-93d22.appspot.com/user?" + rp3.toString();
+        HttpUtils.getByUrl(URlprofile, rp3, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                try {
+                    JSONObject serverResp = new JSONObject(response.toString());
+                    String usernameUser = serverResp.getString("username");
+                    String firstnameUser = serverResp.getString("firstname");
+                    Log.d("salut",serverResp.toString());
+                    if (serverResp.has("tasklist")){
+                        //Need to parse all the tasks, the scoring, the topics, the frequency
+                        JSONObject myTaskList = serverResp.getJSONObject("tasklist");
+                        Iterator<String> keysTaskList = myTaskList.keys();
+                        keysList = new String[]{};
+                        while(keysTaskList.hasNext()) {
+                            String keyTask = keysTaskList.next();
+                            keysList = Methods.increaseArray(keysList,keyTask);
+
+                            if (myTaskList.get(keyTask) instanceof JSONObject) {
+                                JSONObject item2 = myTaskList.getJSONObject(keyTask);
+                                scoreList = Methods.increaseArray(scoreList, item2.getString("scoring"));
+                                freqList = Methods.increaseArray(freqList, item2.getString("frequency"));
+                            }
+
+                            Log.d("salut","the number key is "+keysList.length);
+                            tasksList = new String []{};
+                            topicList = new String[]{} ;
+                            for (int i=0;i<keysList.length;i++){
+                                tasksList=Methods.increaseArray(tasksList,WelcomeActivity.taskList[Methods.find(WelcomeActivity.keysList,keysList[i])]);
+                                topicList=Methods.increaseArray(topicList,WelcomeActivity.topicList[Methods.find(WelcomeActivity.keysList,keysList[i])]);
+                                Log.d("salut","I just wrote "+tasksList[i]);
+                            }
+                        }
+                    }
+
+                    if(!serverResp.has("followed")) {
+                        Log.d("salut","No followed question detected");
+                    }
+
+                    try {
+                        taskCacher.writeCache(tasksList);
+                        topicCacher.writeCache(topicList);
+                        scoreCacher.writeCache(scoreList);
+                        keyCacher.writeCache(keysList);
+                        freqCacher.writeCache(freqList);
+                        challengeCacher.writeCache(challengedList);
+                    } catch (IOException e){
+                        e.printStackTrace();
+                    }
+
+                } catch (JSONException e1) {
+                    e1.printStackTrace();
+                }
+                for (int i=0;i<keysList.length;i++){
+                    Log.d("salut","keys are "+keysList[i]);
+                }
+            }
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray timeline) {
+                // Log.d("salut","received array");
             }
         });
 

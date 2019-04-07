@@ -99,6 +99,9 @@ public class WelcomeActivity extends AppCompatActivity {
                // Log.d("salut","received array");
             }
         });
+        for (int i=0;i<taskList.length;i++){
+            Log.d("salut",taskList[i]+"mange tes morts");
+        }
 //Retrieve all the users of the database
         RequestParams rp2 = new RequestParams();
         rp2.put("api_key","blurryapikeyseetutorial");
@@ -212,6 +215,7 @@ public class WelcomeActivity extends AppCompatActivity {
                         if(!serverResp.has("followed")) {
                             Log.d("salut","No followed question detected");
                         }
+
                     } catch (JSONException e1) {
                         e1.printStackTrace();
                     }
