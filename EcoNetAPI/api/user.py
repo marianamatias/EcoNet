@@ -62,20 +62,25 @@ class User(object):
 	def on_patch(self, req, resp):
 	#We need to be able to change the challenges, followedQuestion and the tasklist 
 	#All of this is quite able to change quickly so we'll edit all the user at once for this
-		data = json.loads(req.get_param("data"))
 		if req.get_param('param') == 'challenge_status':
 			logging.info('Updating the challenge status for both challengers')
 			result = firebase.patch('/users/'+data['fromUserID']+'/challenge',data['challengeFrom'])
 			result = firebase.patch('/users/'+data['otherUserID']+'/challenge',data['challengeTo'])
+			resource2 = 'updated'
+			resp.body = json.dumps(resource2)
+			resp.status = falcon.HTTP_200
 		elif req.get_param('param') == 'update':
 		#Only updating the tasklist, challenge and followedQuestion periodically
+			tasklist = json.loads(req.get_param("tasklist"))
+			challenge = json.loads(req.get_param("challenge"))
+			followedQuestion = json.loads(req.get_param("followedQuestion"))
 			logging.info('Updating the user')
-			result = firebase.patch('/users/'+data['userID']+'/tasklist',data['tasklist'])
-			result = firebase.patch('/users/'+data['userID']+'/followedQuestion',data['followedQuestion'])
-			result = firebase.patch('/users/'+data['userID']+'/challenge',data['challenge'])
-		resource = 'updated'
-		resp.body = json.dumps(resource)
-		resp.status = falcon.HTTP_200
+			result = firebase.patch('/users/'+req.get_param('userID')+'/tasklist',tasklist)
+			result = firebase.patch('/users/'+req.get_param('userID')+'/followedQuestion',challenge)
+			result = firebase.patch('/users/'+req.get_param('userID')+'/challenge',followedQuestion)
+			resource = 'updated'
+			resp.body = json.dumps(resource)
+			resp.status = falcon.HTTP_200
 
 	@falcon.before(api_key)
 	@falcon.after(say_bye_after_operation)

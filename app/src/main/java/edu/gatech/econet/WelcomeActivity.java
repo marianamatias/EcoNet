@@ -224,7 +224,7 @@ public class WelcomeActivity extends AppCompatActivity {
                     intent.putExtra("FROM_ACTIVITY", "WelcomeActivity");
                     startActivity(intent);
                 }
-            }, 12000);
+            }, 3000);
         }
         else{
             timer = new Timer();
@@ -233,7 +233,7 @@ public class WelcomeActivity extends AppCompatActivity {
                     Intent intent = new Intent(WelcomeActivity.this,MainActivity.class);
                     startActivity(intent);
                 }
-            }, 12000);
+            }, 3000);
         }
 
     }

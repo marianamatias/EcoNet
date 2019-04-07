@@ -25,6 +25,14 @@ public class HttpUtils {
         client.post(url, params, responseHandler);
     }
 
+    public static void patchByUrl(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        client.patch(url, params, responseHandler);
+    }
+
+    public static void deleteByUrl(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        client.delete(url, params, responseHandler);
+    }
+
     private static String getAbsoluteUrl(String relativeUrl) {
         return BASE_URL + relativeUrl;
     }

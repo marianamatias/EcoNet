@@ -36,12 +36,19 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.kosalgeek.android.caching.FileCacher;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
 import org.apache.commons.io.FileUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import android.graphics.Color;
 import android.support.design.widget.CoordinatorLayout;
@@ -50,6 +57,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import cz.msebera.android.httpclient.Header;
 
 public class habitTracker extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener {
@@ -117,17 +126,26 @@ public class habitTracker extends AppCompatActivity implements
         drawerLayout = findViewById(R.id.drawer_layout);
 
         swipeListView = (SwipeMenuListView) findViewById(R.id.swipeListView);
-        if (taskCacher.hasCache()){
-            try{
-                tasksList=taskCacher.readCache();
-                topicList=topicCacher.readCache();
-                scoreList=scoreCacher.readCache();
-                keysList=keyCacher.readCache();
-                freqList=freqCacher.readCache();
-                challengedList=challengeCacher.readCache();
-            } catch (IOException e ){
-                e.printStackTrace();
-            }
+//        if (taskCacher.hasCache()){
+//            try{
+//                tasksList=taskCacher.readCache();
+//                topicList=topicCacher.readCache();
+//                scoreList=scoreCacher.readCache();
+//                keysList=keyCacher.readCache();
+//                freqList=freqCacher.readCache();
+//                challengedList=challengeCacher.readCache();
+//            } catch (IOException e ){
+//                e.printStackTrace();
+//            }
+//        }
+
+        scoreList=WelcomeActivity.getTaskScoreListUser;
+        freqList=WelcomeActivity.getTaskFreqListUser;
+        challengedList=WelcomeActivity.getChallengersIDListUser;
+        keysList=WelcomeActivity.getTaskKeysListUser;
+        for (int i=0;i<keysList.length;i++){
+            tasksList=Methods.increaseArray(tasksList,WelcomeActivity.taskList[Methods.find(WelcomeActivity.keysList,keysList[i])]);
+            topicList=Methods.increaseArray(topicList,WelcomeActivity.topicList[Methods.find(WelcomeActivity.keysList,keysList[i])]);
         }
 
         //Retrieve data from previous activity
@@ -147,20 +165,20 @@ public class habitTracker extends AppCompatActivity implements
         }
 
 
-        if (challengesRunningCacher.hasCache()){
-            try{
-                String challengesLocal [] = challengesRunningCacher.readCache();
-                for (int i =0; i<challengesLocal.length;i++){
-                    for (int j=0; j<topicList.length;j++){
-                        if (topicList[j].equals(challengesLocal[i])){
-                            challengedList[j] = "true";
-                        }
-                    }
-                }
-            } catch (IOException e ){
-                e.printStackTrace();
-            }
-        }
+//        if (challengesRunningCacher.hasCache()){
+//            try{
+//                String challengesLocal [] = challengesRunningCacher.readCache();
+//                for (int i =0; i<challengesLocal.length;i++){
+//                    for (int j=0; j<topicList.length;j++){
+//                        if (topicList[j].equals(challengesLocal[i])){
+//                            challengedList[j] = "true";
+//                        }
+//                    }
+//                }
+//            } catch (IOException e ){
+//                e.printStackTrace();
+//            }
+//        }
         HabitTrackerAdapter habitTrackerListAdapter = new HabitTrackerAdapter();
         swipeListView.setAdapter(habitTrackerListAdapter);
         setupSwipeMenuListView(swipeListView);
@@ -198,25 +216,41 @@ public class habitTracker extends AppCompatActivity implements
         }
         if (id == R.id.add_goal){
             Intent intent = new Intent(this, AddTaskSearch.class);
-            quitActivity();
+            try {
+                quitActivity();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             startActivity(intent);
         }
         if (id == R.id.challenges){
             //Toast toast = Toast.makeText(getApplicationContext(),"Could you please implement the challenge activities ?",Toast.LENGTH_LONG);
             //toast.show();
             Intent intent = new Intent(this, ManageChallenge.class);
-            quitActivity();
+            try {
+                quitActivity();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             startActivity(intent);
         }
         if (id== R.id.advice){
             Intent intent = new Intent(this, askQuestion.class);
             intent.putExtra("FROM", "habitTracker_menu");
-            quitActivity();
+            try {
+                quitActivity();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             startActivity(intent);
         }
         if (id == R.id.forum){
             Intent intent = new Intent(this, ForumTopicSelect.class);
-            quitActivity();
+            try {
+                quitActivity();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             startActivity(intent);
         }
         if (id == R.id.signOut){
@@ -239,7 +273,11 @@ public class habitTracker extends AppCompatActivity implements
                 new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        quitActivity();
+                        try {
+                            quitActivity();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     }
                 });
@@ -274,7 +312,11 @@ public class habitTracker extends AppCompatActivity implements
                         taskSwiped = tasksList[position];
                         Intent intent = new Intent(habitTracker.this, askQuestion.class);
                         intent.putExtra("FROM", "habitTracker_swipe");
-                        quitActivity();
+                        try {
+                            quitActivity();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                         startActivity(intent);
                         break;
                     case 1:
@@ -355,14 +397,14 @@ public class habitTracker extends AppCompatActivity implements
         public View getView(int i, View view, ViewGroup viewGroup) {
             view = getLayoutInflater().inflate(R.layout.habit_tracker_adapter_layout,null);
             ImageView challengeIcon = (ImageView)view.findViewById(R.id.challengeIcon);
-            if(challengedList.length!=0){
-                if (!Boolean.parseBoolean(challengedList[i])){
-                    challengeIcon.setVisibility(View.GONE);
-                }
-                else{
-                    challengeIcon.setVisibility(View.VISIBLE);
-                }
-            }
+//            if(challengedList.length!=0){
+//                if (!Boolean.parseBoolean(challengedList[i])){
+//                    challengeIcon.setVisibility(View.GONE);
+//                }
+//                else{
+//                    challengeIcon.setVisibility(View.VISIBLE);
+//                }
+//            }
 
 //            if (newScore[i]){
                 ImageView greatIcon = (ImageView)view.findViewById(R.id.greatIcon);
@@ -386,17 +428,55 @@ public class habitTracker extends AppCompatActivity implements
             return view;
         }
     }
-    public void quitActivity(){
+    public void quitActivity() throws IOException {
+//        try {
+//            taskCacher.writeCache(tasksList);
+//            topicCacher.writeCache(topicList);
+//            scoreCacher.writeCache(scoreList);
+//            keyCacher.writeCache(keysList);
+//            freqCacher.writeCache(freqList);
+//            challengeCacher.writeCache(challengedList);
+//        } catch (IOException e){
+//            e.printStackTrace();
+//        }
+        JSONObject tasklistdata = new JSONObject();
+        JSONObject challengedata = new JSONObject();
+        JSONObject questionsdata = new JSONObject();
+        RequestParams rp3 = new RequestParams();
+        rp3.put("api_key", "blurryapikeyseetutorial");
+        rp3.put("param", "update");
+        rp3.put("userID",userIDCacher.readCache());
         try {
-            taskCacher.writeCache(tasksList);
-            topicCacher.writeCache(topicList);
-            scoreCacher.writeCache(scoreList);
-            keyCacher.writeCache(keysList);
-            freqCacher.writeCache(freqList);
-            challengeCacher.writeCache(challengedList);
-        } catch (IOException e){
+            //Adding every task as an item like : idtask {scoring + frequency}
+            for (int i=0;i<keysList.length;i++){
+                JSONObject itemTask = new JSONObject();
+                itemTask.put("scoring", scoreList[i]);
+                itemTask.put("frequency", freqList[i]);
+                tasklistdata.put(keysList[i],itemTask);
+            }
+            //challengedata.put("challenge", userIDCacher.readCache());
+            //questionsdata.put("followedQuestion", userIDCacher.readCache());
+        } catch (JSONException e) {
             e.printStackTrace();
         }
+        rp3.put("tasklist",URLEncoder.encode(tasklistdata.toString()));
+        rp3.put("challenge",URLEncoder.encode(challengedata.toString()));
+        rp3.put("followedQuestion", URLEncoder.encode(questionsdata.toString()));
+        String URlprofile = "http://www.fir-auth-93d22.appspot.com/user?" + rp3.toString();
+        Log.d("salut",rp3.toString());
+        HttpUtils.patchByUrl(URlprofile, rp3, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                try {
+                    JSONObject serverResp = new JSONObject(response.toString());
+                    Log.d("salut",serverResp.toString());
+
+                } catch (JSONException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
 
     }
 
