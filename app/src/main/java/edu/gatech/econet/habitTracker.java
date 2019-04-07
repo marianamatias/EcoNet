@@ -79,6 +79,7 @@ public class habitTracker extends AppCompatActivity implements
     FileCacher<String []> freqCacher;
     FileCacher<String []> challengeCacher;
     FileCacher<String []> challengesRunningCacher;
+    FileCacher<String []> userIDCacher;
 
 
     SwipeMenuListView swipeListView;
@@ -88,18 +89,23 @@ public class habitTracker extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habit_tracker);
         Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setVisibility(View.GONE);
         noTask = (TextView) findViewById(R.id.no_task);
         noTask.setText("Your Habit Tracker is empty, please swipe the menu and add your first task !");
         noTask.setVisibility(View.GONE);
 
-        setSupportActionBar(toolbar);
+        //setSupportActionBar(toolbar);
+        //By matching the taskretrieved and the tasklist find topic and ID
         taskCacher = new FileCacher<>(habitTracker.this, "taskCacher.txt");
         topicCacher = new FileCacher<>(habitTracker.this, "topicCacher.txt");
+        //From the tasklist of the database
         scoreCacher = new FileCacher<>(habitTracker.this, "scoreCacher.txt");
-        challengeCacher = new FileCacher<>(habitTracker.this, "challengeCacher.txt");
-        challengesRunningCacher = new FileCacher<>(habitTracker.this, "challengeedTopicCacher.txt");
         keyCacher = new FileCacher<>(habitTracker.this, "keys.txt");
         freqCacher = new FileCacher<>(habitTracker.this, "frequency.txt");
+        //From the challengelist of the database
+        challengeCacher = new FileCacher<>(habitTracker.this, "challengeCacher.txt");
+        challengesRunningCacher = new FileCacher<>(habitTracker.this, "challengeedTopicCacher.txt");
+        userIDCacher = new FileCacher<>(habitTracker.this, "userId.txt");
 
         for (int i=0;i<tasksList.length;i++){
             scoreList = Methods.increaseArray(scoreList,"0");
@@ -184,7 +190,11 @@ public class habitTracker extends AppCompatActivity implements
             //Already in it
             //Intent intent = new Intent(this, habitTracker.class);
             //startActivity(intent);
-            Toast.makeText(getApplicationContext(),"your user id is "+MainActivity.userID,Toast.LENGTH_LONG).show();
+            try {
+                Toast.makeText(getApplicationContext(),"your user id is "+userIDCacher.readCache(),Toast.LENGTH_LONG).show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         if (id == R.id.add_goal){
             Intent intent = new Intent(this, AddTaskSearch.class);
@@ -355,7 +365,8 @@ public class habitTracker extends AppCompatActivity implements
             }
 
 //            if (newScore[i]){
-//                ImageView greatIcon = (ImageView)view.findViewById(R.id.greatIcon);
+                ImageView greatIcon = (ImageView)view.findViewById(R.id.greatIcon);
+            greatIcon.setVisibility(View.GONE);
 //            }
             TextView showScore = (TextView)view.findViewById(R.id.cntScore);
             TextView taskName = (TextView)view.findViewById(R.id.taskName);

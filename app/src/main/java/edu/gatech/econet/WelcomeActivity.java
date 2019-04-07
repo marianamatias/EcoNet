@@ -18,6 +18,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -39,6 +40,20 @@ public class WelcomeActivity extends AppCompatActivity {
     public static String[] firstnameList = new String[] {};
     public static String[] userIDList = new String[]{};
     FileCacher<String> userIDCacher;
+    //Information retrieved from the API it user already logged in
+    public static String usernameUser;
+    public static String firstnameUser;
+    //If task list detected
+    public static String[] getTaskKeysListUser = new String[] {};
+    public static String[] getTaskScoreListUser = new String[] {};
+    public static String[] getTaskFreqListUser = new String[] {};
+    //If challenge list detected
+    public static String[] getChallengersIDListUser = new String[] {};
+    public static String[] getChallengersStatusListUser = new String[] {};
+    public static String[] getChallengersTopicListUser = new String[] {};
+    //If followed question list detected
+    public static String[] getFollowedQuestionIDListUser = new String[] {};
+    public static String[] getFollowedQuestionLastViewListUser = new String[] {};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +122,7 @@ public class WelcomeActivity extends AppCompatActivity {
                         }
                     }
                     for (int i=0;i<usernameList.length;i++){
-                        Log.d("salut",usernameList[i]);
+                        //Log.d("salut",usernameList[i]);
                     }
                 } catch (JSONException e1) {
                     e1.printStackTrace();
@@ -118,11 +133,90 @@ public class WelcomeActivity extends AppCompatActivity {
                 // Log.d("salut","received array");
             }
         });
+
+
         String user = MainActivity.signed;
         //If the cache contains an userID then the account is retrieved and we can move on the habit tracker
         //Otherwise the user has to log in or sign up
         if (userIDCacher.hasCache()){
         //if (user=="Yes"){
+            //Retrieve the data of the user if already userID cached
+            JSONObject data = new JSONObject();
+            RequestParams rp3 = new RequestParams();
+            rp3.put("api_key", "blurryapikeyseetutorial");
+            rp3.put("param", "myaccount");
+            try {
+                data.put("ID", userIDCacher.readCache());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            rp3.put("data", data.toString());
+            String URlprofile = "http://www.fir-auth-93d22.appspot.com/user?" + rp3.toString();
+            HttpUtils.getByUrl(URlprofile, rp3, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    super.onSuccess(statusCode, headers, response);
+                    try {
+                        JSONObject serverResp = new JSONObject(response.toString());
+                        usernameUser = serverResp.getString("username");
+                        firstnameUser = serverResp.getString("firstname");
+                        if (serverResp.has("tasklist")){
+                            //Need to parse all the tasks, the scoring, the topics, the frequency
+                            JSONObject myTaskList = serverResp.getJSONObject("tasklist");
+                            Iterator<String> keysTaskList = myTaskList.keys();
+                            while(keysTaskList.hasNext()) {
+                                String keyTask = keysTaskList.next();
+                                getTaskKeysListUser = Methods.increaseArray(getTaskKeysListUser,keyTask);
+                                if (myTaskList.get(keyTask) instanceof JSONObject) {
+                                    JSONObject item2 = myTaskList.getJSONObject(keyTask);
+                                    getTaskScoreListUser = Methods.increaseArray(getTaskScoreListUser, item2.getString("scoring"));
+                                    getTaskFreqListUser = Methods.increaseArray(getTaskFreqListUser, item2.getString("frequency"));
+                                }
+                            }
+                        }
+                        if(!serverResp.has("tasklist")) {
+                            Log.d("salut","No task detected");
+                        }
+                        if (serverResp.has("challenge")){
+                            //Need to parse challenges, status, challengers, tasks
+                            JSONObject myChallengeList = serverResp.getJSONObject("challenge");
+                            Iterator<String> keysChallengeList = myChallengeList.keys();
+                            while(keysChallengeList.hasNext()) {
+                                String keyChallenge = keysChallengeList.next();
+                                getChallengersIDListUser = Methods.increaseArray(getChallengersIDListUser,keyChallenge);
+                                if (myChallengeList.get(keyChallenge) instanceof JSONObject) {
+                                    JSONObject item = myChallengeList.getJSONObject(keyChallenge);
+                                    getChallengersStatusListUser = Methods.increaseArray(getChallengersStatusListUser, item.getString("status"));
+                                    getChallengersTopicListUser = Methods.increaseArray(getChallengersTopicListUser, item.getString("topic"));
+                                }
+                            }
+                        }
+                        if(!serverResp.has("challenge")) {
+                            Log.d("salut","No challenge detected");
+                        }
+                        if (serverResp.has("followed")){
+                            //Need to parse followedquestion, id, lastview
+                            JSONObject myQuestionList = serverResp.getJSONObject("challenge");
+                            Iterator<String> keysQuestionList = myQuestionList.keys();
+                            while(keysQuestionList.hasNext()) {
+                                String keyQuestion = keysQuestionList.next();
+                                getFollowedQuestionIDListUser = Methods.increaseArray(getFollowedQuestionIDListUser,keyQuestion);
+                                if (myQuestionList.get(keyQuestion) instanceof JSONObject) {
+                                    JSONObject item = myQuestionList.getJSONObject(keyQuestion);
+                                    getFollowedQuestionLastViewListUser = Methods.increaseArray(getFollowedQuestionLastViewListUser, item.getString("last"));
+                                }
+                            }
+                        }
+                        if(!serverResp.has("followed")) {
+                            Log.d("salut","No followed question detected");
+                        }
+                    } catch (JSONException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            });
             timer = new Timer();
             timer.schedule(new TimerTask(){
                 @Override public void run(){
@@ -130,7 +224,7 @@ public class WelcomeActivity extends AppCompatActivity {
                     intent.putExtra("FROM_ACTIVITY", "WelcomeActivity");
                     startActivity(intent);
                 }
-            }, 2000);
+            }, 12000);
         }
         else{
             timer = new Timer();
@@ -139,7 +233,7 @@ public class WelcomeActivity extends AppCompatActivity {
                     Intent intent = new Intent(WelcomeActivity.this,MainActivity.class);
                     startActivity(intent);
                 }
-            }, 2000);
+            }, 12000);
         }
 
     }

@@ -1,5 +1,7 @@
 package edu.gatech.econet;
 
+import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -44,6 +46,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Iterator;
+import java.util.TimerTask;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -206,10 +209,8 @@ public class MainActivity extends AppCompatActivity implements
                         super.onSuccess(statusCode, headers, response);
                         try {
                             JSONObject serverResp = new JSONObject(response.toString());
-                            //JSONObject item = serverResp.getJSONObject("name");
                             userID = serverResp.getString("name");
                             userIDCacher.writeCache(userID);
-                            //Log.d("salut",serverResp.toString());
                         } catch (JSONException e1) {
                             e1.printStackTrace();
                         } catch (IOException e) {
@@ -224,6 +225,37 @@ public class MainActivity extends AppCompatActivity implements
                 });
                 signed = "Yes";
             }
+            //Retrieve the profile of the user
+            JSONObject data = new JSONObject();
+            RequestParams rp3 = new RequestParams();
+            rp3.put("api_key", "blurryapikeyseetutorial");
+            rp3.put("param", "myaccount");
+            try {
+                data.put("ID", userID);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            rp3.put("data", data.toString());
+            String URl = "http://www.fir-auth-93d22.appspot.com/user?" + rp3.toString();
+            HttpUtils.getByUrl(URl, rp3, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    super.onSuccess(statusCode, headers, response);
+                    try {
+                        JSONObject serverResp = new JSONObject(response.toString());
+                        Log.d("salut",serverResp.toString());
+                        waitResponse();
+
+                    } catch (JSONException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONArray timeline) {
+                     //Log.d("salut","received array");
+                }
+            });
+
             //switch screens
             Intent intent = new Intent(this, habitTracker.class);
             intent.putExtra("FROM_ACTIVITY", "MainActivity");
@@ -258,5 +290,12 @@ public class MainActivity extends AppCompatActivity implements
     }
     public void retrieveProfile(){
         //on get the profile
+    }
+    public void waitResponse(){
+        new Handler().postDelayed(new Runnable() {
+            public void run(){
+
+            }
+        },3000);
     }
 }

@@ -32,7 +32,7 @@ class User(object):
 		elif req.get_param("param") == 'myaccount':
 			data = json.loads(req.get_param("data"))
 			logging.info('Getting one user')
-			resource2 = firebase.get('/users',data)
+			resource2 = firebase.get('/users',data['ID'])
 			resp.body = json.dumps(resource2)
 			resp.status = falcon.HTTP_200
 
@@ -68,10 +68,11 @@ class User(object):
 			result = firebase.patch('/users/'+data['fromUserID']+'/challenge',data['challengeFrom'])
 			result = firebase.patch('/users/'+data['otherUserID']+'/challenge',data['challengeTo'])
 		elif req.get_param('param') == 'update':
-		#Only updating the tasklist and followedQuestion periodically
+		#Only updating the tasklist, challenge and followedQuestion periodically
 			logging.info('Updating the user')
-			result = firebase.patch('/users/'+data['userID'],data['tasklist'])
-			result = firebase.patch('/users/'+data['userID'],data['followedQuestion'])
+			result = firebase.patch('/users/'+data['userID']+'/tasklist',data['tasklist'])
+			result = firebase.patch('/users/'+data['userID']+'/followedQuestion',data['followedQuestion'])
+			result = firebase.patch('/users/'+data['userID']+'/challenge',data['challenge'])
 		resource = 'updated'
 		resp.body = json.dumps(resource)
 		resp.status = falcon.HTTP_200
