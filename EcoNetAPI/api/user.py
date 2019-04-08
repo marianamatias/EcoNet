@@ -46,16 +46,20 @@ class User(object):
 			logging.info('Adding a user to firebase')
 			#The structure for data on post is :
 			# data = {"firstname" : "Hadrien","lastname" : "RIVIERE","username" : "hadrrivi88","tasklist":{}, "challenges":{},"followedQuestion":{}}
-			result = firebase.post('/users', data)
+			result1 = firebase.post('/users', data)
 			#Retrieve the 'name' of the user which is his ID on to the FRONT-END
+			resp.body = json.dumps(result1)
+			resp.status = falcon.HTTP_201
 		elif req.get_param('param') == 'challenge' : 
 			#An user wants to challenge another one
 			#We need to post on both account the new challenge
 			logging.info("Adding a challenge in both challengers")
-			result = firebase.post('/users/'+data['fromUserID']+'/challenge',data['challengeFrom'])
-			result = firebase.post('/users/'+data['otherUserID']+'/challenge',data['challengeTo'])
-		resp.body = json.dumps(result)
-		resp.status = falcon.HTTP_201
+			challengeForME = json.loads(req.get_param("myChallenge"))
+			challengeForYou = json.loads(req.get_param("otherChallenge"))
+			result21 = firebase.post('/users/'+req.get_param('UserID')+'/challenge',challengeForME)
+			result22 = firebase.post('/users/'+req.get_param('otherUserID')+'/challenge',challengeForYou)
+			resp.body = json.dumps(result22)
+			resp.status = falcon.HTTP_201
 
 	@falcon.before(api_key)
 	@falcon.after(say_bye_after_operation)
@@ -64,8 +68,10 @@ class User(object):
 	#All of this is quite able to change quickly so we'll edit all the user at once for this
 		if req.get_param('param') == 'challenge_status':
 			logging.info('Updating the challenge status for both challengers')
-			result = firebase.patch('/users/'+data['fromUserID']+'/challenge',data['challengeFrom'])
-			result = firebase.patch('/users/'+data['otherUserID']+'/challenge',data['challengeTo'])
+			challengeForME = json.loads(req.get_param("myChallenge"))
+			challengeForYou = json.loads(req.get_param("otherChallenge"))
+			result = firebase.patch('/users/'+req.get_param('UserID')+'/challenge',challengeForME)
+			result = firebase.patch('/users/'+req.get_param('otherUserID')+'/challenge',challengeForYou)
 			resource2 = 'updated'
 			resp.body = json.dumps(resource2)
 			resp.status = falcon.HTTP_200
@@ -88,10 +94,26 @@ class User(object):
 		#One of the challengers has declined, or deleted the challenge
 		#need to remove this challenge for both challengers
 		#The challenge ID is the otherchallengerID which explain the path to delete
-		logging.info('Deleting a challenge for User 1 and User 2')
-		data = json.loads(req.get_param("data"))
-		result = firebase.delete('/users/'+data['otherUserID']+'/challenge/',data['fromUserID'])
-		result = firebase.delete('/users/'+data['fromUserID']+'/challenge/',data['otherUserID'])
-		resource = 'deleted'
-		resp.body = json.dumps(resource)
-		resp.status = falcon.HTTP_200
+		if req.get_param('param')== 'task':
+			logging.info('Deleting one task')
+			result = firebase.delete('/users/'+req.get_param('userID')+'/tasklist',req.get_param('taskID'))
+			resource = 'deleted'
+			resp.body = json.dumps(resource)
+			resp.status = falcon.HTTP_200
+		elif req.get_param('param') == 'challenge':
+			logging.info('Deleting a challenge for User 1 and User 2')
+			result = firebase.delete('/users/'+req.get_param('otherUserID')+'/challenge/',req.get_param('userID'))
+			result = firebase.delete('/users/'+req.get_param('userID')+'/challenge/',req.get_param('otherUserID'))
+			resource2 = 'deleted'
+			resp.body = json.dumps(resource2)
+			resp.status = falcon.HTTP_200
+		elif req.get_param('param') == 'question':
+			logging.info('Deleting a question from the followed list')
+			result = firebase.delete('/users/'+req.get_param('userID')+'/followedQuestion/',req.get_param('questionID'))
+			resource3 = 'deleted'
+			resp.body = json.dumps(resource3)
+			resp.status = falcon.HTTP_200
+		
+		
+		
+		

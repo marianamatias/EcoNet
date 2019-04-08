@@ -95,7 +95,6 @@ public class habitTracker extends AppCompatActivity implements
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habit_tracker);
-
         userIDCacher = new FileCacher<>(habitTracker.this, "userId.txt");
         //setSupportActionBar(toolbar);
         //By matching the taskretrieved and the tasklist find topic and ID
@@ -109,6 +108,34 @@ public class habitTracker extends AppCompatActivity implements
         challengeCacher = new FileCacher<>(habitTracker.this, "challengeCacher.txt");
         challengesRunningCacher = new FileCacher<>(habitTracker.this, "challengeedTopicCacher.txt");
         //Retrieve the data of the user if already userID cached
+        Intent mIntent = getIntent();
+        final HabitTrackerAdapter habitTrackerListAdapter = new HabitTrackerAdapter();
+        swipeListView = (SwipeMenuListView) findViewById(R.id.swipeListView);
+        swipeListView.setAdapter(habitTrackerListAdapter);
+        try{
+            String previousActivity = mIntent.getStringExtra("FROM_ACTIVITY");
+            if ((previousActivity.equals("ParamNewTask"))&&(!Methods.isInArray(tasksList,ParamNewTask.receivedTask))){
+                tasksList=Methods.increaseArray(tasksList,ParamNewTask.receivedTask);
+                topicList=Methods.increaseArray(topicList,ParamNewTask.receivedTopic);
+                scoreList=Methods.increaseArray(scoreList,"0");
+                challengedList=Methods.increaseArray(challengedList,"false");
+                freqList=Methods.increaseArray(freqList,Integer.toString(ParamNewTask.frequency));
+                keysList=Methods.increaseArray(keysList,ParamNewTask.key);
+                taskCacher.writeCache(tasksList);
+                topicCacher.writeCache(topicList);
+                scoreCacher.writeCache(scoreList);
+                keyCacher.writeCache(keysList);
+                freqCacher.writeCache(freqList);
+                challengeCacher.writeCache(challengedList);
+                Log.d("salut","ow the keys are bigger with param new task "+keysList.length);
+                retrieveData();
+                quitActivity();
+                habitTrackerListAdapter.notifyDataSetChanged();
+            }
+
+        }catch (Exception e){
+
+        }
         retrieveData();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -121,7 +148,7 @@ public class habitTracker extends AppCompatActivity implements
         navigationView.setNavigationItemSelectedListener(this);
         drawerLayout = findViewById(R.id.drawer_layout);
 
-        swipeListView = (SwipeMenuListView) findViewById(R.id.swipeListView);
+
         if (taskCacher.hasCache()){
             try{
                 tasksList=taskCacher.readCache();
@@ -130,6 +157,8 @@ public class habitTracker extends AppCompatActivity implements
                 keysList=keyCacher.readCache();
                 freqList=freqCacher.readCache();
                 challengedList=challengeCacher.readCache();
+
+                habitTrackerListAdapter.notifyDataSetChanged();
             } catch (IOException e ){
                 e.printStackTrace();
             }
@@ -148,32 +177,12 @@ public class habitTracker extends AppCompatActivity implements
 
 
         //Retrieve data from previous activity
-        Intent mIntent = getIntent();
-        try{
-            String previousActivity = mIntent.getStringExtra("FROM_ACTIVITY");
-            if ((previousActivity.equals("ParamNewTask"))&&(!Methods.isInArray(tasksList,ParamNewTask.receivedTask))){
-                tasksList=Methods.increaseArray(tasksList,ParamNewTask.receivedTask);
-                topicList=Methods.increaseArray(topicList,ParamNewTask.receivedTopic);
-                scoreList=Methods.increaseArray(scoreList,"0");
-                challengedList=Methods.increaseArray(challengedList,"false");
-                freqList=Methods.increaseArray(freqList,Integer.toString(ParamNewTask.frequency));
-                keysList=Methods.increaseArray(keysList,ParamNewTask.key);
-                Log.d("salut","ow the keys are bigger with param new task "+keysList.length);
-            }
-            taskCacher.writeCache(tasksList);
-            topicCacher.writeCache(topicList);
-            scoreCacher.writeCache(scoreList);
-            keyCacher.writeCache(keysList);
-            freqCacher.writeCache(freqList);
-            challengeCacher.writeCache(challengedList);
-        }catch (Exception e){
 
-        }
-        try {
-            quitActivity();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            quitActivity();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
 //        if (challengesRunningCacher.hasCache()){
 //            try{
@@ -189,17 +198,38 @@ public class habitTracker extends AppCompatActivity implements
 //                e.printStackTrace();
 //            }
 //        }
-        HabitTrackerAdapter habitTrackerListAdapter = new HabitTrackerAdapter();
-        swipeListView.setAdapter(habitTrackerListAdapter);
+//        final HabitTrackerAdapter habitTrackerListAdapter = new HabitTrackerAdapter();
+//        swipeListView.setAdapter(habitTrackerListAdapter);
         setupSwipeMenuListView(swipeListView);
         swipeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long is) {
+                try {
+                    quitActivity();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    scoreList=scoreCacher.readCache();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 int anteScore = Integer.parseInt(scoreList[position]);
                 anteScore++;
                 scoreList[position]=Integer.toString(anteScore);
+                try {
+                    scoreCacher.writeCache(scoreList);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                habitTrackerListAdapter.notifyDataSetChanged();
                 //boolean anteChallenged = Boolean.parseBoolean(challengedList[position]);
                 ///challengedList[position]=Boolean.toString(!anteChallenged);
+                try {
+                    quitActivity();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 try {
                     quitActivity();
                 } catch (IOException e) {
@@ -350,6 +380,22 @@ public class habitTracker extends AppCompatActivity implements
                         challengedList = Methods.deleteString(challengedList,position);
                         keysList = Methods.deleteString(keysList,position);
                         freqList = Methods.deleteString(freqList,position);
+                        try {
+                            taskCacher.writeCache(tasksList);
+                            topicCacher.writeCache(topicList);
+                            scoreCacher.writeCache(scoreList);
+                            keyCacher.writeCache(keysList);
+                            freqCacher.writeCache(freqList);
+                            challengeCacher.writeCache(challengedList);
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                        //Read write new habit tracker with the task off it
+                        try {
+                            deleteTask(deletedKey);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                         deleteCallback(position,deletedTask,deletedTopic,deletecScore,deletedChallenge,deletedKey,deletedFreq);
                         if(tasksList.length==0){
                             noTask.setVisibility(View.VISIBLE);
@@ -488,19 +534,18 @@ public class habitTracker extends AppCompatActivity implements
                 } catch (JSONException e1) {
                     e1.printStackTrace();
                 }
+                try {
+                    taskCacher.writeCache(tasksList);
+                    topicCacher.writeCache(topicList);
+                    scoreCacher.writeCache(scoreList);
+                    keyCacher.writeCache(keysList);
+                    freqCacher.writeCache(freqList);
+                    challengeCacher.writeCache(challengedList);
+                } catch (IOException e){
+                    e.printStackTrace();
+                }
             }
         });
-        try {
-            taskCacher.writeCache(tasksList);
-            topicCacher.writeCache(topicList);
-            scoreCacher.writeCache(scoreList);
-            keyCacher.writeCache(keysList);
-            freqCacher.writeCache(freqList);
-            challengeCacher.writeCache(challengedList);
-        } catch (IOException e){
-            e.printStackTrace();
-        }
-
     }
     public void retrieveData(){
         JSONObject data = new JSONObject();
@@ -580,5 +625,34 @@ public class habitTracker extends AppCompatActivity implements
         });
 
     }
+    public void deleteTask(String selectedTaskKey) throws IOException {
+        tasksList=taskCacher.readCache();
+        topicList=topicCacher.readCache();
+        scoreList=scoreCacher.readCache();
+        keysList=keyCacher.readCache();
+        freqList=freqCacher.readCache();
+        challengedList=challengeCacher.readCache();
+        RequestParams rp3 = new RequestParams();
+        Log.d("salut","The length before writting is "+keysList.length);
+        rp3.put("api_key", "blurryapikeyseetutorial");
+        rp3.put("param", "task");
+        rp3.put("userID",userIDCacher.readCache());
+        rp3.put("taskID",selectedTaskKey);
+        String URlprofile = "http://www.fir-auth-93d22.appspot.com/user?" + rp3.toString();
+        Log.d("salut",rp3.toString());
+        HttpUtils.deleteByUrl(URlprofile, rp3, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                try {
+                    JSONObject serverResp = new JSONObject(response.toString());
+                    Log.d("salut",serverResp.toString());
 
+                } catch (JSONException e1) {
+                    e1.printStackTrace();
+                }
+
+            }
+        });
+    }
 }
