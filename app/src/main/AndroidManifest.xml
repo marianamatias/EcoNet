@@ -19,7 +19,7 @@
         <activity android:name=".AskView" />
         <activity
             android:name=".WelcomeActivity"
-            android:label="Welcome to Econet">
+            android:label="Econet">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
