@@ -295,6 +295,7 @@ public class habitTracker extends AppCompatActivity implements
             //get profile data from Firebase Authentication
             FirebaseAuth auth = FirebaseAuth.getInstance();
             FirebaseUser firebaseUser = auth.getCurrentUser();
+
             Uri userPhotoUri = firebaseUser.getPhotoUrl();
             String displayName = firebaseUser.getDisplayName();
 
@@ -348,12 +349,12 @@ public class habitTracker extends AppCompatActivity implements
             @Override
             public void create(SwipeMenu menu) {
                 SwipeMenuItem askItem = new SwipeMenuItem(getApplicationContext());
-                askItem.setBackground(new ColorDrawable(Color.rgb(31, 167, 221)));
+                askItem.setBackground(new ColorDrawable(Color.rgb(9, 54, 122)));
                 askItem.setWidth(200);
                 askItem.setIcon(R.drawable.ic_advice_white);
                 menu.addMenuItem(askItem);
                 SwipeMenuItem deleteItem = new SwipeMenuItem(getApplicationContext());
-                deleteItem.setBackground(new ColorDrawable(Color.rgb(206, 26, 10)));
+                deleteItem.setBackground(new ColorDrawable(Color.rgb(195, 56, 37)));
                 deleteItem.setWidth(200);
                 deleteItem.setIcon(R.drawable.ic_delete_white);
                 menu.addMenuItem(deleteItem);
