@@ -18,5 +18,6 @@
     <color name="green3">#80A8E885</color>
 
 
-
+    <color name="deleteColor">#d16e6c</color>
+    <color name="adviceColor">#4784a3</color>
 </resources>

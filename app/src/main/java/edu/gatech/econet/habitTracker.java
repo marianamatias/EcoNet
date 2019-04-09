@@ -423,12 +423,12 @@ public class habitTracker extends AppCompatActivity implements
             @Override
             public void create(SwipeMenu menu) {
                 SwipeMenuItem askItem = new SwipeMenuItem(getApplicationContext());
-                askItem.setBackground(new ColorDrawable(Color.rgb(22, 65, 135)));
+                askItem.setBackground(new ColorDrawable(getResources().getColor(R.color.adviceColor)));
                 askItem.setWidth(200);
                 askItem.setIcon(R.drawable.ic_advice_white);
                 menu.addMenuItem(askItem);
                 SwipeMenuItem deleteItem = new SwipeMenuItem(getApplicationContext());
-                deleteItem.setBackground(new ColorDrawable(Color.rgb(195, 56, 37)));
+                deleteItem.setBackground(new ColorDrawable(getResources().getColor(R.color.deleteColor)));
                 deleteItem.setWidth(200);
                 deleteItem.setIcon(R.drawable.ic_delete_white);
                 menu.addMenuItem(deleteItem);
