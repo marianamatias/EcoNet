@@ -66,6 +66,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        android:divider="#30FFFFFF"
+        android:dividerHeight="8px"
         app:layout_constraintBottom_toTopOf="@+id/replyButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

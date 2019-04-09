@@ -10,7 +10,7 @@
 
     <color name="lavender">#c992dd</color>
 
-
+    <color name="whiteTransparent">#90FFFFFF</color>
     <color name="lightGreyTransparent">#20000000</color>
     <color name="darkGreyTransparent">#50000000</color>
     <color name="green1">#8078E8AD</color>
@@ -18,5 +18,6 @@
     <color name="green3">#80A8E885</color>
 
 
-
+    <color name="deleteColor">#d16e6c</color>
+    <color name="adviceColor">#4784a3</color>
 </resources>
