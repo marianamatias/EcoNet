@@ -71,7 +71,6 @@
         android:orientation="vertical"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
 
-
         <Button
             android:id="@+id/add_button"
             android:layout_width="60dp"

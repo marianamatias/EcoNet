@@ -68,9 +68,15 @@ public class adviceForum extends AppCompatActivity implements
     String listquestionanimal [] = new String [] {"What clothing lines are vegan?","Do makeup brands still test products on animals?"};
     String listquestionenergy [] = new String [] {"Do I have to unplug my devices after they're done charging to save energy?","How can I check which appliances use the most energy?","Which lightbulb brand is the most energy efficient?"};
     String listquestiontransport [] = new String[] {"I have to drive 1 hour every day to commute to work and I can't get around this. How else can I reduce my carbon footprint through transportation?","What modifications can I make to my car that will make it more eco-friendly?"};
-    String listquestionzerowaste [] = new String[] {"Which is better, a steel straw or a bamboo straw?","Should I wash my glass before recycling?","What are some tips to avoid single use plastics?","How can I make it more convenient to compost?",
+    String listquestionzerowaste [] = new String[] {"Which is better, a steel straw or a bamboo straw?",
+            "Should I wash my glass before recycling?",
+            "What are some tips to avoid single use plastics?",
+            "How can I make it more convenient to compost?",
             "What are some ways I can reuse plastic bags from shopping?",
-            "I have a lot of makeup and beauty products and when I finish with them, I have a lot of empty bottles/containers. Is there a brand that reuses these or has more sustainable packaging?","When is it ok to mix paper and plastic for recycling?"};
+            "I have a lot of makeup and beauty products and when I finish with them, I have a lot of empty bottles/containers. Is there a brand that reuses these or has more sustainable packaging?",
+            "When is it ok to mix paper and plastic for recycling?",
+        "Are there any plastics that are more harmful to health/environment than others?"
+    };
 
 
     @Override

@@ -37,7 +37,10 @@ public class AskView extends AppCompatActivity {
     public String listquestionenergy [] = new String [] {"Depends on your device and brand. For example iPhones usually stop charging for the most part when they reach 100%.", "You definitely have to unplug hairdryers if you're not using them. They are one of the appliances that use the most energy, even if they're turned off."};
     public String listquestiontransport [] = new String[] {"Stopping at the store on your way home from work, for example, combines trips and reduces your footprint. Combining your commute with your errands, while it may take extra time, will ultimately save you money on gas and reduce your emissions.",
             "Car maintenance is also essential for a green commute. Making sure your oil is changed, your filters are new, your car is in good shape, and you don’t keep anything too heavy in your trunk can all help keep your car running efficiently. This ensures that your engine isn’t overworking and increasing your emissions."};
-    public String listquestionzerowaste [] = new String[] {"If taken care of, bamboo straws can last for years and years and are biodegradable after you've disposed of them.","I agree! And bamboo is a truly renewable resource, bamboo growth can keep up with the rate of human consumption.","Bamboo takes about 5-10 years to decompose. Steel on the other hand takes 50 years. But if you take care of your product, you could have only a couple of steel straws instead of many more bamboo straws."};
+    public String listquestionzerowaste [] = new String[] {"If taken care of, bamboo straws can last for years and years and are biodegradable after you've disposed of them.",
+            "I agree! And bamboo is a truly renewable resource, bamboo growth can keep up with the rate of human consumption.",
+            "Bamboo takes about 5-10 years to decompose. Steel on the other hand takes 50 years. But if you take care of your product, you could have only a couple of steel straws instead of many more bamboo straws."};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
