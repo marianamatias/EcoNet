@@ -356,7 +356,7 @@ public class habitTracker extends AppCompatActivity implements
     }
 
 
-    private void menuSignOut() throws IOException {
+
     private void setGoogleProfilePic() {
         if (FirebaseAuth.getInstance().getCurrentUser()!= null) {
             //get profile data from Firebase Authentication
@@ -390,7 +390,7 @@ public class habitTracker extends AppCompatActivity implements
     }
 
 
-    private void menuSignOut() {
+    private void menuSignOut() throws IOException {
         FirebaseAuth.getInstance().signOut();
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken("1057246002930-8bp2uv0v2sjesp7iin4dkcp35uv3vlas.apps.googleusercontent.com")
