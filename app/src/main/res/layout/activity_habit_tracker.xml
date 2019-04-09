@@ -34,7 +34,6 @@
             >
         </com.baoyz.swipemenulistview.SwipeMenuListView>
 
-
         <TextView
             android:id="@+id/no_task"
             android:layout_width="wrap_content"

@@ -2,8 +2,12 @@ package edu.gatech.econet;
 
 import android.content.ClipData;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import java.net.*;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -23,21 +27,26 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Button;
+import android.graphics.BitmapFactory;
 
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.FirebaseAuth;
 import com.kosalgeek.android.caching.FileCacher;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+
+//Picasso
+import com.squareup.picasso.Picasso;
 
 import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
@@ -57,6 +66,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 
 import cz.msebera.android.httpclient.Header;
 
@@ -254,6 +264,9 @@ public class habitTracker extends AppCompatActivity implements
 
 
 
+
+        setGoogleProfilePic();
+
     }
 
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -321,6 +334,40 @@ public class habitTracker extends AppCompatActivity implements
 
 
     private void menuSignOut() throws IOException {
+    private void setGoogleProfilePic() {
+        if (FirebaseAuth.getInstance().getCurrentUser()!= null) {
+            //get profile data from Firebase Authentication
+            FirebaseAuth auth = FirebaseAuth.getInstance();
+            FirebaseUser firebaseUser = auth.getCurrentUser();
+
+            Uri userPhotoUri = firebaseUser.getPhotoUrl();
+            String displayName = firebaseUser.getDisplayName();
+
+            Log.e("SET GOOGLE PROFILE PIC", userPhotoUri.toString());
+            String userPhotoURLString = "";
+
+            if (userPhotoUri == null) {
+                userPhotoURLString = "http://pronksiapartments.ee/wp-content/uploads/2015/10/placeholder-face-big.png";
+            } else {
+                userPhotoURLString = userPhotoUri.toString();
+            }
+
+            //Get Header view from Navigation View
+            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            View header = navigationView.getHeaderView(0);
+
+            //set profile pic using Picasso
+            ImageView profilePic = (ImageView) header.findViewById(R.id.profilePic);
+            Picasso.get().load(userPhotoURLString).transform(new CircleTransform()).into(profilePic);
+
+            //set Name to Google account name
+            TextView profileName = (TextView) header.findViewById(R.id.profileName);
+            profileName.setText(displayName);
+        }
+    }
+
+
+    private void menuSignOut() {
         FirebaseAuth.getInstance().signOut();
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken("1057246002930-8bp2uv0v2sjesp7iin4dkcp35uv3vlas.apps.googleusercontent.com")
@@ -353,12 +400,12 @@ public class habitTracker extends AppCompatActivity implements
             @Override
             public void create(SwipeMenu menu) {
                 SwipeMenuItem askItem = new SwipeMenuItem(getApplicationContext());
-                askItem.setBackground(new ColorDrawable(Color.rgb(31, 167, 221)));
+                askItem.setBackground(new ColorDrawable(Color.rgb(22, 65, 135)));
                 askItem.setWidth(200);
                 askItem.setIcon(R.drawable.ic_advice_white);
                 menu.addMenuItem(askItem);
                 SwipeMenuItem deleteItem = new SwipeMenuItem(getApplicationContext());
-                deleteItem.setBackground(new ColorDrawable(Color.rgb(206, 26, 10)));
+                deleteItem.setBackground(new ColorDrawable(Color.rgb(195, 56, 37)));
                 deleteItem.setWidth(200);
                 deleteItem.setIcon(R.drawable.ic_delete_white);
                 menu.addMenuItem(deleteItem);
@@ -501,7 +548,7 @@ public class habitTracker extends AppCompatActivity implements
             } catch (IOException e ){
                 e.printStackTrace();
             }
-        
+
             ImageView challengeIcon = (ImageView)view.findViewById(R.id.challengeIcon);
             if(challengedList.length!=0){
                 if (!Boolean.parseBoolean(challengedList[i])){
@@ -517,7 +564,7 @@ public class habitTracker extends AppCompatActivity implements
                 swipeListView.setVisibility(View.GONE);
             }
 //            if (newScore[i]){
-                ImageView greatIcon = (ImageView)view.findViewById(R.id.greatIcon);
+            ImageView greatIcon = (ImageView)view.findViewById(R.id.greatIcon);
             greatIcon.setVisibility(View.GONE);
 //            }
             TextView showScore = (TextView)view.findViewById(R.id.cntScore);
