@@ -22,6 +22,7 @@ public class AskView extends AppCompatActivity {
     TextView authorID;
     ListView listMessages;
     public static String retrievedUser;
+
     public static String retrievedTopic;
     public static String  retrievedTask;
     public static String retrieveQuestion;
@@ -29,6 +30,12 @@ public class AskView extends AppCompatActivity {
     String nbrPlus[] = new String [] {"20","5","1"};
     String textResponse[] = new String[] {"Amazon has some great ones, I would highly suggest this.","I've tried some bamboo straws but are not very durable... You should use steel straws","There are some styilsh ones on etsy!"};
 
+    String listquestionsvegenism [] = new String[] {"first question vegan","first question vegan"};
+    String listquestionanimal [] = new String [] {"first question animal","second question animal"};
+    String listquestionenergy [] = new String [] {"first question energy","second question energy","third question energy"};
+    String listquestiontransport [] = new String[] {"first question transport","second question trasnport"};
+    String listquestionzerowaste [] = new String[] {"first question zero waste this is one of a hell big question huh ?","first question zero waste","first question zero waste","first question zero waste",
+            "first question zero waste","first question zero waste","first question zero waste","first question zero waste"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,8 +66,24 @@ public class AskView extends AppCompatActivity {
             retrievedUser = askReplayPop.user;
             authorRespID=Methods.increaseArray(authorRespID,"New User");
             nbrPlus=Methods.increaseArray(nbrPlus,"0");
-            textResponse=Methods.increaseArray(textResponse,askReplayPop.responseText);
+
         }
+        if (retrievedTopic.equals(ForumTopicSelect.localTopic[0])){
+            textResponse=listquestionsvegenism;
+        }
+        else if (retrievedTopic.equals(ForumTopicSelect.localTopic[1])){
+            textResponse=listquestionanimal;
+        }
+        else if (retrievedTopic.equals(ForumTopicSelect.localTopic[2])){
+            textResponse =listquestionenergy;
+        }
+        else if (retrievedTopic.equals(ForumTopicSelect.localTopic[3])){
+            textResponse =listquestiontransport;
+        }
+        else if (retrievedTopic.equals(ForumTopicSelect.localTopic[4])){
+            textResponse =listquestionzerowaste;
+        }
+        //textResponse=Methods.increaseArray(textResponse,askReplayPop.responseText);
         askTask.setText("Task : "+retrievedTask);
         askTopic.setText("Topic : "+retrievedTopic);
         askMessage.setText(retrieveQuestion);

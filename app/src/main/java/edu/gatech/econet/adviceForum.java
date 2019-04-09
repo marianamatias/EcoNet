@@ -33,6 +33,7 @@ import android.widget.Toast;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 
 public class adviceForum extends AppCompatActivity implements
@@ -43,6 +44,7 @@ public class adviceForum extends AppCompatActivity implements
     public static String localTopic[] = new String[] {};
     ListView listAdvice=null;
     public static String selectedTopic;
+    public static int selectedIndex;
     Button filterButton;
     //For the filter feature
     String [] filterList = new String [] {};
@@ -56,11 +58,17 @@ public class adviceForum extends AppCompatActivity implements
     public static String topicSend;
     public static String taskSend;
     public static String questionSend;
+    //For now the questions are chosen manually ...
 
     String listofquestions[] = new String[]{"Which is better, a steel straw or a bamboo straw?", "What restaurants have good vegan food?", "How can I check which appliances use the most energy?", "How can I set up my house for composting?",
             "How can I reduce my waste?", "What clothing lines are vegan?", "What type of non-animal proteins can I eat?", "Should I wash my glass before recycling?",
     "Do I have to unplug my devices after they're done charging?"};
-
+    String listquestionsvegenism [] = new String[] {"first question vegan","first question vegan"};
+    String listquestionanimal [] = new String [] {"first question animal","second question animal"};
+    String listquestionenergy [] = new String [] {"first question energy","second question energy","third question energy"};
+    String listquestiontransport [] = new String[] {"first question transport","second question trasnport"};
+    String listquestionzerowaste [] = new String[] {"first question zero waste this is one of a hell big question huh ?","first question zero waste","first question zero waste","first question zero waste",
+            "first question zero waste","first question zero waste","first question zero waste","first question zero waste"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,9 +83,11 @@ public class adviceForum extends AppCompatActivity implements
         String previousActivity = mIntent.getStringExtra("FROM2");
         if (previousActivity.equals("ForumTopicSelect")){
             selectedTopic = ForumTopicSelect.chosenTopic;
+            selectedIndex = ForumTopicSelect.chosenIndex;
         }
         else if (previousActivity.equals("askQuestion")){
             selectedTopic = askQuestion.suggestedTopic;
+            selectedIndex = Methods.find(ForumTopicSelect.localTopic,askQuestion.suggestedTopic);
             localTopic = Methods.increaseArray(localTopic,askQuestion.suggestedTopic);
             localTasks = Methods.increaseArray(localTasks,askQuestion.suggestedTask);
             //Here add the length of the history retrieved from the database
@@ -92,11 +102,36 @@ public class adviceForum extends AppCompatActivity implements
                 localTopic = Methods.increaseArray(localTopic,selectedTopic);
                 localTasks = Methods.increaseArray(localTasks,rawTasks[i]);
                 nbrResponse= Methods.increaseArray(nbrResponse,"0");
-                questions= Methods.increaseArray(questions, "Why would I" + rawTasks[i]);
+                //questions= Methods.increaseArray(questions, "Why would I" + rawTasks[i]);
                 copyTasks = Methods.increaseArray(copyTasks,rawTasks[i]);
             }
         }
 
+        for (int i =0 ; i<localTasks.length ; i++){
+            if (i==0){
+                nbrResponse[i] = "3";
+            }
+            else {
+                Random random = new Random();
+                int nbr = random.nextInt(20);
+                nbrResponse[i] = Integer.toString(nbr);
+            }
+            if (selectedIndex==0){
+                questions = Methods.increaseArray(questions,listquestionsvegenism[i]);
+            }
+            else if (selectedIndex==1){
+                questions = Methods.increaseArray(questions,listquestionanimal[i]);
+            }
+            else if (selectedIndex==2){
+                questions = Methods.increaseArray(questions,listquestionenergy[i]);
+            }
+            else if (selectedIndex==3){
+                questions = Methods.increaseArray(questions,listquestiontransport[i]);
+            }
+            else if (selectedIndex==4){
+                questions = Methods.increaseArray(questions,listquestionzerowaste[i]);
+            }
+        }
 
         listAdvice = (ListView) findViewById(R.id.listAdvice);
         adviceForum.AdviceAdapter adviceAdapter = new adviceForum.AdviceAdapter();
@@ -228,8 +263,8 @@ public class adviceForum extends AppCompatActivity implements
             TextView relatedTask = (TextView)view.findViewById(R.id.relatedTask);
             TextView nbrRep = (TextView)view.findViewById(R.id.nbrRep);
             questionID.setText(questions[i]);
-            relatedTask.setText(localTasks[i]);
-            nbrRep.setText(nbrResponse[i].toString());
+            relatedTask.setText("Related task : "+localTasks[i]);
+            nbrRep.setText("Responses : "+nbrResponse[i].toString());
             view.setForegroundGravity(Gravity.CENTER);
             view.setBackgroundColor(getResources().getColor(R.color.lightGreyTransparent));
             return view;
