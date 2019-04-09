@@ -29,7 +29,7 @@ public class askReplayPop extends AppCompatActivity {
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         int width= dm.widthPixels;
         int height = dm.heightPixels;
-        getWindow().setLayout(1000,1200);
+        getWindow().setLayout(1200,1200);
         //Retrieval of all the data from the previous screen
         task=AskView.retrievedTask;
         topic=AskView.retrievedTopic;
