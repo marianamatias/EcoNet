@@ -42,7 +42,7 @@
         android:layout_marginBottom="8dp"
         android:text="ecowarrior512"
         android:textAlignment="center"
-        android:textColor="@color/darkGreyTransparent"
+        android:textColor="@color/whiteTransparent"
         android:textSize="15dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
