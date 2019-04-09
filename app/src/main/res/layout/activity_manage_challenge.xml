@@ -19,7 +19,7 @@
 
 
     <ListView
-        android:id="@+id/ntm"
+        android:id="@+id/listChallenge"
         android:layout_width="372dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"

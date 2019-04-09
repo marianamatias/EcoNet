@@ -30,11 +30,30 @@ class User(object):
 			resp.status = falcon.HTTP_200
 		#The user wants to retrieve only his profile on the database
 		elif req.get_param("param") == 'myaccount':
-			data = json.loads(req.get_param("data"))
-			logging.info('Getting one user')
-			resource2 = firebase.get('/users',data['ID'])
-			resp.body = json.dumps(resource2)
-			resp.status = falcon.HTTP_200
+			if req.get_param("wanted") == 'all':
+				data = json.loads(req.get_param("data"))
+				logging.info('Getting one user')
+				resource2 = firebase.get('/users',data['ID'])
+				resp.body = json.dumps(resource2)
+				resp.status = falcon.HTTP_200
+			elif req.get_param("wanted") == 'tasklist':
+				data = json.loads(req.get_param("data"))
+				logging.info('Getting one tasklist user')
+				resource2 = firebase.get('/users/'+data['ID']+'/tasklist',None)
+				resp.body = json.dumps(resource2)
+				resp.status = falcon.HTTP_200
+			elif req.get_param("wanted") == 'challenge':
+				data = json.loads(req.get_param("data"))
+				logging.info('Getting one user')
+				resource2 = firebase.get('/users/'+data['ID']+'/challenge',None)
+				resp.body = json.dumps(resource2)
+				resp.status = falcon.HTTP_200
+			elif req.get_param("wanted") == 'followedQuestion':
+				data = json.loads(req.get_param("data"))
+				logging.info('Getting one followedQuestion user')
+				resource2 = firebase.get('/users/'+data['ID']+'/followedQuestion',None)
+				resp.body = json.dumps(resource2)
+				resp.status = falcon.HTTP_200
 
 
 	@falcon.before(api_key)
@@ -76,17 +95,39 @@ class User(object):
 			resp.body = json.dumps(resource2)
 			resp.status = falcon.HTTP_200
 		elif req.get_param('param') == 'update':
+			if req.get_param('wanted') == 'all':
 		#Only updating the tasklist, challenge and followedQuestion periodically
-			tasklist = json.loads(req.get_param("tasklist"))
-			challenge = json.loads(req.get_param("challenge"))
-			followedQuestion = json.loads(req.get_param("followedQuestion"))
-			logging.info('Updating the user')
-			result = firebase.patch('/users/'+req.get_param('userID')+'/tasklist',tasklist)
-			result = firebase.patch('/users/'+req.get_param('userID')+'/followedQuestion',challenge)
-			result = firebase.patch('/users/'+req.get_param('userID')+'/challenge',followedQuestion)
-			resource = 'updated'
-			resp.body = json.dumps(resource)
-			resp.status = falcon.HTTP_200
+				tasklist = json.loads(req.get_param("tasklist"))
+				challenge = json.loads(req.get_param("challenge"))
+				followedQuestion = json.loads(req.get_param("followedQuestion"))
+				logging.info('Updating the user')
+				result = firebase.patch('/users/'+req.get_param('userID')+'/tasklist',tasklist)
+				result = firebase.patch('/users/'+req.get_param('userID')+'/followedQuestion',challenge)
+				result = firebase.patch('/users/'+req.get_param('userID')+'/challenge',followedQuestion)
+				resource = 'updated'
+				resp.body = json.dumps(resource)
+				resp.status = falcon.HTTP_200
+			elif req.get_param('wanted') == 'tasklist':	
+				tasklist = json.loads(req.get_param("tasklist"))
+				logging.info('Updating the user')
+				result = firebase.patch('/users/'+req.get_param('userID')+'/tasklist',tasklist)
+				resource = 'updated'
+				resp.body = json.dumps(resource)
+				resp.status = falcon.HTTP_200
+			elif req.get_param('wanted') == 'challenge':	
+				challenge = json.loads(req.get_param("challenge"))
+				logging.info('Updating the user')
+				result = firebase.patch('/users/'+req.get_param('userID')+'/challenge',challenge)
+				resource = 'updated'
+				resp.body = json.dumps(resource)
+				resp.status = falcon.HTTP_200
+			elif req.get_param('wanted') == 'followedQuestion':	
+				followedQuestion = json.loads(req.get_param("followedQuestion"))
+				logging.info('Updating the user')
+				result = firebase.patch('/users/'+req.get_param('userID')+'/followedQuestion',followedQuestion)
+				resource = 'updated'
+				resp.body = json.dumps(resource)
+				resp.status = falcon.HTTP_200
 
 	@falcon.before(api_key)
 	@falcon.after(say_bye_after_operation)

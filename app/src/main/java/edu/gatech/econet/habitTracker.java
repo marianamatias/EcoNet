@@ -184,20 +184,20 @@ public class habitTracker extends AppCompatActivity implements
 //            e.printStackTrace();
 //        }
 
-//        if (challengesRunningCacher.hasCache()){
-//            try{
-//                String challengesLocal [] = challengesRunningCacher.readCache();
-//                for (int i =0; i<challengesLocal.length;i++){
-//                    for (int j=0; j<topicList.length;j++){
-//                        if (topicList[j].equals(challengesLocal[i])){
-//                            challengedList[j] = "true";
-//                        }
-//                    }
-//                }
-//            } catch (IOException e ){
-//                e.printStackTrace();
-//            }
-//        }
+        if (challengesRunningCacher.hasCache()){
+            try{
+                String challengesLocal [] = challengesRunningCacher.readCache();
+                for (int i =0; i<challengesLocal.length;i++){
+                    for (int j=0; j<topicList.length;j++){
+                        if (topicList[j].equals(challengesLocal[i])){
+                            challengedList[j] = "true";
+                        }
+                    }
+                }
+            } catch (IOException e ){
+                e.printStackTrace();
+            }
+        }
 //        final HabitTrackerAdapter habitTrackerListAdapter = new HabitTrackerAdapter();
 //        swipeListView.setAdapter(habitTrackerListAdapter);
         setupSwipeMenuListView(swipeListView);
@@ -459,14 +459,14 @@ public class habitTracker extends AppCompatActivity implements
             view = getLayoutInflater().inflate(R.layout.habit_tracker_adapter_layout,null);
 
             ImageView challengeIcon = (ImageView)view.findViewById(R.id.challengeIcon);
-//            if(challengedList.length!=0){
-//                if (!Boolean.parseBoolean(challengedList[i])){
-//                    challengeIcon.setVisibility(View.GONE);
-//                }
-//                else{
-//                    challengeIcon.setVisibility(View.VISIBLE);
-//                }
-//            }
+            if(challengedList.length!=0){
+                if (!Boolean.parseBoolean(challengedList[i])){
+                    challengeIcon.setVisibility(View.GONE);
+                }
+                else{
+                    challengeIcon.setVisibility(View.VISIBLE);
+                }
+            }
 
 //            if (newScore[i]){
                 ImageView greatIcon = (ImageView)view.findViewById(R.id.greatIcon);
@@ -504,6 +504,7 @@ public class habitTracker extends AppCompatActivity implements
         Log.d("salut","The length before writting is "+keysList.length);
         rp3.put("api_key", "blurryapikeyseetutorial");
         rp3.put("param", "update");
+        rp3.put("wanted","tasklist");
         rp3.put("userID",userIDCacher.readCache());
         try {
             //Adding every task as an item like : idtask {scoring + frequency}
@@ -519,8 +520,8 @@ public class habitTracker extends AppCompatActivity implements
             e.printStackTrace();
         }
         rp3.put("tasklist",URLEncoder.encode(tasklistdata.toString()));
-        rp3.put("challenge",URLEncoder.encode(challengedata.toString()));
-        rp3.put("followedQuestion", URLEncoder.encode(questionsdata.toString()));
+//        rp3.put("challenge",URLEncoder.encode(challengedata.toString()));
+//        rp3.put("followedQuestion", URLEncoder.encode(questionsdata.toString()));
         String URlprofile = "http://www.fir-auth-93d22.appspot.com/user?" + rp3.toString();
         Log.d("salut",rp3.toString());
         HttpUtils.patchByUrl(URlprofile, rp3, new JsonHttpResponseHandler() {
@@ -552,6 +553,7 @@ public class habitTracker extends AppCompatActivity implements
         RequestParams rp3 = new RequestParams();
         rp3.put("api_key", "blurryapikeyseetutorial");
         rp3.put("param", "myaccount");
+        rp3.put("wanted","tasklist");
         try {
             data.put("ID", userIDCacher.readCache());
         } catch (JSONException e) {
@@ -570,17 +572,16 @@ public class habitTracker extends AppCompatActivity implements
                     String usernameUser = serverResp.getString("username");
                     String firstnameUser = serverResp.getString("firstname");
                     Log.d("salut",serverResp.toString());
-                    if (serverResp.has("tasklist")){
                         //Need to parse all the tasks, the scoring, the topics, the frequency
-                        JSONObject myTaskList = serverResp.getJSONObject("tasklist");
-                        Iterator<String> keysTaskList = myTaskList.keys();
+                        //JSONObject myTaskList = serverResp.getJSONObject("tasklist");
+                        Iterator<String> keysTaskList = serverResp.keys();
                         keysList = new String[]{};
                         while(keysTaskList.hasNext()) {
                             String keyTask = keysTaskList.next();
                             keysList = Methods.increaseArray(keysList,keyTask);
 
-                            if (myTaskList.get(keyTask) instanceof JSONObject) {
-                                JSONObject item2 = myTaskList.getJSONObject(keyTask);
+                            if (serverResp.get(keyTask) instanceof JSONObject) {
+                                JSONObject item2 = serverResp.getJSONObject(keyTask);
                                 scoreList = Methods.increaseArray(scoreList, item2.getString("scoring"));
                                 freqList = Methods.increaseArray(freqList, item2.getString("frequency"));
                             }
@@ -593,12 +594,13 @@ public class habitTracker extends AppCompatActivity implements
                                 topicList=Methods.increaseArray(topicList,WelcomeActivity.topicList[Methods.find(WelcomeActivity.keysList,keysList[i])]);
                                 Log.d("salut","I just wrote "+tasksList[i]);
                             }
-                        }
+
                     }
 
                     if(!serverResp.has("followed")) {
                         Log.d("salut","No followed question detected");
                     }
+
 
                     try {
                         taskCacher.writeCache(tasksList);

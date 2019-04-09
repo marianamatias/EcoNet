@@ -7,6 +7,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,12 +27,23 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.kosalgeek.android.caching.FileCacher;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.util.Iterator;
+
+import cz.msebera.android.httpclient.Header;
 
 public class ManageChallenge extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener{
     ListView listChallenge = null;
+    FileCacher<String []> userIDCacher;
     FileCacher<String []> challengeCacher;
     FileCacher<String []> topicCacher;
     FileCacher<String []> scoreCacher;
@@ -39,7 +51,10 @@ public class ManageChallenge extends AppCompatActivity implements
     Button addChallenge;
     FileCacher<String []> challengedUserCacher;
     FileCacher<String []> challengeedTopicCacher;
+    FileCacher<String []> challengedStatusCacher;
+    FileCacher<String []> challengedKeysUserCacher;
     String [] challengedUsers = new String[] {};
+    String [] getChallengedUsers = new String [] {};
     String [] challengedTopic = new String[] {};
     String [] challengesStatus = new String[] {};
     private DrawerLayout drawerLayout;
@@ -57,27 +72,34 @@ public class ManageChallenge extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_challenge);
+        userIDCacher = new FileCacher<>(ManageChallenge.this, "userId.txt");
         topicCacher = new FileCacher<>(ManageChallenge.this, "topicCacher.txt");
         scoreCacher = new FileCacher<>(ManageChallenge.this, "scoreCacher.txt");
         challengeCacher = new FileCacher<>(ManageChallenge.this, "challengeCacher.txt");
         challengedUserCacher = new FileCacher<>(ManageChallenge.this, "challengedUserCacher.txt");
         challengeedTopicCacher = new FileCacher<>(ManageChallenge.this, "challengeedTopicCacher.txt");
+        challengedStatusCacher = new FileCacher<>(ManageChallenge.this, "challengedStatusCacher.txt");
+        challengedKeysUserCacher = new FileCacher<>(ManageChallenge.this, "challengeedKeysUserCacher.txt");
         addChallenge = (Button)findViewById(R.id.addChallenge);
-        listChallenge=(ListView) findViewById(R.id.ntm);
-
+        listChallenge=(ListView) findViewById(R.id.listChallenge);
+        final ManageChallenge.ChallengeAdapter challengeAdapter = new ManageChallenge.ChallengeAdapter();
+        listChallenge.setAdapter(challengeAdapter);
+        retrieveDataChallenge();
         if (challengedUserCacher.hasCache()){
             try{
                 challengedUsers=challengedUserCacher.readCache();
                 challengedTopic=challengeedTopicCacher.readCache();
+                challengesStatus=challengedStatusCacher.readCache();
+                getChallengedUsers = challengedKeysUserCacher.readCache();
                 for (int i=0; i<challengedTopic.length;i++){
                     challengesStatus = Methods.increaseArray(challengesStatus,"Received");
                 }
+                challengeAdapter.notifyDataSetChanged();
             } catch (IOException e ){
                 e.printStackTrace();
             }
         }
-        ManageChallenge.ChallengeAdapter challengeAdapter = new ManageChallenge.ChallengeAdapter();
-        listChallenge.setAdapter(challengeAdapter);
+
         listChallenge.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -86,7 +108,12 @@ public class ManageChallenge extends AppCompatActivity implements
                 topicSelected=challengedTopic[position];
                 challengerSelected=challengedUsers[position];
                 statusSelected=challengesStatus[position];
-                quitActivity();
+                try {
+                    quitActivity();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                challengeAdapter.notifyDataSetChanged();
                 Intent intent = new Intent (getApplicationContext(), ChallengeView.class);
                 startActivity(intent);
             }
@@ -95,7 +122,12 @@ public class ManageChallenge extends AppCompatActivity implements
         addChallenge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                quitActivity();
+                try {
+                    quitActivity();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                challengeAdapter.notifyDataSetChanged();
                 Intent intent = new Intent(getApplicationContext(), AddChallengeScreen.class);
                 startActivity(intent);
             }
@@ -107,7 +139,7 @@ public class ManageChallenge extends AppCompatActivity implements
     class ChallengeAdapter extends BaseAdapter {
         @Override
         public int getCount() {
-            return challengedTopic.length;
+            return challengedUsers.length;
         }
         @Override
         public Object getItem(int i) {
@@ -183,7 +215,11 @@ public class ManageChallenge extends AppCompatActivity implements
                     topicSelected=challengedTopic[u];
                     challengerSelected=challengedUsers[u];
                     statusSelected=challengesStatus[u];
-                    quitActivity();
+                    try {
+                        quitActivity();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     Intent intent = new Intent (getApplicationContext(), ChallengeView.class);
                     startActivity(intent);
                 }
@@ -197,12 +233,20 @@ public class ManageChallenge extends AppCompatActivity implements
         int id = item.getItemId();
         if (id == R.id.habit_tracker){
             Intent intent = new Intent(this, habitTracker.class);
-            quitActivity();
+            try {
+                quitActivity();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             startActivity(intent);
         }
         if (id == R.id.add_goal){
             Intent intent = new Intent(this, AddTaskSearch.class);
-            quitActivity();
+            try {
+                quitActivity();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             startActivity(intent);
         }
         if (id == R.id.challenges){
@@ -211,12 +255,20 @@ public class ManageChallenge extends AppCompatActivity implements
         if (id== R.id.advice){
             Intent intent = new Intent(this, askQuestion.class);
             intent.putExtra("FROM", "habitTracker_menu");
-            quitActivity();
+            try {
+                quitActivity();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             startActivity(intent);
         }
         if (id == R.id.forum){
             Intent intent = new Intent(this, ForumTopicSelect.class);
-            quitActivity();
+            try {
+                quitActivity();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             startActivity(intent);
         }
         if (id == R.id.signOut){
@@ -226,14 +278,14 @@ public class ManageChallenge extends AppCompatActivity implements
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-    public void quitActivity(){
-        try {
-            challengeedTopicCacher.writeCache(challengedTopic);
-            challengedUserCacher.writeCache(challengedUsers);
-        } catch (IOException e){
-            e.printStackTrace();
-        }
-    }
+//    public void quitActivity(){
+//        try {
+//            challengeedTopicCacher.writeCache(challengedTopic);
+//            challengedUserCacher.writeCache(challengedUsers);
+//        } catch (IOException e){
+//            e.printStackTrace();
+//        }
+//    }
     private void menuSignOut() {
         FirebaseAuth.getInstance().signOut();
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -245,9 +297,166 @@ public class ManageChallenge extends AppCompatActivity implements
                 new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        quitActivity();
+                        try {
+                            quitActivity();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     }
                 });
+    }
+    public void quitActivity() throws IOException {
+//        tasksList=taskCacher.readCache();
+//        topicList=topicCacher.readCache();
+//        scoreList=scoreCacher.readCache();
+//        keysList=keyCacher.readCache();
+//        freqList=freqCacher.readCache();
+//        challengedList=challengeCacher.readCache();
+//        JSONObject tasklistdata = new JSONObject();
+//        JSONObject challengedata = new JSONObject();
+//        JSONObject questionsdata = new JSONObject();
+//        RequestParams rp3 = new RequestParams();
+//        Log.d("salut","The length before writting is "+keysList.length);
+//        rp3.put("api_key", "blurryapikeyseetutorial");
+//        rp3.put("param", "update");
+//        rp3.put("wanted","tasklist");
+//        rp3.put("userID",userIDCacher.readCache());
+//        try {
+//            //Adding every task as an item like : idtask {scoring + frequency}
+//            for (int i=0;i<keysList.length;i++){
+//                JSONObject itemTask = new JSONObject();
+//                itemTask.put("scoring", scoreList[i]);
+//                itemTask.put("frequency", freqList[i]);
+//                tasklistdata.put(keysList[i],itemTask);
+//            }
+//            //challengedata.put("challenge", userIDCacher.readCache());
+//            //questionsdata.put("followedQuestion", userIDCacher.readCache());
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        rp3.put("tasklist", URLEncoder.encode(tasklistdata.toString()));
+////        rp3.put("challenge",URLEncoder.encode(challengedata.toString()));
+////        rp3.put("followedQuestion", URLEncoder.encode(questionsdata.toString()));
+//        String URlprofile = "http://www.fir-auth-93d22.appspot.com/user?" + rp3.toString();
+//        Log.d("salut",rp3.toString());
+//        HttpUtils.patchByUrl(URlprofile, rp3, new JsonHttpResponseHandler() {
+//            @Override
+//            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+//                super.onSuccess(statusCode, headers, response);
+//                try {
+//                    JSONObject serverResp = new JSONObject(response.toString());
+//                    Log.d("salut",serverResp.toString());
+//
+//                } catch (JSONException e1) {
+//                    e1.printStackTrace();
+//                }
+//                try {
+//                    taskCacher.writeCache(tasksList);
+//                    topicCacher.writeCache(topicList);
+//                    scoreCacher.writeCache(scoreList);
+//                    keyCacher.writeCache(keysList);
+//                    freqCacher.writeCache(freqList);
+//                    challengeCacher.writeCache(challengedList);
+//
+//                } catch (IOException e){
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+    }
+    public void retrieveDataChallenge(){
+        JSONObject data = new JSONObject();
+        RequestParams rp3 = new RequestParams();
+        rp3.put("api_key", "blurryapikeyseetutorial");
+        rp3.put("param", "myaccount");
+        rp3.put("wanted","challenge");
+        try {
+            data.put("ID", userIDCacher.readCache());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        rp3.put("data", data.toString());
+        String URlprofile = "http://www.fir-auth-93d22.appspot.com/user?" + rp3.toString();
+        HttpUtils.getByUrl(URlprofile, rp3, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                try {
+                    JSONObject serverResp = new JSONObject(response.toString());
+                    Log.d("salut",serverResp.toString());
+                    //Need to parse all the tasks, the scoring, the topics, the frequency
+                    //JSONObject myTaskList = serverResp.getJSONObject("tasklist");
+                    Iterator<String> keysTaskList = serverResp.keys();
+                    getChallengedUsers = new String[]{};
+                    while(keysTaskList.hasNext()) {
+                        String keyTask = keysTaskList.next();
+                        getChallengedUsers = Methods.increaseArray(getChallengedUsers,keyTask);
+                        if (serverResp.get(keyTask) instanceof JSONObject) {
+                            JSONObject item2 = serverResp.getJSONObject(keyTask);
+                            challengesStatus = Methods.increaseArray(challengesStatus, item2.getString("status"));
+                            challengedTopic = Methods.increaseArray(challengedTopic, item2.getString("topic"));
+                        }
+
+                        Log.d("salut","the number key is "+getChallengedUsers.length);
+                        challengedUsers = new String []{};
+                        for (int i=0;i<getChallengedUsers.length;i++){
+                            challengedUsers=Methods.increaseArray(challengedUsers,WelcomeActivity.usernameList[Methods.find(WelcomeActivity.userIDList,getChallengedUsers[i])]);
+                            Log.d("salut","I just wrote "+challengedUsers[i]);
+                        }
+                    }
+                    try {
+                        challengedUserCacher.writeCache(challengedUsers);
+                        challengeedTopicCacher.writeCache(challengedTopic);
+                        challengedStatusCacher.writeCache(challengesStatus);
+                        challengedKeysUserCacher.writeCache(getChallengedUsers);
+                    } catch (IOException e){
+                        e.printStackTrace();
+                    }
+                } catch (JSONException e1) {
+                    e1.printStackTrace();
+                }
+                for (int i=0;i<getChallengedUsers.length;i++){
+                    Log.d("salut","keys of the challenges are "+getChallengedUsers[i]);
+                }
+            }
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray timeline) {
+                // Log.d("salut","received array");
+            }
+        });
+
+    }
+    public void deleteTask(String selectedTaskKey) throws IOException {
+//        tasksList=taskCacher.readCache();
+//        topicList=topicCacher.readCache();
+//        scoreList=scoreCacher.readCache();
+//        keysList=keyCacher.readCache();
+//        freqList=freqCacher.readCache();
+//        challengedList=challengeCacher.readCache();
+//        RequestParams rp3 = new RequestParams();
+//        Log.d("salut","The length before writting is "+keysList.length);
+//        rp3.put("api_key", "blurryapikeyseetutorial");
+//        rp3.put("param", "task");
+//        rp3.put("userID",userIDCacher.readCache());
+//        rp3.put("taskID",selectedTaskKey);
+//        String URlprofile = "http://www.fir-auth-93d22.appspot.com/user?" + rp3.toString();
+//        Log.d("salut",rp3.toString());
+//        HttpUtils.deleteByUrl(URlprofile, rp3, new JsonHttpResponseHandler() {
+//            @Override
+//            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+//                super.onSuccess(statusCode, headers, response);
+//                try {
+//                    JSONObject serverResp = new JSONObject(response.toString());
+//                    Log.d("salut",serverResp.toString());
+//
+//                } catch (JSONException e1) {
+//                    e1.printStackTrace();
+//                }
+//
+//            }
+//        });
     }
 }

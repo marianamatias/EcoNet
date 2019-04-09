@@ -60,8 +60,32 @@ public class MainActivity extends AppCompatActivity implements
     EditText usernameText;
     public static String userID;
     FileCacher<String> userIDCacher;
-
-
+    FileCacher<String []> taskCacher;
+    FileCacher<String []> keyCacher;
+    FileCacher<String []> topicCacher;
+    FileCacher<String []> scoreCacher;
+    FileCacher<String []> freqCacher;
+    FileCacher<String []> challengeCacher;
+    FileCacher<String []> challengesRunningCacher;
+    FileCacher<String []> challengedStatusCacher;
+    FileCacher<String []> challengedKeysUserCacher;
+    FileCacher<String []> challengedUserCacher;
+    FileCacher<String []> challengeedTopicCacher;
+    public static String usernameUser;
+    public static String firstnameUser;
+    //If task list detected
+    public static String[] getTaskKeysListUser = new String[] {};
+    public static String[] getTaskScoreListUser = new String[] {};
+    public static String[] getTaskFreqListUser = new String[] {};
+    //If challenge list detected
+    public static String[] getChallengersIDListUser = new String[] {};
+    public static String[] getChallengersStatusListUser = new String[] {};
+    public static String[] getChallengersTopicListUser = new String[] {};
+    //If followed question list detected
+    public static String[] getFollowedQuestionIDListUser = new String[] {};
+    public static String[] getFollowedQuestionLastViewListUser = new String[] {};
+    public static String [] tasksList = new String[]{};
+    public  static String[] topicList = new String[]{};
     // [START declare_auth]
     public FirebaseAuth mAuth;
     public static  String signed = "No";
@@ -73,8 +97,38 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //By matching the taskretrieved and the tasklist find topic and ID
+        taskCacher = new FileCacher<>(MainActivity.this, "taskCacher.txt");
+        topicCacher = new FileCacher<>(MainActivity.this, "topicCacher.txt");
+        //From the tasklist of the database
+        scoreCacher = new FileCacher<>(MainActivity.this, "scoreCacher.txt");
+        keyCacher = new FileCacher<>(MainActivity.this, "keys.txt");
+        freqCacher = new FileCacher<>(MainActivity.this, "frequency.txt");
+        //From the challengelist of the database
+        challengeCacher = new FileCacher<>(MainActivity.this, "challengeCacher.txt");
+        challengesRunningCacher = new FileCacher<>(MainActivity.this, "challengeedTopicCacher.txt");
+        challengeCacher = new FileCacher<>(MainActivity.this, "challengeCacher.txt");
+        challengedUserCacher = new FileCacher<>(MainActivity.this, "challengedUserCacher.txt");
+        challengeedTopicCacher = new FileCacher<>(MainActivity.this, "challengeedTopicCacher.txt");
+        challengedStatusCacher = new FileCacher<>(MainActivity.this, "challengedStatusCacher.txt");
+        challengedKeysUserCacher = new FileCacher<>(MainActivity.this, "challengeedKeysUserCacher.txt");
+        try {
+            taskCacher.clearCache();
+            topicCacher.clearCache();
+            scoreCacher.clearCache();
+            keyCacher.clearCache();
+            freqCacher.clearCache();
+            challengeCacher.clearCache();
+            challengedKeysUserCacher.clearCache();
+            challengedStatusCacher.clearCache();
+            challengedUserCacher.clearCache();
+            challengeedTopicCacher.clearCache();
+            challengesRunningCacher.clearCache();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        firstnameText = (EditText) findViewById(R.id.firstnameText);
+        //firstnameText = (EditText) findViewById(R.id.firstnameText);
         usernameText = (EditText) findViewById(R.id.usernameText);
         userIDCacher = new FileCacher<>(MainActivity.this, "userId.txt");
         if (signed.equals("No")){
@@ -113,7 +167,11 @@ public class MainActivity extends AppCompatActivity implements
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        updateUI(currentUser);
+        try {
+            updateUI(currentUser);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     // [END on_start_check_user]
 
@@ -134,7 +192,11 @@ public class MainActivity extends AppCompatActivity implements
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e);
                 // [START_EXCLUDE]
-                updateUI(null);
+                try {
+                    updateUI(null);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
                 // [END_EXCLUDE]
             }
         }
@@ -154,12 +216,20 @@ public class MainActivity extends AppCompatActivity implements
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            updateUI(user);
+                            try {
+                                updateUI(user);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             Snackbar.make(findViewById(R.id.main_layout), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
-                            updateUI(null);
+                            try {
+                                updateUI(null);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 });
@@ -182,21 +252,44 @@ public class MainActivity extends AppCompatActivity implements
                 new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        updateUI(null);
+                        try {
+                            updateUI(null);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
     }
 
-    private void updateUI(FirebaseUser user) {
-        if (user != null) {
-            if (signed.equals("No")) {
+    private void updateUI(FirebaseUser user) throws IOException {
+        if ((user != null)) {
+            //Need to create a new user because no email in the database
+            String mail = mAuth.getCurrentUser().getEmail();
+            if (signed.equals("No")&&(!Methods.isInArray(WelcomeActivity.firstnameList,mail))){
                 //Success in log in so post of the new user into the database
+
+                Toast.makeText(getApplicationContext(),"I am creating a new account",Toast.LENGTH_LONG).show();
+                try {
+                    taskCacher.clearCache();
+                    topicCacher.clearCache();
+                    scoreCacher.clearCache();
+                    keyCacher.clearCache();
+                    freqCacher.clearCache();
+                    challengeCacher.clearCache();
+                    challengedKeysUserCacher.clearCache();
+                    challengedStatusCacher.clearCache();
+                    challengedUserCacher.clearCache();
+                    challengeedTopicCacher.clearCache();
+                    challengesRunningCacher.clearCache();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 JSONObject test = new JSONObject();
                 RequestParams rp = new RequestParams();
                 rp.put("api_key", "blurryapikeyseetutorial");
                 rp.put("param", "new");
                 try {
-                    test.put("firstname", firstnameText.getText().toString());
+                    test.put("e-mail",mAuth.getCurrentUser().getEmail()); //get the mail here);
                     test.put("username", usernameText.getText().toString());
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -225,11 +318,36 @@ public class MainActivity extends AppCompatActivity implements
                 });
                 signed = "Yes";
             }
-            //Retrieve the profile of the user
+            else {
+                Toast.makeText(getApplicationContext(),"Mail already in database",Toast.LENGTH_LONG).show();
+                if (WelcomeActivity.userIDList.length!=0){
+                    String mail2 = mAuth.getCurrentUser().getEmail();
+                    userID = WelcomeActivity.userIDList[Methods.find(WelcomeActivity.firstnameList,mail2)];
+                    Log.d("salut","my mail is "+mail2+" "+userID);
+                    userIDCacher.writeCache(userID);
+                }
+            }
+            try {
+                taskCacher.clearCache();
+                topicCacher.clearCache();
+                scoreCacher.clearCache();
+                keyCacher.clearCache();
+                freqCacher.clearCache();
+                challengeCacher.clearCache();
+                challengedKeysUserCacher.clearCache();
+                challengedStatusCacher.clearCache();
+                challengedUserCacher.clearCache();
+                challengeedTopicCacher.clearCache();
+                challengesRunningCacher.clearCache();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            //Retrieve the profile of the user if mail is in database
             JSONObject data = new JSONObject();
             RequestParams rp3 = new RequestParams();
             rp3.put("api_key", "blurryapikeyseetutorial");
             rp3.put("param", "myaccount");
+            rp3.put("wanted","all");
             try {
                 data.put("ID", userID);
             } catch (JSONException e) {
@@ -243,17 +361,80 @@ public class MainActivity extends AppCompatActivity implements
                     super.onSuccess(statusCode, headers, response);
                     try {
                         JSONObject serverResp = new JSONObject(response.toString());
-                        Log.d("salut",serverResp.toString());
-                        waitResponse();
+                        usernameUser = serverResp.getString("username");
+                        firstnameUser = serverResp.getString("e-mail");
+                        if (serverResp.has("tasklist")){
+                            //Need to parse all the tasks, the scoring, the topics, the frequency
+                            JSONObject myTaskList = serverResp.getJSONObject("tasklist");
+                            Iterator<String> keysTaskList = myTaskList.keys();
+                            while(keysTaskList.hasNext()) {
+                                String keyTask = keysTaskList.next();
+                                getTaskKeysListUser = Methods.increaseArray(getTaskKeysListUser,keyTask);
+                                if (myTaskList.get(keyTask) instanceof JSONObject) {
+                                    JSONObject item2 = myTaskList.getJSONObject(keyTask);
+                                    getTaskScoreListUser = Methods.increaseArray(getTaskScoreListUser, item2.getString("scoring"));
+                                    getTaskFreqListUser = Methods.increaseArray(getTaskFreqListUser, item2.getString("frequency"));
+                                }
+                            }
+                        }
+                        if(!serverResp.has("tasklist")) {
+                            Log.d("salut","No task detected");
+                        }
+                        if (serverResp.has("challenge")){
+                            //Need to parse challenges, status, challengers, tasks
+                            JSONObject myChallengeList = serverResp.getJSONObject("challenge");
+                            Iterator<String> keysChallengeList = myChallengeList.keys();
+                            while(keysChallengeList.hasNext()) {
+                                String keyChallenge = keysChallengeList.next();
+                                getChallengersIDListUser = Methods.increaseArray(getChallengersIDListUser,keyChallenge);
+                                if (myChallengeList.get(keyChallenge) instanceof JSONObject) {
+                                    JSONObject item = myChallengeList.getJSONObject(keyChallenge);
+                                    getChallengersStatusListUser = Methods.increaseArray(getChallengersStatusListUser, item.getString("status"));
+                                    getChallengersTopicListUser = Methods.increaseArray(getChallengersTopicListUser, item.getString("topic"));
+                                }
+                            }
+                        }
+
+                        if(!serverResp.has("challenge")) {
+                            Log.d("salut","No challenge detected");
+                        }
+                        if (serverResp.has("followed")){
+                            //Need to parse followedquestion, id, lastview
+                            JSONObject myQuestionList = serverResp.getJSONObject("challenge");
+                            Iterator<String> keysQuestionList = myQuestionList.keys();
+                            while(keysQuestionList.hasNext()) {
+                                String keyQuestion = keysQuestionList.next();
+                                getFollowedQuestionIDListUser = Methods.increaseArray(getFollowedQuestionIDListUser,keyQuestion);
+                                if (myQuestionList.get(keyQuestion) instanceof JSONObject) {
+                                    JSONObject item = myQuestionList.getJSONObject(keyQuestion);
+                                    getFollowedQuestionLastViewListUser = Methods.increaseArray(getFollowedQuestionLastViewListUser, item.getString("last"));
+                                }
+                            }
+                        }
+                        if(!serverResp.has("followed")) {
+                            Log.d("salut","No followed question detected");
+                        }
+                        try {
+                            scoreCacher.writeCache(getTaskScoreListUser);
+                            keyCacher.writeCache(getTaskKeysListUser);
+                            freqCacher.writeCache(getTaskFreqListUser);
+                            for (int i=0;i<getTaskKeysListUser.length;i++){
+                                tasksList=Methods.increaseArray(tasksList,WelcomeActivity.taskList[Methods.find(WelcomeActivity.keysList,getTaskKeysListUser[i])]);
+                                topicList=Methods.increaseArray(topicList,WelcomeActivity.topicList[Methods.find(WelcomeActivity.keysList,getTaskKeysListUser[i])]);
+                                Log.d("salut","I just wrote "+tasksList[i]);
+                            }
+                            taskCacher.writeCache(tasksList);
+                            topicCacher.writeCache(topicList);
+                        } catch (IOException e){
+                            e.printStackTrace();
+                        }
 
                     } catch (JSONException e1) {
                         e1.printStackTrace();
                     }
+
                 }
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONArray timeline) {
-                     //Log.d("salut","received array");
-                }
+
             });
 
             //switch screens
@@ -268,25 +449,25 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onClick(View v) {
         int i = v.getId();
-        if ((i == R.id.signInButton)&&(!usernameText.getText().toString().equals(""))&&(!firstnameText.getText().toString().equals(""))
-        && (!Methods.isInArray(WelcomeActivity.usernameList,usernameText.getText().toString()))) {
-            signIn();
-        }
-        else if ((Methods.isInArray(WelcomeActivity.usernameList,usernameText.getText().toString()))&&
-                (Methods.isInArray(WelcomeActivity.firstnameList,firstnameText.getText().toString()))){
-            userID = WelcomeActivity.userIDList[Methods.find(WelcomeActivity.usernameList,usernameText.getText().toString())];
-            try {
-                userIDCacher.writeCache(userID);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            retrieveProfile();
-            signed = "Yes";
-            signIn();
-        }
-        else {
-            Toast.makeText(getApplicationContext(),"Please enter a firstname and username before login",Toast.LENGTH_LONG).show();
-        }
+//        if ((i == R.id.signInButton)&&(!Methods.isInArray(WelcomeActivity.usernameList,usernameText.getText().toString()))) {
+//            signIn();
+//        }
+//        else if ((Methods.isInArray(WelcomeActivity.usernameList,usernameText.getText().toString()))&&
+//                (Methods.isInArray(WelcomeActivity.firstnameList,firstnameText.getText().toString()))){
+//            userID = WelcomeActivity.userIDList[Methods.find(WelcomeActivity.usernameList,usernameText.getText().toString())];
+//            try {
+//                userIDCacher.writeCache(userID);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            retrieveProfile();
+//            signed = "Yes";
+//            signIn();
+//        }
+//        else {
+//            Toast.makeText(getApplicationContext(),"Please enter a firstname and username before login",Toast.LENGTH_LONG).show();
+//        }
+        signIn();
     }
     public void retrieveProfile(){
         //on get the profile

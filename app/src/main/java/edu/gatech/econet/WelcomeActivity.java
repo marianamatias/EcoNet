@@ -99,9 +99,7 @@ public class WelcomeActivity extends AppCompatActivity {
                // Log.d("salut","received array");
             }
         });
-        for (int i=0;i<taskList.length;i++){
-            Log.d("salut",taskList[i]+"mange tes morts");
-        }
+
 //Retrieve all the users of the database
         RequestParams rp2 = new RequestParams();
         rp2.put("api_key","blurryapikeyseetutorial");
@@ -121,7 +119,7 @@ public class WelcomeActivity extends AppCompatActivity {
                         if (serverResp.get(key) instanceof JSONObject) {
                             JSONObject item = serverResp.getJSONObject(key);
                             usernameList = Methods.increaseArray(usernameList, item.getString("username"));
-                            firstnameList = Methods.increaseArray(firstnameList, item.getString("firstname"));
+                            firstnameList = Methods.increaseArray(firstnameList, item.getString("e-mail"));
                         }
                     }
                     for (int i=0;i<usernameList.length;i++){
@@ -148,6 +146,7 @@ public class WelcomeActivity extends AppCompatActivity {
             RequestParams rp3 = new RequestParams();
             rp3.put("api_key", "blurryapikeyseetutorial");
             rp3.put("param", "myaccount");
+            rp3.put("wanted","all");
             try {
                 data.put("ID", userIDCacher.readCache());
             } catch (JSONException e) {
@@ -164,7 +163,7 @@ public class WelcomeActivity extends AppCompatActivity {
                     try {
                         JSONObject serverResp = new JSONObject(response.toString());
                         usernameUser = serverResp.getString("username");
-                        firstnameUser = serverResp.getString("firstname");
+                        firstnameUser = serverResp.getString("e-mail");
                         if (serverResp.has("tasklist")){
                             //Need to parse all the tasks, the scoring, the topics, the frequency
                             JSONObject myTaskList = serverResp.getJSONObject("tasklist");
@@ -196,6 +195,7 @@ public class WelcomeActivity extends AppCompatActivity {
                                 }
                             }
                         }
+
                         if(!serverResp.has("challenge")) {
                             Log.d("salut","No challenge detected");
                         }
@@ -216,14 +216,18 @@ public class WelcomeActivity extends AppCompatActivity {
                             Log.d("salut","No followed question detected");
                         }
 
+
                     } catch (JSONException e1) {
                         e1.printStackTrace();
                     }
+
                 }
+
             });
             timer = new Timer();
             timer.schedule(new TimerTask(){
                 @Override public void run(){
+
                     Intent intent = new Intent(WelcomeActivity.this,habitTracker.class);
                     intent.putExtra("FROM_ACTIVITY", "WelcomeActivity");
                     startActivity(intent);
