@@ -78,7 +78,7 @@
             android:layout_height="60dp"
             android:layout_marginEnd="24dp"
             android:layout_marginBottom="24dp"
-            android:background="@drawable/ic_action_name"
+            android:background="@drawable/ic_add_grey"
             android:onClick="addANewGoal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
