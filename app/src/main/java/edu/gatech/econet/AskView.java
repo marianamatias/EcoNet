@@ -106,9 +106,7 @@ public class AskView extends AppCompatActivity {
     }
     class AskAdapter extends BaseAdapter {
         @Override
-        public int getCount() {
-            return authorRespID.length;
-        }
+        public int getCount() { return 2; }
         @Override
         public Object getItem(int i) {
             return null;

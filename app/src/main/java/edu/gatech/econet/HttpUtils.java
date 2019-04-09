@@ -9,6 +9,7 @@ public class HttpUtils {
 
     private static AsyncHttpClient client = new AsyncHttpClient();
 
+
     public static void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         client.get(getAbsoluteUrl(url), params, responseHandler);
     }
