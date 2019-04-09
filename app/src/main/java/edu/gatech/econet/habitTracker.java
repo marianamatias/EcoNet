@@ -89,13 +89,14 @@ public class habitTracker extends AppCompatActivity implements
     FileCacher<String []> challengesRunningCacher;
     FileCacher<String []> userIDCacher;
     SwipeMenuListView swipeListView;
+    final HabitTrackerAdapter habitTrackerListAdapter= new HabitTrackerAdapter();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habit_tracker);
         userIDCacher = new FileCacher<>(habitTracker.this, "userId.txt");
+
         //setSupportActionBar(toolbar);
         //By matching the taskretrieved and the tasklist find topic and ID
         taskCacher = new FileCacher<>(habitTracker.this, "taskCacher.txt");
@@ -108,8 +109,13 @@ public class habitTracker extends AppCompatActivity implements
         challengeCacher = new FileCacher<>(habitTracker.this, "challengeCacher.txt");
         challengesRunningCacher = new FileCacher<>(habitTracker.this, "challengeedTopicCacher.txt");
         //Retrieve the data of the user if already userID cached
+        try {
+            quitActivity();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Intent mIntent = getIntent();
-        final HabitTrackerAdapter habitTrackerListAdapter = new HabitTrackerAdapter();
+        //final HabitTrackerAdapter habitTrackerListAdapter = new HabitTrackerAdapter();
         swipeListView = (SwipeMenuListView) findViewById(R.id.swipeListView);
         swipeListView.setAdapter(habitTrackerListAdapter);
         try{
@@ -136,7 +142,13 @@ public class habitTracker extends AppCompatActivity implements
         }catch (Exception e){
 
         }
+        try {
+            quitActivity();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         retrieveData();
+
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setVisibility(View.GONE);
@@ -240,10 +252,7 @@ public class habitTracker extends AppCompatActivity implements
             }
         });
 
-        if(tasksList.length==0){
-            noTask.setVisibility(View.VISIBLE);
-            swipeListView.setVisibility(View.GONE);
-        }
+
 
     }
 
@@ -299,7 +308,11 @@ public class habitTracker extends AppCompatActivity implements
             startActivity(intent);
         }
         if (id == R.id.signOut){
-            menuSignOut();
+            try {
+                menuSignOut();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -307,7 +320,7 @@ public class habitTracker extends AppCompatActivity implements
     }
 
 
-    private void menuSignOut() {
+    private void menuSignOut() throws IOException {
         FirebaseAuth.getInstance().signOut();
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken("1057246002930-8bp2uv0v2sjesp7iin4dkcp35uv3vlas.apps.googleusercontent.com")
@@ -326,6 +339,13 @@ public class habitTracker extends AppCompatActivity implements
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     }
                 });
+        taskCacher.clearCache();
+        topicCacher.clearCache();
+        scoreCacher.clearCache();
+        keyCacher.clearCache();
+        freqCacher.clearCache();
+        challengeCacher.clearCache();
+        challengesRunningCacher.clearCache();
     }
 
     private void setupSwipeMenuListView(final SwipeMenuListView swipeList) {
@@ -444,7 +464,18 @@ public class habitTracker extends AppCompatActivity implements
     class HabitTrackerAdapter extends BaseAdapter {
         @Override
         public int getCount() {
+            try {
+                tasksList=taskCacher.readCache();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                taskCacher.writeCache(tasksList);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             return tasksList.length;
+
         }
         @Override
         public Object getItem(int i) {
@@ -458,6 +489,19 @@ public class habitTracker extends AppCompatActivity implements
         public View getView(int i, View view, ViewGroup viewGroup) {
             view = getLayoutInflater().inflate(R.layout.habit_tracker_adapter_layout,null);
 
+            try{
+                tasksList=taskCacher.readCache();
+                topicList=topicCacher.readCache();
+                scoreList=scoreCacher.readCache();
+                keysList=keyCacher.readCache();
+                freqList=freqCacher.readCache();
+                challengedList=challengeCacher.readCache();
+
+                habitTrackerListAdapter.notifyDataSetChanged();
+            } catch (IOException e ){
+                e.printStackTrace();
+            }
+        
             ImageView challengeIcon = (ImageView)view.findViewById(R.id.challengeIcon);
             if(challengedList.length!=0){
                 if (!Boolean.parseBoolean(challengedList[i])){
@@ -468,6 +512,10 @@ public class habitTracker extends AppCompatActivity implements
                 }
             }
 
+            if(!taskCacher.hasCache()){
+                noTask.setVisibility(View.VISIBLE);
+                swipeListView.setVisibility(View.GONE);
+            }
 //            if (newScore[i]){
                 ImageView greatIcon = (ImageView)view.findViewById(R.id.greatIcon);
             greatIcon.setVisibility(View.GONE);
@@ -596,6 +644,7 @@ public class habitTracker extends AppCompatActivity implements
                             }
 
                     }
+                    habitTrackerListAdapter.notifyDataSetChanged();
 
                     if(!serverResp.has("followed")) {
                         Log.d("salut","No followed question detected");
