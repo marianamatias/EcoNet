@@ -73,8 +73,6 @@ import cz.msebera.android.httpclient.Header;
 public class habitTracker extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener {
 
-    //String tasksList[] = new String[] {};
-    //String topicList[] = new String[] {};
     public static String tasksList[] = new String[] {};
     public static String topicList[] = new String[] {};
     public static String scoreList[] = new String[] {};
