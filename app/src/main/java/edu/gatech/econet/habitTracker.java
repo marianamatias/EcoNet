@@ -101,6 +101,8 @@ public class habitTracker extends AppCompatActivity implements
     SwipeMenuListView swipeListView;
     final HabitTrackerAdapter habitTrackerListAdapter= new HabitTrackerAdapter();
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -163,7 +165,7 @@ public class habitTracker extends AppCompatActivity implements
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setVisibility(View.GONE);
         noTask = (TextView) findViewById(R.id.no_task);
-        noTask.setText("Your Habit Tracker is empty, please swipe the menu and add your first task !");
+        noTask.setText("Your Habit Tracker is empty.\nClick the button to add your first task !");
         noTask.setVisibility(View.GONE);
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -267,6 +269,27 @@ public class habitTracker extends AppCompatActivity implements
 
         setGoogleProfilePic();
 
+        Button addNewGoalButton = (Button) findViewById(R.id.add_button);
+
+        addNewGoalButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Code here executes on main thread after user presses button
+                nextActivity();
+            }
+        });
+
+
+
+    }
+
+    private void nextActivity() {
+        Intent intent = new Intent(this, AddTaskSearch.class);
+        try {
+            quitActivity();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        startActivity(intent);
     }
 
     public boolean onNavigationItemSelected(MenuItem item) {
