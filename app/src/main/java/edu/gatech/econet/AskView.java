@@ -30,12 +30,14 @@ public class AskView extends AppCompatActivity {
     String nbrPlus[] = new String [] {"20","5","1"};
     String textResponse[] = new String[] {"Amazon has some great ones, I would highly suggest this.","I've tried some bamboo straws but are not very durable... You should use steel straws","There are some styilsh ones on etsy!"};
 
-    String listquestionsvegenism [] = new String[] {"first question vegan","first question vegan"};
-    String listquestionanimal [] = new String [] {"first question animal","second question animal"};
-    String listquestionenergy [] = new String [] {"first question energy","second question energy","third question energy"};
-    String listquestiontransport [] = new String[] {"first question transport","second question trasnport"};
-    String listquestionzerowaste [] = new String[] {"first question zero waste this is one of a hell big question huh ?","first question zero waste","first question zero waste","first question zero waste",
-            "first question zero waste","first question zero waste","first question zero waste","first question zero waste"};
+    public String listquestionsvegenism [] = new String[] {"Beans and high-protein grains are a great source of protein! I really enjoy a quinoa salad with chickpease, carrots, avocados and tomatoes.",
+            "Tofu is a good source of protein. You can substitute it for many meat/egg/milk products, you just have to choose silk or firm tofu for the texture."};
+    public String listquestionanimal [] = new String [] {"Here are some cool stores that I've found! https://www.peta.org/living/personal-care-fashion/vegan-eco-clothing-belongs-in-your-closet/",
+            "For makeup in the US, you can download the Leaping Bunny Cruelty Free app to find the most animal-friendly products!"};
+    public String listquestionenergy [] = new String [] {"Depends on your device and brand. For example iPhones usually stop charging for the most part when they reach 100%.", "You definitely have to unplug hairdryers if you're not using them. They are one of the appliances that use the most energy, even if they're turned off."};
+    public String listquestiontransport [] = new String[] {"Stopping at the store on your way home from work, for example, combines trips and reduces your footprint. Combining your commute with your errands, while it may take extra time, will ultimately save you money on gas and reduce your emissions.",
+            "Car maintenance is also essential for a green commute. Making sure your oil is changed, your filters are new, your car is in good shape, and you don’t keep anything too heavy in your trunk can all help keep your car running efficiently. This ensures that your engine isn’t overworking and increasing your emissions."};
+    public String listquestionzerowaste [] = new String[] {"If taken care of, bamboo straws can last for years and years and are biodegradable after you've disposed of them.","I agree! And bamboo is a truly renewable resource, bamboo growth can keep up with the rate of human consumption.","Bamboo takes about 5-10 years to decompose. Steel on the other hand takes 50 years. But if you take care of your product, you could have only a couple of steel straws instead of many more bamboo straws."};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,7 +109,8 @@ public class AskView extends AppCompatActivity {
     class AskAdapter extends BaseAdapter {
         @Override
         public int getCount() {
-            return authorRespID.length;
+            return 2;
+//            return authorRespID.length;
         }
         @Override
         public Object getItem(int i) {
