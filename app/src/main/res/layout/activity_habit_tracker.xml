@@ -38,14 +38,18 @@
             android:id="@+id/no_task"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingLeft="32dp"
+            android:paddingRight="32dp"
             android:textAlignment="center"
-            android:textSize="18sp"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:lineSpacingExtra="6dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintHorizontal_bias="0.51"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"
-            app:layout_constraintVertical_bias="0.09" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.31" />
 
 
         <ListView
@@ -67,6 +71,17 @@
         android:orientation="vertical"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
 
+
+        <Button
+            android:id="@+id/add_button"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/ic_action_name"
+            android:onClick="addANewGoal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
 

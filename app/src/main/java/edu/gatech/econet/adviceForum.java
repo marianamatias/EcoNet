@@ -57,8 +57,9 @@ public class adviceForum extends AppCompatActivity implements
     public static String taskSend;
     public static String questionSend;
 
-    String listofquestions[] = new String[]{"I don't know where to buy a bamboo straw.", "What restaurants have good vegan food", "How can I check which appliances use the most energy?", "How can I set up my house for composting?",
-            "How can I reduce my waste?", "what clothing lines are vegan?", "What type of non-animal proteins can I eat?", "Should I wash my glass recycling?"};
+    String listofquestions[] = new String[]{"Which is better, a steel straw or a bamboo straw?", "What restaurants have good vegan food?", "How can I check which appliances use the most energy?", "How can I set up my house for composting?",
+            "How can I reduce my waste?", "What clothing lines are vegan?", "What type of non-animal proteins can I eat?", "Should I wash my glass before recycling?",
+    "Do I have to unplug my devices after they're done charging?"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +92,7 @@ public class adviceForum extends AppCompatActivity implements
                 localTopic = Methods.increaseArray(localTopic,selectedTopic);
                 localTasks = Methods.increaseArray(localTasks,rawTasks[i]);
                 nbrResponse= Methods.increaseArray(nbrResponse,"0");
-                questions= Methods.increaseArray(questions,"Why should I" + rawTasks[i]);
+                questions= Methods.increaseArray(questions, "Why would I" + rawTasks[i]);
                 copyTasks = Methods.increaseArray(copyTasks,rawTasks[i]);
             }
         }
